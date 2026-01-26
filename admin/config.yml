@@ -1,0 +1,470 @@
+# Netlify CMS Configuration for N. Pavan Kalyan Portfolio
+backend:
+  name: git-gateway
+  branch: main # Branch to update (main or master)
+  commit_messages:
+    create: 'Create {{collection}} "{{slug}}"'
+    update: 'Update {{collection}} "{{slug}}"'
+    delete: 'Delete {{collection}} "{{slug}}"'
+    uploadMedia: '[skip ci] Upload "{{path}}"'
+    deleteMedia: '[skip ci] Delete "{{path}}"'
+    openAuthoring: '{{message}}'
+
+# Media storage
+media_folder: "assets/projects" # Where uploaded images will be stored
+public_folder: "/assets/projects" # Public URL path for images
+
+# Site URL for preview
+site_url: https://pavankalyan.netlify.app
+display_url: https://pavankalyan.netlify.app
+
+# Logo for admin panel
+logo_url: /assets/images/logo.png
+
+# Publish mode
+publish_mode: editorial_workflow # Enable draft/review/publish workflow
+
+# Search functionality
+search: true
+
+# Slug configuration
+slug:
+  encoding: "ascii"
+  clean_accents: true
+  sanitize_replacement: "-"
+
+# Collections configuration
+collections:
+  # Projects Collection
+  - name: "projects"
+    label: "Projects"
+    label_singular: "Project"
+    folder: "_projects"
+    create: true
+    delete: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    preview_path: "projects/{{slug}}.html"
+    fields:
+      - label: "Title"
+        name: "title"
+        widget: "string"
+        required: true
+        hint: "Project name (e.g., Milk Freshness Detection)"
+        
+      - label: "Description"
+        name: "description"
+        widget: "text"
+        required: true
+        hint: "Brief project description for cards"
+        
+      - label: "Category"
+        name: "category"
+        widget: "select"
+        required: true
+        options:
+          - { label: "IoT", value: "iot" }
+          - { label: "Robotics", value: "robotics" }
+          - { label: "Computer Vision", value: "cv" }
+        hint: "Project category for filtering"
+        
+      - label: "Featured Project"
+        name: "featured"
+        widget: "boolean"
+        default: false
+        hint: "Mark as featured project (shows first)"
+        
+      - label: "Featured Image"
+        name: "featured_image"
+        widget: "image"
+        required: true
+        hint: "Main project image (400x300px recommended)"
+        media_library:
+          config:
+            multiple: false
+            
+      - label: "Gallery Images"
+        name: "gallery"
+        widget: "list"
+        required: false
+        field:
+          label: "Image"
+          name: "image"
+          widget: "image"
+        hint: "Additional project images"
+        
+      - label: "Technologies Used"
+        name: "technologies"
+        widget: "list"
+        required: true
+        field:
+          label: "Technology"
+          name: "tech"
+          widget: "string"
+        hint: "Technologies/tools used (Arduino, ESP32, etc.)"
+        
+      - label: "Project Status"
+        name: "status"
+        widget: "select"
+        required: true
+        options:
+          - { label: "Completed", value: "completed" }
+          - { label: "In Progress", value: "in-progress" }
+          - { label: "Planning", value: "planning" }
+        default: "completed"
+        
+      - label: "Start Date"
+        name: "start_date"
+        widget: "date"
+        required: false
+        hint: "When you started this project"
+        
+      - label: "Completion Date"
+        name: "completion_date"
+        widget: "date"
+        required: false
+        hint: "When you completed this project"
+        
+      - label: "Project URL"
+        name: "project_url"
+        widget: "string"
+        required: false
+        hint: "Link to live project, GitHub repo, or demo"
+        
+      - label: "GitHub Repository"
+        name: "github_url"
+        widget: "string"
+        required: false
+        hint: "GitHub repository URL"
+        
+      - label: "Demo Video"
+        name: "demo_video"
+        widget: "string"
+        required: false
+        hint: "YouTube video ID or full URL"
+        
+      - label: "Detailed Description"
+        name: "body"
+        widget: "markdown"
+        required: true
+        hint: "Full project description with technical details"
+        buttons:
+          - bold
+          - italic
+          - code
+          - link
+          - heading-two
+          - heading-three
+          - quote
+          - bulleted-list
+          - numbered-list
+        editor_components:
+          - image
+          - youtube
+          
+      - label: "Key Features"
+        name: "features"
+        widget: "list"
+        required: false
+        field:
+          label: "Feature"
+          name: "feature"
+          widget: "string"
+        hint: "Key project features/highlights"
+        
+      - label: "Challenges Faced"
+        name: "challenges"
+        widget: "text"
+        required: false
+        hint: "Technical challenges and how you solved them"
+        
+      - label: "Results & Impact"
+        name: "results"
+        widget: "text"
+        required: false
+        hint: "Project outcomes, metrics, achievements"
+        
+      - label: "Future Enhancements"
+        name: "future_work"
+        widget: "text"
+        required: false
+        hint: "Planned improvements or next steps"
+        
+      - label: "SEO Meta Description"
+        name: "meta_description"
+        widget: "string"
+        required: false
+        hint: "SEO description for search engines"
+        
+      - label: "Tags"
+        name: "tags"
+        widget: "list"
+        required: false
+        field:
+          label: "Tag"
+          name: "tag"
+          widget: "string"
+        hint: "SEO tags for better discoverability"
+
+  # Site Settings
+  - name: "settings"
+    label: "Site Settings"
+    files:
+      - label: "General Settings"
+        name: "general"
+        file: "_data/settings.yml"
+        fields:
+          - label: "Site Title"
+            name: "site_title"
+            widget: "string"
+            default: "N. Pavan Kalyan - IoT & Robotics Engineer"
+            
+          - label: "Site Description"
+            name: "site_description"
+            widget: "text"
+            default: "B.Tech ECE student specializing in IoT, Robotics, and Computer Vision"
+            
+          - label: "Your Name"
+            name: "name"
+            widget: "string"
+            default: "N. Pavan Kalyan"
+            
+          - label: "Professional Title"
+            name: "title"
+            widget: "string"
+            default: "IoT & Robotics Engineer"
+            
+          - label: "Education"
+            name: "education"
+            widget: "string"
+            default: "B.Tech 3rd Year ECE"
+            
+          - label: "Email"
+            name: "email"
+            widget: "string"
+            default: "pavankalyanoffical31@gmail.com"
+            
+          - label: "Phone"
+            name: "phone"
+            widget: "string"
+            default: "+91 7569963393"
+            
+          - label: "Location"
+            name: "location"
+            widget: "string"
+            default: "Nandyal, Banaganapalle"
+            
+          - label: "Professional Summary"
+            name: "summary"
+            widget: "text"
+            default: "IoT/Robotics expert. Built DJI NAZA drones, 10× Abilix robots, Roboflow CV models (steel plates 92% accuracy, parcel damage, person recognition). Currently working on milk freshness detection with FDC1004 capacitance sensor."
+            
+          - label: "Profile Image"
+            name: "profile_image"
+            widget: "image"
+            required: false
+            hint: "Your profile photo (square format recommended)"
+            
+          - label: "Resume/CV"
+            name: "resume_url"
+            widget: "string"
+            required: false
+            hint: "Link to your resume/CV PDF"
+            
+          - label: "GitHub Username"
+            name: "github"
+            widget: "string"
+            default: "pavankalyan"
+            
+          - label: "LinkedIn Profile"
+            name: "linkedin"
+            widget: "string"
+            default: "pavankalyan"
+            
+          - label: "Twitter Handle"
+            name: "twitter"
+            widget: "string"
+            required: false
+            
+          - label: "Instagram Handle"
+            name: "instagram"
+            widget: "string"
+            required: false
+            
+          - label: "Google Analytics ID"
+            name: "google_analytics"
+            widget: "string"
+            required: false
+            hint: "GA4 Measurement ID (G-XXXXXXXXXX)"
+            
+          - label: "Formspree Form ID"
+            name: "formspree_id"
+            widget: "string"
+            required: false
+            hint: "Formspree form ID for contact form"
+            
+          - label: "Disqus Shortname"
+            name: "disqus_shortname"
+            widget: "string"
+            required: false
+            hint: "Disqus shortname for comments"
+
+      - label: "About Section"
+        name: "about"
+        file: "_data/about.yml"
+        fields:
+          - label: "About Title"
+            name: "title"
+            widget: "string"
+            default: "About Me"
+            
+          - label: "About Description"
+            name: "description"
+            widget: "text"
+            default: "Passionate about creating innovative IoT and robotics solutions"
+            
+          - label: "Skills"
+            name: "skills"
+            widget: "list"
+            field:
+              label: "Skill"
+              name: "skill"
+              widget: "string"
+            default:
+              - "Arduino"
+              - "ESP32"
+              - "Raspberry Pi"
+              - "Indus Board"
+              - "IoT"
+              - "Computer Vision"
+              - "Roboflow"
+              - "Robotics"
+              - "Drones"
+              - "HTML/CSS"
+              
+          - label: "Experience Highlights"
+            name: "experience"
+            widget: "list"
+            required: false
+            fields:
+              - label: "Title"
+                name: "title"
+                widget: "string"
+              - label: "Description"
+                name: "description"
+                widget: "text"
+              - label: "Achievement"
+                name: "achievement"
+                widget: "string"
+                required: false
+                
+          - label: "Certifications"
+            name: "certifications"
+            widget: "list"
+            required: false
+            fields:
+              - label: "Name"
+                name: "name"
+                widget: "string"
+              - label: "Issuer"
+                name: "issuer"
+                widget: "string"
+              - label: "Date"
+                name: "date"
+                widget: "date"
+              - label: "URL"
+                name: "url"
+                widget: "string"
+                required: false
+
+      - label: "Theme Settings"
+        name: "theme"
+        file: "_data/theme.yml"
+        fields:
+          - label: "Primary Color"
+            name: "primary_color"
+            widget: "color"
+            default: "#1e3a8a"
+            hint: "Main brand color"
+            
+          - label: "Accent Color"
+            name: "accent_color"
+            widget: "color"
+            default: "#10b981"
+            hint: "Secondary accent color"
+            
+          - label: "Font Family"
+            name: "font_family"
+            widget: "select"
+            options:
+              - { label: "Inter", value: "Inter" }
+              - { label: "Roboto", value: "Roboto" }
+              - { label: "Open Sans", value: "Open Sans" }
+              - { label: "Poppins", value: "Poppins" }
+              - { label: "Montserrat", value: "Montserrat" }
+            default: "Inter"
+            
+          - label: "Enable Dark Mode"
+            name: "dark_mode"
+            widget: "boolean"
+            default: true
+            
+          - label: "Enable Animations"
+            name: "animations"
+            widget: "boolean"
+            default: true
+            
+          - label: "Enable Particles Background"
+            name: "particles"
+            widget: "boolean"
+            default: false
+
+  # Navigation Menu
+  - name: "navigation"
+    label: "Navigation"
+    files:
+      - label: "Main Menu"
+        name: "main"
+        file: "_data/navigation.yml"
+        fields:
+          - label: "Menu Items"
+            name: "main"
+            widget: "list"
+            fields:
+              - label: "Title"
+                name: "title"
+                widget: "string"
+              - label: "URL"
+                name: "url"
+                widget: "string"
+              - label: "Icon"
+                name: "icon"
+                widget: "string"
+                required: false
+                hint: "Heroicon name (optional)"
+
+# Editor configuration
+editor:
+  preview: true
+  frame: true
+  
+# Media library configuration
+media_library:
+  name: uploadcare
+  config:
+    publicKey: "demopublickey"
+    multiple: false
+    tabs: "file camera url facebook gdrive gphotos dropbox instagram"
+    effects: "crop,rotate,enhance,grayscale"
+    imageShrink: "2000x2000"
+    previewStep: true
+    clearable: true
+
+# Local backend for development
+local_backend: true
+
+# Show preview links
+show_preview_links: true
+
+# Extension configuration
+extension:
+  preview_path: "{{slug}}"

@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YOLOv8n Raspberry Pi Optimization - AuraAlliance</title>
+    <meta name="description" content="Complete evolution from RT-DETR to YOLOv8n with TFLite optimization for Raspberry Pi deployment achieving 11 FPS with 85% accuracy">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: {
+                            50: '#eff6ff',
+                            500: '#1e3a8a',
+                            600: '#1e40af',
+                            700: '#1d4ed8',
+                        },
+                        accent: {
+                            500: '#10b981',
+                            600: '#059669',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body class="font-inter bg-white dark:bg-gray-900 text-gray-900 dark:text-white transition-colors duration-300">
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 glass-nav backdrop-blur-md bg-white/80 dark:bg-gray-900/80 border-b border-gray-200/20 dark:border-gray-700/20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex-shrink-0">
+                    <a href="../index.html" class="text-xl font-bold text-primary-500">AuraAlliance</a>
+                </div>
+                
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="../index.html#home" class="nav-link">Home</a>
+                        <a href="../index.html#about" class="nav-link">About</a>
+                        <a href="../index.html#projects" class="nav-link">Projects</a>
+                        <a href="../index.html#contact" class="nav-link">Contact</a>
+                    </div>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <button id="theme-toggle" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+                        <svg class="w-5 h-5 hidden dark:block" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"></path>
+                        </svg>
+                        <svg class="w-5 h-5 block dark:hidden" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="pt-24 pb-12 px-4">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-8">
+                <h1 class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary-500 to-accent-500 bg-clip-text text-transparent">
+                    YOLOv8n Raspberry Pi Optimization
+                </h1>
+                <p class="text-xl text-gray-600 dark:text-gray-300 mb-6">
+                    Complete model evolution from RT-DETR to TFLite-optimized YOLOv8n achieving 11 FPS on Raspberry Pi 4
+                </p>
+                <div class="flex flex-wrap justify-center gap-3 mb-8">
+                    <span class="tech-tag">YOLOv8n</span>
+                    <span class="tech-tag">TFLite</span>
+                    <span class="tech-tag">Raspberry Pi 4</span>
+                    <span class="tech-tag">Edge Computing</span>
+                    <span class="tech-tag">Model Optimization</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Project Details -->
+    <section class="py-12 px-4">
+        <div class="max-w-4xl mx-auto">
+            <div class="grid md:grid-cols-3 gap-8 mb-12">
+                <div class="glass-card p-6 text-center">
+                    <div class="w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">24x Speed Boost</h3>
+                    <p class="text-gray-600 dark:text-gray-300">From 0.5 FPS to 12 FPS</p>
+                </div>
+                
+                <div class="glass-card p-6 text-center">
+                    <div class="w-16 h-16 bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">85% Accuracy</h3>
+                    <p class="text-gray-600 dark:text-gray-300">Maintained detection precision</p>
+                </div>
+                
+                <div class="glass-card p-6 text-center">
+                    <div class="w-16 h-16 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Edge Deployment</h3>
+                    <p class="text-gray-600 dark:text-gray-300">Raspberry Pi 4 optimized</p>
+                </div>
+            </div>
+
+            <div class="space-y-8">
+                <!-- Project Evolution Overview -->
+                <div class="glass-card p-8">
+                    <h2 class="text-2xl font-bold mb-4 text-primary-500">Project Evolution Journey</h2>
+                    <p class="text-gray-700 dark:text-gray-300 leading-relaxed mb-6">
+                        This project represents a comprehensive journey in model optimization and edge deployment, guided by <strong>Prof. Narayan Sir (HOD, ECE Department)</strong>. Starting with RT-DETR achieving excellent accuracy on laptops, we encountered significant performance challenges when deploying to Raspberry Pi 4, leading to an extensive research and optimization process.
+                    </p>
+                    <div class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border border-blue-200 dark:border-blue-700 rounded-lg p-6">
+                        <h3 class="text-lg font-semibold text-blue-800 dark:text-blue-200 mb-3">Research Problem Statement</h3>
+                        <p class="text-blue-700 dark:text-blue-300 leading-relaxed">
+                            <strong>Challenge:</strong> RT-DETR model worked perfectly on laptops but suffered severe performance degradation on Raspberry Pi 4 (4-core CPU limitation). This led us to explore YOLO architectures and advanced edge optimization techniques to achieve real-time performance while maintaining detection accuracy.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Model Evolution Timeline -->
+                <div class="glass-card p-8">
+                    <h2 class="text-2xl font-bold mb-6 text-primary-500">Model Evolution Timeline</h2>
+                    <div class="space-y-6">
+                        <!-- RT-DETR Phase -->
+                        <div class="flex items-start space-x-4">
+                            <div class="w-12 h-12 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center flex-shrink-0">
+                                <span class="text-red-600 font-bold">1</span>
+                            </div>
+                            <div class="flex-1">
+                                <h3 class="text-lg font-semibold mb-2 text-red-600">RT-DETR Initial Implementation</h3>
+                                <p class="text-gray-700 dark:text-gray-300 mb-3">
+                                    Successfully trained RT-DETR on 25,000 head images achieving 98% accuracy on laptops. However, deployment on Raspberry Pi 4 resulted in severe FPS drops due to GPU-optimized architecture incompatibility with 4-core CPU.
+                                </p>
+                                <div class="bg-red-50 dark:bg-red-900/20 border-l-4 border-red-500 p-3 rounded-r-lg">
+                                    <p class="text-red-700 dark:text-red-300 text-sm">
+                                        <strong>Issue:</strong> RT-DETR requires GPU cores for optimal performance, causing lag on Raspberry Pi's limited CPU architecture.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- YOLO Transition -->
+                        <div class="flex items-start space-x-4">
+                            <div class="w-12 h-12 bg-yellow-100 dark:bg-yellow-900/30 rounded-full flex items-center justify-center flex-shrink-0">
+                                <span class="text-yellow-600 font-bold">2</span>
+                            </div>
+                            <div class="flex-1">
+                                <h3 class="text-lg font-semibold mb-2 text-yellow-600">YOLO Architecture Exploration</h3>
+                                <p class="text-gray-700 dark:text-gray-300 mb-3">
+                                    Under Prof. Narayan Sir's guidance, we explored YOLO models known for Raspberry Pi compatibility. Trained both YOLOv8n and YOLOv11n on Kaggle (6 hours each) with 30,000 images dataset.
+                                </p>
+                                <div class="grid md:grid-cols-2 gap-4">
+                                    <div class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700 rounded-lg p-3">
+                                        <h4 class="font-semibold text-yellow-800 dark:text-yellow-200 mb-1">YOLOv8n Performance</h4>
+                                        <p class="text-yellow-700 dark:text-yellow-300 text-sm">Better speed performance on Raspberry Pi compared to YOLOv11n</p>
+                                    </div>
+                                    <div class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700 rounded-lg p-3">
+                                        <h4 class="font-semibold text-yellow-800 dark:text-yellow-200 mb-1">Initial Pi Results</h4>
+                                        <p class="text-yellow-700 dark:text-yellow-300 text-sm">Improved FPS but still experiencing lag issues</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Edge Optimization -->
+                        <div class="flex items-start space-x-4">
+                            <div class="w-12 h-12 bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center flex-shrink-0">
+                                <span class="text-emerald-600 font-bold">3</span>
+                            </div>
+                            <div class="flex-1">
+                                <h3 class="text-lg font-semibold mb-2 text-emerald-600">Edge Optimization Research</h3>
+                                <p class="text-gray-700 dark:text-gray-300 mb-3">
+                                    Extensive research into edge computing techniques for model compression and optimization. Tested multiple conversion formats to find the optimal balance between speed and accuracy.
+                                </p>
+                                <div class="grid md:grid-cols-2 gap-4">
+                                    <div>
+                                        <h4 class="font-semibold text-gray-800 dark:text-gray-200 mb-2">Techniques Tested</h4>
+                                        <ul class="text-sm text-gray-600 dark:text-gray-400 space-y-1">
+                                            <li>• <span class="text-red-500">Edge Impulse:</span> Accuracy loss detected</li>
+                                            <li>• <span class="text-red-500">ONNX Format:</span> Parameter loss, wrong detection</li>
+                                            <li>• <span class="text-orange-500">NCNN Format:</span> Reduced accuracy</li>
+                                            <li>• <span class="text-emerald-500">TFLite:</span> Perfect accuracy & speed ✓</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-semibold text-gray-800 dark:text-gray-200 mb-2">Key Learnings</h4>
+                                        <ul class="text-sm text-gray-600 dark:text-gray-400 space-y-1">
+                                            <li>• Parameter preservation importance</li>
+                                            <li>• Model compression trade-offs</li>
+                                            <li>• Edge deployment challenges</li>
+                                            <li>• Hardware-software optimization</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- TFLite Success -->
+                        <div class="flex items-start space-x-4">
+                            <div class="w-12 h-12 bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center flex-shrink-0">
+                                <span class="text-emerald-600 font-bold">✓</span>
+                            </div>
+                            <div class="flex-1">
+                                <h3 class="text-lg font-semibold mb-2 text-emerald-600">TFLite Optimization Success</h3>
+                                <p class="text-gray-700 dark:text-gray-300 mb-3">
+                                    Successfully converted YOLOv8n to TFLite format with input size optimization (640→320) achieving remarkable performance improvement while maintaining detection accuracy.
+                                </p>
+                                <div class="bg-emerald-50 dark:bg-emerald-900/20 border-l-4 border-emerald-500 p-4 rounded-r-lg">
+                                    <div class="grid md:grid-cols-3 gap-4">
+                                        <div class="text-center">
+                                            <div class="text-2xl font-bold text-emerald-600 mb-1">0.5 → 11</div>
+                                            <div class="text-emerald-700 dark:text-emerald-300 text-sm">FPS Improvement</div>
+                                        </div>
+                                        <div class="text-center">
+                                            <div class="text-2xl font-bold text-emerald-600 mb-1">85%</div>
+                                            <div class="text-emerald-700 dark:text-emerald-300 text-sm">Maintained Accuracy</div>
+                                        </div>
+                                        <div class="text-center">
+                                            <div class="text-2xl font-bold text-emerald-600 mb-1">320px</div>
+                                            <div class="text-emerald-700 dark:text-emerald-300 text-sm">Optimized Input Size</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kaggle Training Details -->
+                <div class="glass-card p-8">
+                    <h2 class="text-2xl font-bold mb-6 text-primary-500">Dataset & Training Implementation</h2>
+                    
+                    <!-- Dataset Details -->
+                    <div class="mb-8">
+                        <h3 class="text-xl font-semibold mb-4 text-accent-500">Head Detection Dataset</h3>
+                        <div class="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border border-green-200 dark:border-green-700 rounded-lg p-6 mb-6">
+                            <div class="flex items-center mb-4">
+                                <div class="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center mr-4">
+                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h4 class="text-xl font-bold text-green-800 dark:text-green-200">Specialized Head Detection Dataset</h4>
+                                    <p class="text-green-600 dark:text-green-300">21,000 Images • Overhead & Head-Focused • Roboflow Mixed Datasets</p>
+                                </div>
+                            </div>
+                            
+                            <div class="grid md:grid-cols-2 gap-6 mb-4">
+                                <div>
+                                    <h5 class="font-semibold text-green-800 dark:text-green-200 mb-3">Dataset Specifications</h5>
+                                    <ul class="text-sm text-green-700 dark:text-green-300 space-y-1">
+                                        <li>• <strong>Total Images:</strong> ~21,000 head detection images</li>
+                                        <li>• <strong>Source:</strong> Multiple Roboflow head datasets mixed</li>
+                                        <li>• <strong>Focus:</strong> Overhead and head-focused perspectives</li>
+                                        <li>• <strong>Format:</strong> Converted to COCO format</li>
+                                        <li>• <strong>Task:</strong> Head detection only (not full body)</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h5 class="font-semibold text-green-800 dark:text-green-200 mb-3">Training Configuration</h5>
+                                    <ul class="text-sm text-green-700 dark:text-green-300 space-y-1">
+                                        <li>• <strong>Platform:</strong> Kaggle GPU acceleration</li>
+                                        <li>• <strong>Model:</strong> YOLOv8n (Nano architecture)</li>
+                                        <li>• <strong>Training Size:</strong> 640x640 pixels</li>
+                                        <li>• <strong>Epochs:</strong> 100 (6 hours training)</li>
+                                        <li>• <strong>Optimization:</strong> TFLite conversion for Pi</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-white dark:bg-gray-800 rounded-lg p-4 border border-green-200 dark:border-green-600">
+                                <h5 class="font-semibold text-green-800 dark:text-green-200 mb-2">Dataset Source Example</h5>
+                                <p class="text-green-700 dark:text-green-300 text-sm mb-2">
+                                    <strong>Primary Dataset:</strong> <a href="https://app.roboflow.com/agrisense-puixp/overhead-eeifj-e45ta/2" class="underline hover:text-green-600" target="_blank">Roboflow Overhead Head Detection</a>
+                                </p>
+                                <p class="text-green-700 dark:text-green-300 text-sm">
+                                    Multiple head detection datasets from Roboflow were combined and converted to COCO format for comprehensive training coverage.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Kaggle Training Pipeline -->
+                    <div class="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 border border-purple-200 dark:border-purple-700 rounded-lg p-6 mb-6">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 bg-purple-500 rounded-full flex items-center justify-center mr-4">
+                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-purple-800 dark:text-purple-200">Advanced Training Pipeline</h3>
+                                <p class="text-purple-600 dark:text-purple-300">100 Epochs - Raspberry Pi Optimized</p>
+                            </div>
+                        </div>
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div>
+                                <h4 class="font-semibold text-purple-800 dark:text-purple-200 mb-3">Training Parameters</h4>
+                                <div class="bg-white dark:bg-gray-800 rounded-lg p-3 border border-purple-200 dark:border-purple-600">
+                                    <ul class="text-sm text-purple-700 dark:text-purple-300 space-y-1">
+                                        <li>• <strong>Model:</strong> YOLOv8n (Nano)</li>
+                                        <li>• <strong>Dataset:</strong> 21,000 head images</li>
+                                        <li>• <strong>Epochs:</strong> 100 (6 hours training)</li>
+                                        <li>• <strong>Batch Size:</strong> 32</li>
+                                        <li>• <strong>Image Size:</strong> 640px</li>
+                                        <li>• <strong>Optimizer:</strong> AdamW with cosine LR</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-purple-800 dark:text-purple-200 mb-3">Optimization Features</h4>
+                                <div class="bg-white dark:bg-gray-800 rounded-lg p-3 border border-purple-200 dark:border-purple-600">
+                                    <ul class="text-sm text-purple-700 dark:text-purple-300 space-y-1">
+                                        <li>• <strong>GPU:</strong> Dual GPU acceleration</li>
+                                        <li>• <strong>Export:</strong> TFLite format for Pi</li>
+                                        <li>• <strong>Inference Size:</strong> 320px (optimized)</li>
+                                        <li>• <strong>AMP:</strong> Automatic Mixed Precision</li>
+                                        <li>• <strong>Single Class:</strong> Head detection only</li>
+                                        <li>• <strong>Tracking:</strong> ByteTrack built-in</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Performance Analysis -->
+                <div class="glass-card p-8">
+                    <h2 class="text-2xl font-bold mb-6 text-primary-500">Performance Analysis & Optimization</h2>
+                    
+                    <!-- Performance Graphs Section -->
+                    <div class="mb-8">
+                        <h3 class="text-xl font-semibold mb-4 text-accent-500">FPS Performance Analysis Graphs</h3>
+                        <div class="bg-gradient-to-r from-gray-50 to-blue-50 dark:from-gray-800 dark:to-blue-900/20 border border-gray-200 dark:border-gray-700 rounded-lg p-6 mb-6">
+                            <div class="text-center mb-6">
+                                <h4 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">Synchronous vs Asynchronous Processing Comparison</h4>
+                                <p class="text-gray-600 dark:text-gray-400 text-sm">Real-time FPS performance analysis on Raspberry Pi 4</p>
+                            </div>
+                            
+                            <!-- Performance Graphs -->
+                            <div class="grid md:grid-cols-2 gap-6 mb-6">
+                                <div class="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
+                                    <div class="mb-3">
+                                        <img src="../assets/projects/fpsvs graph.jpg" alt="Synchronous FPS Performance" class="w-full h-48 object-contain rounded-lg border">
+                                    </div>
+                                    <h5 class="font-semibold text-gray-800 dark:text-gray-200 text-center mb-2">Synchronous Processing</h5>
+                                    <div class="text-center text-sm text-gray-600 dark:text-gray-400">
+                                        <p>FPS: 5-12 (fluctuating) • Unstable performance</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
+                                    <div class="mb-3">
+                                        <img src="../assets/projects/asynchrnous.jpg" alt="Asynchronous FPS Performance" class="w-full h-48 object-contain rounded-lg border">
+                                    </div>
+                                    <h5 class="font-semibold text-gray-800 dark:text-gray-200 text-center mb-2">Asynchronous Processing</h5>
+                                    <div class="text-center text-sm text-gray-600 dark:text-gray-400">
+                                        <p>FPS: 11-12 (stable) • Consistent performance</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Performance Analysis -->
+                            <div class="grid md:grid-cols-2 gap-6 mb-4">
+                                <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700 rounded-lg p-4">
+                                    <h5 class="font-semibold text-red-800 dark:text-red-200 mb-2">Synchronous Issues</h5>
+                                    <ul class="text-sm text-red-700 dark:text-red-300 space-y-1">
+                                        <li>• FPS fluctuates significantly (5-12 FPS)</li>
+                                        <li>• Model warm-up causes initial low FPS</li>
+                                        <li>• Detection + tracking + display in same loop</li>
+                                        <li>• Occasional FPS drops during processing</li>
+                                    </ul>
+                                </div>
+                                <div class="bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-700 rounded-lg p-4">
+                                    <h5 class="font-semibold text-emerald-800 dark:text-emerald-200 mb-2">Asynchronous Benefits</h5>
+                                    <ul class="text-sm text-emerald-700 dark:text-emerald-300 space-y-1">
+                                        <li>• Stable 11-12 FPS performance</li>
+                                        <li>• Minimal frame drops</li>
+                                        <li>• Decoupled frame capture & inference</li>
+                                        <li>• Better real-time performance</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 p-4 rounded-r-lg">
+                                <h4 class="font-semibold text-blue-800 dark:text-blue-200 mb-2">Key Performance Insights</h4>
+                                <p class="text-blue-700 dark:text-blue-300 text-sm leading-relaxed mb-3">
+                                    Asynchronous processing clearly improves stability and real-time performance by decoupling frame capture, inference, and display operations. This results in consistent 12 FPS performance on Raspberry Pi 4.
+                                </p>
+                                <div class="grid md:grid-cols-3 gap-4">
+                                    <div class="text-center">
+                                        <div class="text-lg font-bold text-blue-600 mb-1">12 FPS</div>
+                                        <div class="text-blue-700 dark:text-blue-300 text-xs">Stable Async</div>
+                                    </div>
+                                    <div class="text-center">
+                                        <div class="text-lg font-bold text-blue-600 mb-1">ByteTrack</div>
+                                        <div class="text-blue-700 dark:text-blue-300 text-xs">Built-in Tracker</div>
+                                    </div>
+                                    <div class="text-center">
+                                        <div class="text-lg font-bold text-blue-600 mb-1">320px</div>
+                                        <div class="text-blue-700 dark:text-blue-300 text-xs">TFLite Inference</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Confidence Threshold Analysis -->
+                    <div class="mb-8">
+                        <h3 class="text-xl font-semibold mb-4 text-accent-500">Confidence Threshold Calibration</h3>
+                        <div class="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 p-4 rounded-r-lg mb-4">
+                            <h4 class="font-semibold text-blue-800 dark:text-blue-200 mb-2">31% Confidence Threshold</h4>
+                            <p class="text-blue-700 dark:text-blue-300 text-sm leading-relaxed">
+                                The consistent 31% confidence value is not a bug but a carefully calibrated manual threshold. While the AI calculates different confidence scores for each detection, we configured the system to only count objects above 31% to ensure optimal results for specific camera positions and environmental conditions.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- FPS Performance Analysis -->
+                    <div class="mb-8">
+                        <h3 class="text-xl font-semibold mb-4 text-accent-500">FPS Performance Analysis</h3>
+                        <div class="grid md:grid-cols-2 gap-6 mb-6">
+                            <div class="bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-700 rounded-lg p-4">
+                                <h4 class="font-semibold text-emerald-800 dark:text-emerald-200 mb-2">Asynchronous Processing Breakthrough</h4>
+                                <ul class="text-sm text-emerald-700 dark:text-emerald-300 space-y-1">
+                                    <li>• <strong>Stable Performance:</strong> 12 FPS consistently achieved</li>
+                                    <li>• <strong>Method:</strong> Asynchronous frame processing</li>
+                                    <li>• <strong>Improvement:</strong> Eliminated FPS fluctuations</li>
+                                    <li>• <strong>Result:</strong> More reliable person tracking</li>
+                                </ul>
+                            </div>
+                            <div class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700 rounded-lg p-4">
+                                <h4 class="font-semibold text-yellow-800 dark:text-yellow-200 mb-2">Synchronous vs Asynchronous</h4>
+                                <ul class="text-sm text-yellow-700 dark:text-yellow-300 space-y-1">
+                                    <li>• <strong>Synchronous:</strong> 10-12 FPS (fluctuation)</li>
+                                    <li>• <strong>Asynchronous:</strong> 12 FPS (stable)</li>
+                                    <li>• <strong>Benefit:</strong> Consistent frame processing</li>
+                                    <li>• <strong>Impact:</strong> Better tracking accuracy</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-lg p-4">
+                                <h4 class="font-semibold text-blue-800 dark:text-blue-200 mb-2">Optimized Performance</h4>
+                                <ul class="text-sm text-blue-700 dark:text-blue-300 space-y-1">
+                                    <li>• <strong>Current FPS:</strong> 12 FPS stable</li>
+                                    <li>• <strong>Processing:</strong> Asynchronous pipeline</li>
+                                    <li>• <strong>Hardware:</strong> Pi 4 CPU optimized</li>
+                                    <li>• <strong>Tracking:</strong> Consistent person ID maintenance</li>
+                                </ul>
+                            </div>
+                            <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700 rounded-lg p-4">
+                                <h4 class="font-semibold text-red-800 dark:text-red-200 mb-2">Low FPS Impact (5 FPS)</h4>
+                                <ul class="text-sm text-red-700 dark:text-red-300 space-y-1">
+                                    <li>• <strong>Issue:</strong> Large gaps between frames</li>
+                                    <li>• <strong>Problem:</strong> Tracking algorithm loses person ID</li>
+                                    <li>• <strong>Result:</strong> Missed detections at counting line</li>
+                                    <li>• <strong>Solution:</strong> Maintain 12 FPS for stable tracking</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Hardware Specifications -->
+                    <div class="mb-6">
+                        <h3 class="text-xl font-semibold mb-4 text-accent-500">Hardware Deployment Specifications</h3>
+                        <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6">
+                            <div class="grid md:grid-cols-3 gap-6">
+                                <div class="text-center">
+                                    <div class="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-3">
+                                        <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"></path>
+                                        </svg>
+                                    </div>
+                                    <h4 class="font-semibold text-gray-800 dark:text-gray-200">Raspberry Pi 4</h4>
+                                    <p class="text-gray-600 dark:text-gray-400 text-sm">4GB RAM, Quad-core CPU</p>
+                                </div>
+                                <div class="text-center">
+                                    <div class="w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-3">
+                                        <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"></path>
+                                        </svg>
+                                    </div>
+                                    <h4 class="font-semibold text-gray-800 dark:text-gray-200">Storage</h4>
+                                    <p class="text-gray-600 dark:text-gray-400 text-sm">32GB Memory Card</p>
+                                </div>
+                                <div class="text-center">
+                                    <div class="w-16 h-16 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center mx-auto mb-3">
+                                        <svg class="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                        </svg>
+                                    </div>
+                                    <h4 class="font-semibold text-gray-800 dark:text-gray-200">Performance</h4>
+                                    <p class="text-gray-600 dark:text-gray-400 text-sm">11 FPS Optimized</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Technical Implementation -->
+                <div class="glass-card p-8">
+                    <h2 class="text-2xl font-bold mb-4 text-primary-500">Technical Implementation Details</h2>
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div>
+                            <h3 class="text-lg font-semibold mb-4 text-accent-500">Model Architecture</h3>
+                            <ul class="space-y-3 text-gray-700 dark:text-gray-300">
+                                <li class="flex items-start space-x-3">
+                                    <span class="w-2 h-2 bg-accent-500 rounded-full mt-2"></span>
+                                    <span><strong>Base Model:</strong> YOLOv8n (Nano) - Lightweight architecture</span>
+                                </li>
+                                <li class="flex items-start space-x-3">
+                                    <span class="w-2 h-2 bg-accent-500 rounded-full mt-2"></span>
+                                    <span><strong>Training Size:</strong> 640x640 pixels</span>
+                                </li>
+                                <li class="flex items-start space-x-3">
+                                    <span class="w-2 h-2 bg-accent-500 rounded-full mt-2"></span>
+                                    <span><strong>Inference Size:</strong> 320x320 pixels (optimized)</span>
+                                </li>
+                                <li class="flex items-start space-x-3">
+                                    <span class="w-2 h-2 bg-accent-500 rounded-full mt-2"></span>
+                                    <span><strong>Format:</strong> TFLite (TensorFlow Lite)</span>
+                                </li>
+                                <li class="flex items-start space-x-3">
+                                    <span class="w-2 h-2 bg-accent-500 rounded-full mt-2"></span>
+                                    <span><strong>Classes:</strong> Single class (head detection)</span>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <div>
+                            <h3 class="text-lg font-semibold mb-4 text-accent-500">Optimization Techniques</h3>
+                            <ul class="space-y-3 text-gray-700 dark:text-gray-300">
+                                <li class="flex items-start space-x-3">
+                                    <span class="w-2 h-2 bg-blue-500 rounded-full mt-2"></span>
+                                    <span><strong>Input Reduction:</strong> 640→320px (4x computation reduction)</span>
+                                </li>
+                                <li class="flex items-start space-x-3">
+                                    <span class="w-2 h-2 bg-blue-500 rounded-full mt-2"></span>
+                                    <span><strong>Model Quantization:</strong> TFLite INT8 optimization</span>
+                                </li>
+                                <li class="flex items-start space-x-3">
+                                    <span class="w-2 h-2 bg-blue-500 rounded-full mt-2"></span>
+                                    <span><strong>CPU Optimization:</strong> ARM Cortex-A72 specific tuning</span>
+                                </li>
+                                <li class="flex items-start space-x-3">
+                                    <span class="w-2 h-2 bg-blue-500 rounded-full mt-2"></span>
+                                    <span><strong>Memory Management:</strong> Efficient buffer allocation</span>
+                                </li>
+                                <li class="flex items-start space-x-3">
+                                    <span class="w-2 h-2 bg-blue-500 rounded-full mt-2"></span>
+                                    <span><strong>Threading:</strong> Multi-core CPU utilization</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Results & Achievements -->
+                <div class="glass-card p-8">
+                    <h2 class="text-2xl font-bold mb-4 text-primary-500">Results & Key Achievements</h2>
+                    <div class="grid md:grid-cols-4 gap-6 mb-6">
+                        <div class="text-center">
+                            <div class="text-3xl font-bold text-accent-500 mb-2">24x</div>
+                            <div class="text-gray-600 dark:text-gray-300">Speed Improvement</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-3xl font-bold text-accent-500 mb-2">85%</div>
+                            <div class="text-gray-600 dark:text-gray-300">Detection Accuracy</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-3xl font-bold text-accent-500 mb-2">12</div>
+                            <div class="text-gray-600 dark:text-gray-300">FPS on Pi 4</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-3xl font-bold text-accent-500 mb-2">30K</div>
+                            <div class="text-gray-600 dark:text-gray-300">Training Images</div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-emerald-50 dark:bg-emerald-900/20 border-l-4 border-emerald-500 p-6 rounded-r-lg">
+                        <h3 class="text-lg font-semibold text-emerald-800 dark:text-emerald-200 mb-3">Project Impact & Learning Outcomes</h3>
+                        <p class="text-emerald-700 dark:text-emerald-300 leading-relaxed mb-4">
+                            This project provided comprehensive hands-on experience in edge computing, model optimization, and real-world deployment challenges. We gained deep insights into parameter preservation, hardware-software optimization, and the critical balance between performance and accuracy in resource-constrained environments.
+                        </p>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div>
+                                <h4 class="font-semibold text-emerald-800 dark:text-emerald-200 mb-2">Technical Skills Gained</h4>
+                                <ul class="text-sm text-emerald-700 dark:text-emerald-300 space-y-1">
+                                    <li>• Advanced model optimization techniques</li>
+                                    <li>• Edge computing deployment strategies</li>
+                                    <li>• Hardware-software integration</li>
+                                    <li>• Performance profiling and analysis</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-emerald-800 dark:text-emerald-200 mb-2">Research Contributions</h4>
+                                <ul class="text-sm text-emerald-700 dark:text-emerald-300 space-y-1">
+                                    <li>• Comparative analysis of edge formats</li>
+                                    <li>• TFLite optimization methodology</li>
+                                    <li>• Raspberry Pi deployment best practices</li>
+                                    <li>• Real-time tracking optimization</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Enhanced Counting Pipeline -->
+                <div class="glass-card p-8">
+                    <h2 class="text-2xl font-bold mb-4 text-primary-500">Enhanced Counting Pipeline & Real-world Testing</h2>
+                    
+                    <!-- Pipeline Problem & Solution -->
+                    <div class="mb-8">
+                        <h3 class="text-xl font-semibold mb-4 text-accent-500">Counting Accuracy Pipeline Enhancement</h3>
+                        <div class="bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20 border border-yellow-200 dark:border-yellow-700 rounded-lg p-6 mb-6">
+                            <div class="flex items-center mb-4">
+                                <div class="w-12 h-12 bg-yellow-500 rounded-full flex items-center justify-center mr-4">
+                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 15.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h4 class="text-xl font-bold text-yellow-800 dark:text-yellow-200">False Count Detection & Solution</h4>
+                                    <p class="text-yellow-600 dark:text-yellow-300">Advanced Pipeline Logic for Accurate Counting</p>
+                                </div>
+                            </div>
+                            
+                            <p class="text-yellow-700 dark:text-yellow-300 leading-relaxed mb-6">
+                                During Raspberry Pi testing at 12 FPS, we identified a critical issue where the system was generating unnecessary fake counts. The problem occurred when heads were detected but the person wasn't actually crossing the counting line. We developed an enhanced pipeline that implements a "suspense" mechanism to ensure accurate counting.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Problem vs Solution Videos -->
+                    <div class="mb-8">
+                        <h3 class="text-xl font-semibold mb-4 text-accent-500">Before & After: Counting Accuracy Improvement</h3>
+                        
+                        <div class="grid md:grid-cols-2 gap-6 mb-6">
+                            <!-- Problem Video -->
+                            <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700 rounded-lg p-4">
+                                <h4 class="font-semibold text-red-800 dark:text-red-200 mb-3 text-center">❌ Problem: Fake Counts</h4>
+                                <div class="relative aspect-video rounded-xl overflow-hidden border-2 border-red-300 dark:border-red-600 bg-black mb-4">
+                                    <video controls class="w-full h-full object-contain">
+                                        <source src="../assets/videos/fake counts .mp4" type="video/mp4">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                </div>
+                                <p class="text-center text-red-600 dark:text-red-400 text-sm italic mb-3">
+                                    Original pipeline generating unnecessary fake counts
+                                </p>
+                                <div class="bg-white dark:bg-gray-800 rounded-lg p-3">
+                                    <h5 class="font-semibold text-red-800 dark:text-red-200 mb-2">Issues Identified:</h5>
+                                    <ul class="text-sm text-red-700 dark:text-red-300 space-y-1">
+                                        <li>• Counting on head detection alone</li>
+                                        <li>• No verification of actual crossing</li>
+                                        <li>• False positives from partial visibility</li>
+                                        <li>• Inaccurate passenger estimation</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <!-- Solution Video -->
+                            <div class="bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-700 rounded-lg p-4">
+                                <h4 class="font-semibold text-emerald-800 dark:text-emerald-200 mb-3 text-center">✅ Solution: Real Counts</h4>
+                                <div class="relative aspect-video rounded-xl overflow-hidden border-2 border-emerald-300 dark:border-emerald-600 bg-black mb-4">
+                                    <video controls class="w-full h-full object-contain">
+                                        <source src="../assets/videos/realcounts.mp4" type="video/mp4">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                </div>
+                                <p class="text-center text-emerald-600 dark:text-emerald-400 text-sm italic mb-3">
+                                    Enhanced pipeline with accurate counting logic
+                                </p>
+                                <div class="bg-white dark:bg-gray-800 rounded-lg p-3">
+                                    <h5 class="font-semibold text-emerald-800 dark:text-emerald-200 mb-2">Improvements Made:</h5>
+                                    <ul class="text-sm text-emerald-700 dark:text-emerald-300 space-y-1">
+                                        <li>• Suspense mechanism on head detection</li>
+                                        <li>• Count only when person completely exits frame</li>
+                                        <li>• Verification of actual line crossing</li>
+                                        <li>• Accurate passenger counting achieved</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Enhanced Pipeline Logic -->
+                    <div class="mb-8">
+                        <h3 class="text-xl font-semibold mb-4 text-accent-500">Enhanced Counting Pipeline</h3>
+                        <div class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border border-blue-200 dark:border-blue-700 rounded-lg p-6">
+                            <div class="flex items-center mb-4">
+                                <div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center mr-4">
+                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h4 class="text-xl font-bold text-blue-800 dark:text-blue-200">Smart Suspense Mechanism</h4>
+                                    <p class="text-blue-600 dark:text-blue-300">Preventing False Counts with Advanced Logic</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Pipeline Steps -->
+                            <div class="grid md:grid-cols-3 gap-4 mb-6">
+                                <div class="bg-white dark:bg-gray-800 rounded-lg p-4 border border-blue-200 dark:border-blue-600">
+                                    <div class="text-center mb-3">
+                                        <div class="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-2">
+                                            <span class="text-blue-600 font-bold">1</span>
+                                        </div>
+                                        <h5 class="font-semibold text-blue-800 dark:text-blue-200">Head Detection</h5>
+                                    </div>
+                                    <p class="text-blue-700 dark:text-blue-300 text-sm text-center">
+                                        System detects head entering frame and creates tracking ID
+                                    </p>
+                                </div>
+                                
+                                <div class="bg-white dark:bg-gray-800 rounded-lg p-4 border border-yellow-200 dark:border-yellow-600">
+                                    <div class="text-center mb-3">
+                                        <div class="w-10 h-10 bg-yellow-100 dark:bg-yellow-900/30 rounded-full flex items-center justify-center mx-auto mb-2">
+                                            <span class="text-yellow-600 font-bold">2</span>
+                                        </div>
+                                        <h5 class="font-semibold text-yellow-800 dark:text-yellow-200">Suspense Mode</h5>
+                                    </div>
+                                    <p class="text-yellow-700 dark:text-yellow-300 text-sm text-center">
+                                        Person enters "suspense" - tracking continues without counting
+                                    </p>
+                                </div>
+                                
+                                <div class="bg-white dark:bg-gray-800 rounded-lg p-4 border border-emerald-200 dark:border-emerald-600">
+                                    <div class="text-center mb-3">
+                                        <div class="w-10 h-10 bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center mx-auto mb-2">
+                                            <span class="text-emerald-600 font-bold">3</span>
+                                        </div>
+                                        <h5 class="font-semibold text-emerald-800 dark:text-emerald-200">Count Trigger</h5>
+                                    </div>
+                                    <p class="text-emerald-700 dark:text-emerald-300 text-sm text-center">
+                                        Count only when person completely exits camera view
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-emerald-50 dark:bg-emerald-900/20 border-l-4 border-emerald-500 p-4 rounded-r-lg">
+                                <h5 class="font-semibold text-emerald-800 dark:text-emerald-200 mb-2">Pipeline Benefits</h5>
+                                <p class="text-emerald-700 dark:text-emerald-300 text-sm leading-relaxed">
+                                    <strong>✓ Accuracy Improvement:</strong> The enhanced pipeline eliminates false counts by implementing a suspense mechanism. When a head is detected, the system waits until the person completely exits the camera view before registering a count, ensuring accurate passenger estimation for bus fleet management.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Performance Metrics -->
+                    <div class="mb-6">
+                        <h3 class="text-xl font-semibold mb-4 text-accent-500">Raspberry Pi 4 Deployment Results</h3>
+                        <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6">
+                            <div class="grid md:grid-cols-4 gap-6">
+                                <div class="text-center">
+                                    <div class="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-3">
+                                        <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                        </svg>
+                                    </div>
+                                    <h4 class="font-semibold text-gray-800 dark:text-gray-200">12 FPS</h4>
+                                    <p class="text-gray-600 dark:text-gray-400 text-sm">Stable Performance</p>
+                                </div>
+                                <div class="text-center">
+                                    <div class="w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-3">
+                                        <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                        </svg>
+                                    </div>
+                                    <h4 class="font-semibold text-gray-800 dark:text-gray-200">Accurate</h4>
+                                    <p class="text-gray-600 dark:text-gray-400 text-sm">No False Counts</p>
+                                </div>
+                                <div class="text-center">
+                                    <div class="w-16 h-16 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center mx-auto mb-3">
+                                        <svg class="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"></path>
+                                        </svg>
+                                    </div>
+                                    <h4 class="font-semibold text-gray-800 dark:text-gray-200">Pi 4 Ready</h4>
+                                    <p class="text-gray-600 dark:text-gray-400 text-sm">Edge Deployment</p>
+                                </div>
+                                <div class="text-center">
+                                    <div class="w-16 h-16 bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center mx-auto mb-3">
+                                        <svg class="w-8 h-8 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                                        </svg>
+                                    </div>
+                                    <h4 class="font-semibold text-gray-800 dark:text-gray-200">Real-world</h4>
+                                    <p class="text-gray-600 dark:text-gray-400 text-sm">Tested & Verified</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Future Scope -->
+                <div class="glass-card p-8">
+                    <h2 class="text-2xl font-bold mb-4 text-primary-500">Counting Logic & Real-world Challenges</h2>
+                    
+                    <!-- Counting Logic Section -->
+                    <div class="mb-8">
+                        <h3 class="text-xl font-semibold mb-4 text-accent-500">Smart Counting Algorithm</h3>
+                        <div class="bg-gradient-to-r from-orange-50 to-red-50 dark:from-orange-900/20 dark:to-red-900/20 border border-orange-200 dark:border-orange-700 rounded-lg p-6 mb-6">
+                            <div class="flex items-center mb-4">
+                                <div class="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center mr-4">
+                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16a2 2 0 002 2z"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h4 class="text-xl font-bold text-orange-800 dark:text-orange-200">Net Passenger Counting Logic</h4>
+                                    <p class="text-orange-600 dark:text-orange-300">Handling Peeping Head & Duplicate Count Issues</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Problem & Solution -->
+                            <div class="grid md:grid-cols-2 gap-6 mb-6">
+                                <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700 rounded-lg p-4">
+                                    <h5 class="font-semibold text-red-800 dark:text-red-200 mb-3">Observed Challenge</h5>
+                                    <ul class="text-sm text-red-700 dark:text-red-300 space-y-2">
+                                        <li>• <strong>Peeping Head Issue:</strong> Person peeps head out and pulls back</li>
+                                        <li>• <strong>Result:</strong> IN and OUT count increases repeatedly</li>
+                                        <li>• <strong>Track ID:</strong> Remains same (Track = 1)</li>
+                                        <li>• <strong>Problem:</strong> Entry/exit line crossing triggers multiple counts</li>
+                                    </ul>
+                                </div>
+                                <div class="bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-700 rounded-lg p-4">
+                                    <h5 class="font-semibold text-emerald-800 dark:text-emerald-200 mb-3">Smart Solution</h5>
+                                    <ul class="text-sm text-emerald-700 dark:text-emerald-300 space-y-2">
+                                        <li>• <strong>Net Count Logic:</strong> IN_count - OUT_count</li>
+                                        <li>• <strong>Benefit:</strong> Even with peeping, net count remains correct</li>
+                                        <li>• <strong>Use Case:</strong> Perfect for bus passenger occupancy</li>
+                                        <li>• <strong>Result:</strong> Accurate passenger estimation</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <!-- Algorithm Explanation -->
+                            <div class="bg-white dark:bg-gray-800 rounded-lg p-4 border border-orange-200 dark:border-orange-600 mb-4">
+                                <h5 class="font-semibold text-orange-800 dark:text-orange-200 mb-3">Counting Algorithm</h5>
+                                <div class="grid md:grid-cols-3 gap-4 text-center">
+                                    <div class="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-3">
+                                        <div class="text-lg font-bold text-blue-600 mb-1">IN_count</div>
+                                        <div class="text-blue-700 dark:text-blue-300 text-sm">People entering bus</div>
+                                    </div>
+                                    <div class="bg-red-50 dark:bg-red-900/20 rounded-lg p-3">
+                                        <div class="text-lg font-bold text-red-600 mb-1">OUT_count</div>
+                                        <div class="text-red-700 dark:text-red-300 text-sm">People exiting bus</div>
+                                    </div>
+                                    <div class="bg-emerald-50 dark:bg-emerald-900/20 rounded-lg p-3">
+                                        <div class="text-lg font-bold text-emerald-600 mb-1">Net = IN - OUT</div>
+                                        <div class="text-emerald-700 dark:text-emerald-300 text-sm">Current occupancy</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-emerald-50 dark:bg-emerald-900/20 border-l-4 border-emerald-500 p-4 rounded-r-lg">
+                                <p class="text-emerald-700 dark:text-emerald-300 text-sm leading-relaxed">
+                                    <strong>✓ Solution Effectiveness:</strong> This net counting logic is sufficient for bus passenger occupancy estimation, which is the primary use case. Even if a person peeps and causes simultaneous IN and OUT counts, the net passenger count remains accurate for fleet management purposes.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Multi-Camera Future Scope -->
+                    <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-lg p-6">
+                        <h3 class="text-lg font-semibold text-blue-800 dark:text-blue-200 mb-3">Future Scope & Multi-Camera Analysis</h3>
+                        <p class="text-blue-700 dark:text-blue-300 leading-relaxed mb-4">
+                            Current focus is on single-door optimization (1 camera) for entry/exit monitoring. Future research will evaluate parallel inference capabilities for multiple camera feeds, determining the maximum number of doors a single Raspberry Pi 4 can monitor without detection loss.
+                        </p>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div>
+                                <h4 class="font-semibold text-blue-800 dark:text-blue-200 mb-2">Current Status</h4>
+                                <ul class="text-sm text-blue-700 dark:text-blue-300 space-y-1">
+                                    <li>• Single camera: 12 FPS stable</li>
+                                    <li>• No lag issues with single feed</li>
+                                    <li>• ByteTrack built-in tracking</li>
+                                    <li>• Production-ready deployment</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-blue-800 dark:text-blue-200 mb-2">Future Research</h4>
+                                <ul class="text-sm text-blue-700 dark:text-blue-300 space-y-1">
+                                    <li>• Multi-camera parallel processing</li>
+                                    <li>• Load balancing optimization</li>
+                                    <li>• Hardware limitation analysis</li>
+                                    <li>• Jetson comparison (cost permitting)</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- What We Learned Section -->
+                <div class="glass-card p-8">
+                    <h2 class="text-2xl font-bold mb-6 text-blue-600">What We Learned</h2>
+                    <div class="bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 border border-indigo-200 dark:border-indigo-700 rounded-lg p-6 mb-6">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 bg-indigo-500 rounded-full flex items-center justify-center mr-4">
+                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-indigo-800 dark:text-indigo-200">Key Learning Outcomes</h3>
+                                <p class="text-indigo-600 dark:text-indigo-300">Under the guidance of Prof. M.V. Narayana Sir</p>
+                            </div>
+                        </div>
+                        
+                        <div class="grid md:grid-cols-2 gap-6 mb-6">
+                            <div>
+                                <h4 class="font-semibold text-indigo-800 dark:text-indigo-200 mb-3">Technical Skills Mastered</h4>
+                                <ul class="text-sm text-indigo-700 dark:text-indigo-300 space-y-2">
+                                    <li>• <strong>Edge Computing Optimization:</strong> Learned how to optimize AI models for resource-constrained devices like Raspberry Pi</li>
+                                    <li>• <strong>Model Conversion Techniques:</strong> Mastered TFLite conversion, quantization, and parameter preservation methods</li>
+                                    <li>• <strong>Performance Profiling:</strong> Gained expertise in analyzing FPS, memory usage, and CPU utilization on edge devices</li>
+                                    <li>• <strong>Asynchronous Programming:</strong> Implemented multi-threaded processing for stable real-time performance</li>
+                                    <li>• <strong>Computer Vision Pipeline:</strong> Built end-to-end detection, tracking, and counting systems</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-indigo-800 dark:text-indigo-200 mb-3">Research & Problem-Solving</h4>
+                                <ul class="text-sm text-indigo-700 dark:text-indigo-300 space-y-2">
+                                    <li>• <strong>Comparative Analysis:</strong> Evaluated multiple model formats (ONNX, NCNN, Edge Impulse, TFLite) for optimal performance</li>
+                                    <li>• <strong>Hardware-Software Integration:</strong> Understanding ARM Cortex-A72 architecture and CPU optimization techniques</li>
+                                    <li>• <strong>Real-world Testing:</strong> Identified and solved false counting issues through iterative testing and algorithm refinement</li>
+                                    <li>• <strong>Dataset Engineering:</strong> Learned to curate and prepare specialized datasets for head detection tasks</li>
+                                    <li>• <strong>Deployment Strategies:</strong> Mastered production-ready deployment on edge devices with reliability considerations</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="grid md:grid-cols-3 gap-4 mb-6">
+                            <div class="bg-white dark:bg-gray-800 rounded-lg p-4 border border-indigo-200 dark:border-indigo-600">
+                                <h5 class="font-semibold text-indigo-800 dark:text-indigo-200 mb-2">Model Optimization</h5>
+                                <p class="text-indigo-700 dark:text-indigo-300 text-sm">
+                                    Learned the critical importance of parameter preservation during model conversion and the trade-offs between speed and accuracy in edge deployment.
+                                </p>
+                            </div>
+                            <div class="bg-white dark:bg-gray-800 rounded-lg p-4 border border-indigo-200 dark:border-indigo-600">
+                                <h5 class="font-semibold text-indigo-800 dark:text-indigo-200 mb-2">Algorithm Design</h5>
+                                <p class="text-indigo-700 dark:text-indigo-300 text-sm">
+                                    Developed sophisticated counting logic with suspense mechanisms to handle real-world challenges like peeping heads and false positives.
+                                </p>
+                            </div>
+                            <div class="bg-white dark:bg-gray-800 rounded-lg p-4 border border-indigo-200 dark:border-indigo-600">
+                                <h5 class="font-semibold text-indigo-800 dark:text-indigo-200 mb-2">System Integration</h5>
+                                <p class="text-indigo-700 dark:text-indigo-300 text-sm">
+                                    Gained experience in building complete systems from dataset preparation to production deployment with real-world testing validation.
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-emerald-50 dark:bg-emerald-900/20 border-l-4 border-emerald-500 p-4 rounded-r-lg">
+                            <h4 class="font-semibold text-emerald-800 dark:text-emerald-200 mb-2">Project Impact & Future Applications</h4>
+                            <p class="text-emerald-700 dark:text-emerald-300 text-sm leading-relaxed">
+                                This project provided comprehensive hands-on experience in edge AI deployment, teaching us the complete pipeline from model training to production deployment. The skills gained in optimization techniques, real-time processing, and hardware-software integration are directly applicable to IoT, smart city applications, and industrial automation projects. Under Prof. M.V. Narayana Sir's guidance, we learned not just the technical implementation but also the research methodology and systematic problem-solving approach essential for R&D work.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 dark:bg-gray-950 text-white py-8">
+        <div class="max-w-6xl mx-auto px-4 text-center">
+            <p>&copy; 2024 AuraAlliance - KSRM College of Engineering. All rights reserved.</p>
+            <div class="mt-4">
+                <a href="../index.html" class="text-gray-300 hover:text-white transition-colors">← Back to Portfolio</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="../assets/js/main.js"></script>
+</body>
+</html>

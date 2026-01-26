@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portfolio Admin - N. Pavan Kalyan</title>
+  <link rel="icon" type="image/x-icon" href="/assets/images/favicon.ico">
+  
+  <!-- Netlify CMS Styles -->
+  <link rel="stylesheet" href="https://unpkg.com/netlify-cms@^2.0.0/dist/cms.css" />
+  
+  <!-- Custom Admin Styles -->
+  <style>
+    :root {
+      --primary-color: #1e3a8a;
+      --accent-color: #10b981;
+    }
+    
+    /* Custom admin panel styling */
+    .nc-app-header {
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%) !important;
+    }
+    
+    .nc-app-header h1 {
+      color: white !important;
+    }
+    
+    .nc-entryEditor-widget {
+      margin-bottom: 20px;
+    }
+    
+    .nc-controlPane-widget {
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+    
+    .nc-controlPane-widget label {
+      font-weight: 600;
+      color: var(--primary-color);
+      margin-bottom: 8px;
+      display: block;
+    }
+    
+    /* Preview styling */
+    .nc-previewPane {
+      background: #f9fafb;
+    }
+    
+    /* Custom button styling */
+    .nc-button-primary {
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%) !important;
+      border: none !important;
+    }
+    
+    .nc-button-primary:hover {
+      opacity: 0.9 !important;
+    }
+    
+    /* Media library styling */
+    .nc-mediaLibrary-card {
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    
+    /* Collection list styling */
+    .nc-collectionPage-sidebar {
+      background: #f8fafc;
+    }
+    
+    .nc-collectionPage-sidebar .nc-listCard {
+      border-radius: 8px;
+      margin-bottom: 8px;
+    }
+    
+    /* Entry editor styling */
+    .nc-entryEditor-editor {
+      background: white;
+      border-radius: 8px;
+    }
+    
+    /* Widget styling */
+    .nc-textControl-input,
+    .nc-textareaControl-input,
+    .nc-selectControl-input {
+      border: 1px solid #d1d5db !important;
+      border-radius: 6px !important;
+      padding: 8px 12px !important;
+    }
+    
+    .nc-textControl-input:focus,
+    .nc-textareaControl-input:focus,
+    .nc-selectControl-input:focus {
+      border-color: var(--primary-color) !important;
+      box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1) !important;
+    }
+    
+    /* Image widget styling */
+    .nc-imageControl-imageWrapper {
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    
+    /* Rich text editor styling */
+    .nc-richTextControl-editor {
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      min-height: 200px;
+    }
+    
+    /* Loading states */
+    .nc-loader {
+      color: var(--primary-color);
+    }
+    
+    /* Success messages */
+    .nc-toast-success {
+      background: var(--accent-color) !important;
+    }
+    
+    /* Error messages */
+    .nc-toast-error {
+      background: #ef4444 !important;
+    }
+    
+    /* Custom dashboard styling */
+    .dashboard-welcome {
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+      color: white;
+      padding: 2rem;
+      border-radius: 12px;
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+    
+    .dashboard-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    
+    .stat-card {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+    
+    .stat-number {
+      font-size: 2rem;
+      font-weight: bold;
+      color: var(--primary-color);
+    }
+    
+    .stat-label {
+      color: #6b7280;
+      margin-top: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <!-- Netlify CMS App -->
+  <script src="https://unpkg.com/netlify-cms@^2.0.0/dist/netlify-cms.js"></script>
+  
+  <!-- Custom Admin Scripts -->
+  <script>
+    // Custom preview templates
+    CMS.registerPreviewTemplate('projects', ProjectPreview);
+    CMS.registerPreviewTemplate('settings', SettingsPreview);
+    CMS.registerPreviewTemplate('about', AboutPreview);
+    
+    // Project preview template
+    function ProjectPreview({ entry, widgetFor, widgetsFor }) {
+      const data = entry.getIn(['data']).toJS();
+      
+      return `
+        <div style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: Inter, sans-serif;">
+          <div style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+            ${data.featured_image ? `
+              <img src="${data.featured_image}" alt="${data.title}" style="width: 100%; height: 200px; object-fit: cover;">
+            ` : ''}
+            <div style="padding: 24px;">
+              <h2 style="color: #1e3a8a; margin-bottom: 12px; font-size: 1.5rem; font-weight: 600;">${data.title}</h2>
+              <p style="color: #6b7280; margin-bottom: 16px; line-height: 1.6;">${data.description}</p>
+              <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px;">
+                ${data.technologies ? data.technologies.map(tech => `
+                  <span style="background: #dbeafe; color: #1e40af; padding: 4px 12px; border-radius: 16px; font-size: 0.875rem;">${tech}</span>
+                `).join('') : ''}
+              </div>
+              <div style="display: flex; gap: 12px;">
+                <span style="background: #10b981; color: white; padding: 8px 16px; border-radius: 6px; font-size: 0.875rem; text-transform: capitalize;">${data.category}</span>
+                ${data.featured ? '<span style="background: #f59e0b; color: white; padding: 8px 16px; border-radius: 6px; font-size: 0.875rem;">Featured</span>' : ''}
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+    
+    // Settings preview template
+    function SettingsPreview({ entry }) {
+      const data = entry.getIn(['data']).toJS();
+      
+      return `
+        <div style="max-width: 600px; margin: 0 auto; padding: 20px; font-family: Inter, sans-serif;">
+          <div style="background: white; border-radius: 12px; padding: 24px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+            <h2 style="color: #1e3a8a; margin-bottom: 20px;">Site Settings Preview</h2>
+            <div style="space-y: 16px;">
+              <div>
+                <strong>Site Title:</strong> ${data.site_title || 'N. Pavan Kalyan'}
+              </div>
+              <div>
+                <strong>Email:</strong> ${data.email || 'pavankalyanoffical31@gmail.com'}
+              </div>
+              <div>
+                <strong>Phone:</strong> ${data.phone || '+91 7569963393'}
+              </div>
+              <div>
+                <strong>Location:</strong> ${data.location || 'Nandyal, Banaganapalle'}
+              </div>
+              <div>
+                <strong>Summary:</strong><br>
+                <p style="margin-top: 8px; color: #6b7280; line-height: 1.6;">${data.summary || 'IoT/Robotics expert...'}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+    
+    // About preview template
+    function AboutPreview({ entry }) {
+      const data = entry.getIn(['data']).toJS();
+      
+      return `
+        <div style="max-width: 600px; margin: 0 auto; padding: 20px; font-family: Inter, sans-serif;">
+          <div style="background: white; border-radius: 12px; padding: 24px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+            <h2 style="color: #1e3a8a; margin-bottom: 20px;">About Section Preview</h2>
+            <div>
+              <h3 style="margin-bottom: 12px;">Skills:</h3>
+              <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                ${data.skills ? data.skills.map(skill => `
+                  <span style="background: linear-gradient(135deg, #dbeafe 0%, #dcfce7 100%); color: #1e40af; padding: 6px 12px; border-radius: 16px; font-size: 0.875rem;">${skill}</span>
+                `).join('') : ''}
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+    
+    // Custom editor components
+    CMS.registerEditorComponent({
+      id: "youtube",
+      label: "YouTube Video",
+      fields: [
+        {
+          name: "id",
+          label: "YouTube Video ID",
+          widget: "string"
+        },
+        {
+          name: "title",
+          label: "Video Title",
+          widget: "string"
+        }
+      ],
+      pattern: /^{{< youtube ([a-zA-Z0-9_-]+) "([^"]+)" >}}$/,
+      fromBlock: function(match) {
+        return {
+          id: match[1],
+          title: match[2]
+        };
+      },
+      toBlock: function(obj) {
+        return `{{< youtube ${obj.id} "${obj.title}" >}}`;
+      },
+      toPreview: function(obj) {
+        return `
+          <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+            <iframe 
+              src="https://www.youtube.com/embed/${obj.id}" 
+              style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
+              frameborder="0" 
+              allowfullscreen
+              title="${obj.title}">
+            </iframe>
+          </div>
+        `;
+      }
+    });
+    
+    // Initialize custom dashboard
+    CMS.init({
+      config: {
+        load_config_file: true
+      }
+    });
+    
+    // Add custom dashboard functionality
+    document.addEventListener('DOMContentLoaded', function() {
+      // Add welcome message
+      setTimeout(() => {
+        const appHeader = document.querySelector('.nc-app-header');
+        if (appHeader) {
+          const welcomeDiv = document.createElement('div');
+          welcomeDiv.innerHTML = `
+            <div class="dashboard-welcome">
+              <h1>Welcome to Your Portfolio Admin Panel</h1>
+              <p>Manage your projects, update content, and publish changes instantly!</p>
+            </div>
+          `;
+          appHeader.appendChild(welcomeDiv);
+        }
+      }, 1000);
+    });
+    
+    // Auto-save functionality
+    let autoSaveTimer;
+    function enableAutoSave() {
+      clearTimeout(autoSaveTimer);
+      autoSaveTimer = setTimeout(() => {
+        const saveButton = document.querySelector('[data-testid="save-button"]');
+        if (saveButton && !saveButton.disabled) {
+          console.log('Auto-saving...');
+          // Auto-save logic would go here
+        }
+      }, 30000); // Auto-save every 30 seconds
+    }
+    
+    // Enable auto-save on input changes
+    document.addEventListener('input', enableAutoSave);
+    document.addEventListener('change', enableAutoSave);
+  </script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+primary_color: "#1e3a8a"
+accent_color: "#10b981"
+font_family: "Inter"
+dark_mode: true
+animations: true
+particles: false

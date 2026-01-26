@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seven Segment Display Clock - AuraAlliance</title>
+    <meta name="description" content="Digital clock using seven segment displays - First electronics learning experience">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: {
+                            50: '#eff6ff',
+                            500: '#1e3a8a',
+                            600: '#1e40af',
+                            700: '#1d4ed8',
+                        },
+                        accent: {
+                            500: '#10b981',
+                            600: '#059669',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/assets/css/style.css">
+    
+    <!-- Prism.js for syntax highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+</head>
+<body class="font-inter bg-white dark:bg-gray-900 text-gray-900 dark:text-white transition-colors duration-300">
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 glass-nav backdrop-blur-md bg-white/80 dark:bg-gray-900/80 border-b border-gray-200/20 dark:border-gray-700/20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex-shrink-0">
+                    <a href="/" class="text-xl font-bold text-primary-500">AuraAlliance</a>
+                </div>
+                
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="/#home" class="nav-link">Home</a>
+                        <a href="/#about" class="nav-link">About</a>
+                        <a href="/#projects" class="nav-link">Projects</a>
+                        <a href="/#contact" class="nav-link">Contact</a>
+                    </div>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <button id="theme-toggle" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+                        <svg class="w-5 h-5 hidden dark:block" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"></path>
+                        </svg>
+                        <svg class="w-5 h-5 block dark:hidden" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="pt-24 pb-12 px-4">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-8">
+                <h1 class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary-500 to-accent-500 bg-clip-text text-transparent">
+                    Seven Segment Display Clock
+                </h1>
+                <p class="text-xl text-gray-600 dark:text-gray-300 mb-6">
+                    Digital clock using seven segment displays - First electronics learning experience
+                </p>
+                <div class="flex flex-wrap justify-center gap-3 mb-8">
+                    <span class="tech-tag">Arduino</span>
+                    <span class="tech-tag">Seven Segment</span>
+                    <span class="tech-tag">Digital Clock</span>
+                    <span class="tech-tag">Learning Project</span>
+                    <span class="tech-tag">Electronics</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Project Details -->
+    <section class="py-12 px-4">
+        <div class="max-w-4xl mx-auto">
+            <div class="grid md:grid-cols-3 gap-8 mb-12">
+                <div class="glass-card p-6 text-center">
+                    <div class="w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Digital Clock</h3>
+                    <p class="text-gray-600 dark:text-gray-300">Real-time display</p>
+                </div>
+                
+                <div class="glass-card p-6 text-center">
+                    <div class="w-16 h-16 bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">First Project</h3>
+                    <p class="text-gray-600 dark:text-gray-300">Learning experience</p>
+                </div>
+                
+                <div class="glass-card p-6 text-center">
+                    <div class="w-16 h-16 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">4 Digits</h3>
+                    <p class="text-gray-600 dark:text-gray-300">HH:MM format</p>
+                </div>
+            </div>
+
+            <div class="space-y-8">
+                <div class="glass-card p-8">
+                    <h2 class="text-2xl font-bold mb-4 text-primary-500">Project Overview</h2>
+                    <p class="text-gray-700 dark:text-gray-300 leading-relaxed mb-6">
+                        This seven segment display clock project marks my first step into the world of electronics and embedded programming. Under the guidance of <strong>Prof. M.V. Narayana Sir</strong>, we learned the fundamentals of digital displays, Arduino programming, and circuit design through this hands-on project.
+                    </p>
+                    <p class="text-gray-700 dark:text-gray-300 leading-relaxed mb-6">
+                        The project displays time in HH:MM format using four seven-segment displays. It demonstrates basic concepts of multiplexing, digit control, and time management in embedded systems. This foundational project opened the door to more complex electronics projects and sparked my interest in embedded systems development.
+                    </p>
+                    
+                    <div class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border border-blue-200 dark:border-blue-700 rounded-lg p-6">
+                        <h3 class="text-lg font-semibold text-blue-800 dark:text-blue-200 mb-3">Project Guidance & Supervision</h3>
+                        <p class="text-blue-700 dark:text-blue-300 leading-relaxed">
+                            This foundational project was developed under the expert guidance of <strong>Prof. M.V. Narayana Sir</strong>, Head of Department (ECE) and R&D Dean at KSRM College of Engineering. His mentorship in electronics fundamentals and embedded programming provided the essential foundation for my journey into electronics and embedded systems development.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Display Demo Video -->
+                <div class="glass-card p-8">
+                    <h2 class="text-2xl font-bold mb-6 text-primary-500 text-center">Clock Demonstration</h2>
+                    <div class="relative aspect-video rounded-xl overflow-hidden border-2 border-gray-700 dark:border-gray-600 bg-black mb-4">
+                        <video controls class="w-full h-full object-cover">
+                            <source src="/assets/videos/seven-segment-demo.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                    <p class="text-center text-gray-500 dark:text-gray-400 text-sm italic">
+                        Live demonstration of the seven segment display clock showing time updates
+                    </p>
+                </div>
+
+                <div class="glass-card p-8">
+                    <h2 class="text-2xl font-bold mb-4 text-primary-500">Hardware Setup</h2>
+                    <div class="space-y-4">
+                        <div>
+                            <h3 class="text-lg font-semibold mb-2">Components Required</h3>
+                            <ul class="list-disc list-inside text-gray-700 dark:text-gray-300 space-y-1">
+                                <li>Arduino Uno Development Board</li>
+                                <li>4× Seven Segment Common Cathode Displays</li>
+                                <li>4× NPN Transistors (2N2222 or similar)</li>
+                                <li>8× Current Limiting Resistors (220Ω)</li>
+                                <li>4× Base Resistors (1kΩ)</li>
+                                <li>Breadboard and jumper wires</li>
+                                <li>Power supply (5V)</li>
+                            </ul>
+                        </div>
+                        
+                        <div>
+                            <h3 class="text-lg font-semibold mb-2">Circuit Connections</h3>
+                            <div class="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg font-mono text-sm">
+                                <p class="mb-2"><strong>Seven Segment Pins (A-G, DP):</strong></p>
+                                <p>Arduino D2-D9 → Segment pins (through 220Ω resistors)</p>
+                                <p class="mb-2 mt-3"><strong>Digit Control (Common Cathodes):</strong></p>
+                                <p>Arduino D10 → Transistor 1 (Hours tens)</p>
+                                <p>Arduino D11 → Transistor 2 (Hours units)</p>
+                                <p>Arduino D12 → Transistor 3 (Minutes tens)</p>
+                                <p>Arduino D13 → Transistor 4 (Minutes units)</p>
+                                <p class="mt-2 text-gray-600 dark:text-gray-400">Note: Use transistors for digit switching to handle current</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-card p-8">
+                    <h2 class="text-2xl font-bold mb-4 text-primary-500">Key Learning Concepts</h2>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="space-y-4">
+                            <div class="flex items-start space-x-4">
+                                <div class="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <span class="text-blue-600 font-bold">1</span>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold mb-1">Seven Segment Displays</h3>
+                                    <p class="text-gray-600 dark:text-gray-300 text-sm">Understanding segment mapping and digit encoding</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start space-x-4">
+                                <div class="w-10 h-10 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <span class="text-emerald-600 font-bold">2</span>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold mb-1">Multiplexing</h3>
+                                    <p class="text-gray-600 dark:text-gray-300 text-sm">Time-division display control for multiple digits</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-4">
+                            <div class="flex items-start space-x-4">
+                                <div class="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <span class="text-purple-600 font-bold">3</span>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold mb-1">Transistor Switching</h3>
+                                    <p class="text-gray-600 dark:text-gray-300 text-sm">Using transistors for current control and switching</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start space-x-4">
+                                <div class="w-10 h-10 bg-yellow-100 dark:bg-yellow-900/30 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <span class="text-yellow-600 font-bold">4</span>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold mb-1">Arduino Programming</h3>
+                                    <p class="text-gray-600 dark:text-gray-300 text-sm">Basic embedded programming and timing control</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-card p-8">
+                    <h2 class="text-2xl font-bold mb-4 text-primary-500">Arduino Source Code</h2>
+                    <p class="text-gray-600 dark:text-gray-300 mb-4">Complete Arduino code for the seven segment display clock:</p>
+                    <pre class="rounded-lg overflow-x-auto"><code class="language-cpp">// Seven Segment Display Clock
+// First Electronics Learning Project
+// Mentor: MV Narayana Sir
+
+// Pin definitions for segments (A-G, DP)
+int segmentPins[] = {2, 3, 4, 5, 6, 7, 8, 9};
+
+// Pin definitions for digit control
+int digitPins[] = {10, 11, 12, 13};
+
+// Seven segment patterns for digits 0-9
+byte digitPatterns[10] = {
+  B11111100, // 0
+  B01100000, // 1
+  B11011010, // 2
+  B11110010, // 3
+  B01100110, // 4
+  B10110110, // 5
+  B10111110, // 6
+  B11100000, // 7
+  B11111110, // 8
+  B11110110  // 9
+};
+
+// Time variables
+int hours = 12;
+int minutes = 30;
+int seconds = 0;
+unsigned long previousMillis = 0;
+const long interval = 1000; // 1 second
+
+// Display variables
+int currentDigit = 0;
+unsigned long displayTimer = 0;
+const int displayDelay = 5; // 5ms per digit
+
+void setup() {
+  // Initialize segment pins as outputs
+  for (int i = 0; i < 8; i++) {
+    pinMode(segmentPins[i], OUTPUT);
+  }
+  
+  // Initialize digit pins as outputs
+  for (int i = 0; i < 4; i++) {
+    pinMode(digitPins[i], OUTPUT);
+    digitalWrite(digitPins[i], HIGH); // Turn off all digits initially
+  }
+  
+  Serial.begin(9600);
+  Serial.println("Seven Segment Clock Started");
+}
+
+void loop() {
+  // Update time every second
+  unsigned long currentMillis = millis();
+  if (currentMillis - previousMillis >= interval) {
+    previousMillis = currentMillis;
+    updateTime();
+  }
+  
+  // Display multiplexing
+  if (currentMillis - displayTimer >= displayDelay) {
+    displayTimer = currentMillis;
+    displayDigit();
+  }
+}
+
+void updateTime() {
+  seconds++;
+  if (seconds >= 60) {
+    seconds = 0;
+    minutes++;
+    if (minutes >= 60) {
+      minutes = 0;
+      hours++;
+      if (hours > 23) {
+        hours = 0;
+      }
+    }
+  }
+  
+  // Print time to serial monitor
+  Serial.print(hours < 10 ? "0" : "");
+  Serial.print(hours);
+  Serial.print(":");
+  Serial.print(minutes < 10 ? "0" : "");
+  Serial.println(minutes);
+}
+
+void displayDigit() {
+  // Turn off all digits
+  for (int i = 0; i < 4; i++) {
+    digitalWrite(digitPins[i], HIGH);
+  }
+  
+  // Determine which digit to display
+  int digitValue;
+  switch (currentDigit) {
+    case 0: // Hours tens
+      digitValue = hours / 10;
+      break;
+    case 1: // Hours units
+      digitValue = hours % 10;
+      break;
+    case 2: // Minutes tens
+      digitValue = minutes / 10;
+      break;
+    case 3: // Minutes units
+      digitValue = minutes % 10;
+      break;
+  }
+  
+  // Set segment pattern
+  setSegments(digitPatterns[digitValue]);
+  
+  // Turn on current digit
+  digitalWrite(digitPins[currentDigit], LOW);
+  
+  // Move to next digit
+  currentDigit = (currentDigit + 1) % 4;
+}
+
+void setSegments(byte pattern) {
+  for (int i = 0; i < 8; i++) {
+    digitalWrite(segmentPins[i], (pattern >> (7-i)) & 1);
+  }
+}
+
+// Function to set time manually (for testing)
+void setTime(int h, int m, int s) {
+  hours = h;
+  minutes = m;
+  seconds = s;
+}</code></pre>
+                </div>
+
+                <div class="glass-card p-8">
+                    <h2 class="text-2xl font-bold mb-4 text-primary-500">Learning Outcomes</h2>
+                    <div class="space-y-3">
+                        <div class="flex items-start space-x-3">
+                            <div class="w-6 h-6 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mt-0.5">
+                                <span class="w-2 h-2 bg-blue-600 rounded-full"></span>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold">Digital Display Fundamentals</h3>
+                                <p class="text-gray-600 dark:text-gray-300">Learned how seven segment displays work and how to control them programmatically</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start space-x-3">
+                            <div class="w-6 h-6 bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center mt-0.5">
+                                <span class="w-2 h-2 bg-emerald-600 rounded-full"></span>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold">Arduino Programming</h3>
+                                <p class="text-gray-600 dark:text-gray-300">First experience with embedded C programming and Arduino IDE</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start space-x-3">
+                            <div class="w-6 h-6 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center mt-0.5">
+                                <span class="w-2 h-2 bg-purple-600 rounded-full"></span>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold">Circuit Design</h3>
+                                <p class="text-gray-600 dark:text-gray-300">Understanding current limiting, transistor switching, and breadboard prototyping</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start space-x-3">
+                            <div class="w-6 h-6 bg-orange-100 dark:bg-orange-900/30 rounded-full flex items-center justify-center mt-0.5">
+                                <span class="w-2 h-2 bg-orange-600 rounded-full"></span>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold">Problem Solving</h3>
+                                <p class="text-gray-600 dark:text-gray-300">Debugging circuits, troubleshooting code, and systematic testing approaches</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-card p-8">
+                    <h2 class="text-2xl font-bold mb-4 text-primary-500">Project Impact</h2>
+                    <div class="grid md:grid-cols-3 gap-6 mb-6">
+                        <div class="text-center">
+                            <div class="text-3xl font-bold text-accent-500 mb-2">1st</div>
+                            <div class="text-gray-600 dark:text-gray-300">Electronics Project</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-3xl font-bold text-accent-500 mb-2">4</div>
+                            <div class="text-gray-600 dark:text-gray-300">Seven Segments</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-3xl font-bold text-accent-500 mb-2">24h</div>
+                            <div class="text-gray-600 dark:text-gray-300">Time Format</div>
+                        </div>
+                    </div>
+                    <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
+                        This foundational project introduced me to the world of embedded systems and electronics. Under MV Narayana Sir's guidance, I learned essential concepts that became the building blocks for all subsequent projects. The experience of seeing code translate into physical hardware behavior was truly inspiring and set the direction for my future learning path.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Related Projects -->
+    <section class="py-12 px-4 bg-gray-50 dark:bg-gray-800/50">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-2xl font-bold text-center mb-8 text-primary-500">Related Projects</h2>
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="project-card">
+                    <div class="project-image">
+                        <img src="/assets/projects/neopixel-hero.jpg" alt="NeoPixel Display" class="w-full h-48 object-cover">
+                        <div class="project-overlay">
+                            <a href="/projects/neopixel-display.html" class="btn-primary">View Project</a>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-lg font-semibold mb-2">NeoPixel Scrolling Display</h3>
+                        <p class="text-gray-600 dark:text-gray-300 mb-4">WiFi-controlled LED matrix with web interface</p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="tech-tag">ESP8266</span>
+                            <span class="tech-tag">NeoPixel</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="project-card">
+                    <div class="project-image">
+                        <img src="/assets/projects/wifi-led-hero.jpg" alt="WiFi LED Control" class="w-full h-48 object-cover">
+                        <div class="project-overlay">
+                            <a href="/projects/wifi-led-control.html" class="btn-primary">View Project</a>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-lg font-semibold mb-2">WiFi LED Control System</h3>
+                        <p class="text-gray-600 dark:text-gray-300 mb-4">Cloud-based LED control with Arduino IoT</p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="tech-tag">ESP32</span>
+                            <span class="tech-tag">Arduino Cloud</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="project-card">
+                    <div class="project-image">
+                        <img src="/assets/projects/raspberry-pi-hero.jpg" alt="Raspberry Pi" class="w-full h-48 object-cover">
+                        <div class="project-overlay">
+                            <a href="/projects/raspberry-pi-gpio.html" class="btn-primary">View Project</a>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-lg font-semibold mb-2">Raspberry Pi GPIO Control</h3>
+                        <p class="text-gray-600 dark:text-gray-300 mb-4">Python-based hardware interfacing</p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="tech-tag">Raspberry Pi</span>
+                            <span class="tech-tag">Python</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- What We Learned Section -->
+    <section class="py-12 px-4 bg-blue-50 dark:bg-gray-800">
+        <div class="max-w-4xl mx-auto">
+            <div class="bg-white dark:bg-gray-900 rounded-lg shadow-lg p-8">
+                <h2 class="text-3xl font-bold mb-6 text-blue-600 text-center">What We Learned</h2>
+                <div class="bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 border border-indigo-200 dark:border-indigo-700 rounded-lg p-6">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 bg-indigo-500 rounded-full flex items-center justify-center mr-4">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-indigo-800 dark:text-indigo-200">Key Learning Outcomes</h3>
+                            <p class="text-indigo-600 dark:text-indigo-300">Under the guidance of Prof. M.V. Narayana Sir</p>
+                        </div>
+                    </div>
+                    
+                    <div class="grid md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <h4 class="font-semibold text-indigo-800 dark:text-indigo-200 mb-3">Electronics Fundamentals</h4>
+                            <ul class="text-sm text-indigo-700 dark:text-indigo-300 space-y-2">
+                                <li>• <strong>Seven Segment Displays:</strong> Understanding common cathode/anode configurations and segment control</li>
+                                <li>• <strong>Multiplexing Concepts:</strong> Learned time-division multiplexing to control multiple displays with limited pins</li>
+                                <li>• <strong>Transistor Switching:</strong> Using NPN transistors for digit selection and current amplification</li>
+                                <li>• <strong>Current Limiting:</strong> Calculating and implementing resistors for LED protection and proper brightness</li>
+                                <li>• <strong>Circuit Design:</strong> Breadboard prototyping and systematic circuit construction</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-indigo-800 dark:text-indigo-200 mb-3">Programming & Embedded Systems</h4>
+                            <ul class="text-sm text-indigo-700 dark:text-indigo-300 space-y-2">
+                                <li>• <strong>Arduino Programming:</strong> First introduction to C++ programming and Arduino IDE</li>
+                                <li>• <strong>Digital I/O Control:</strong> Managing multiple digital pins for display control</li>
+                                <li>• <strong>Timing Functions:</strong> Using millis() for non-blocking time management</li>
+                                <li>• <strong>Array Manipulation:</strong> Creating lookup tables for digit patterns and display control</li>
+                                <li>• <strong>Real-time Systems:</strong> Understanding refresh rates and persistence of vision in displays</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="grid md:grid-cols-3 gap-4 mb-6">
+                        <div class="bg-white dark:bg-gray-800 rounded-lg p-4 border border-indigo-200 dark:border-indigo-600">
+                            <h5 class="font-semibold text-indigo-800 dark:text-indigo-200 mb-2">Foundation Building</h5>
+                            <p class="text-indigo-700 dark:text-indigo-300 text-sm">
+                                This first electronics project established fundamental concepts in digital electronics, embedded programming, and hardware-software integration.
+                            </p>
+                        </div>
+                        <div class="bg-white dark:bg-gray-800 rounded-lg p-4 border border-indigo-200 dark:border-indigo-600">
+                            <h5 class="font-semibold text-indigo-800 dark:text-indigo-200 mb-2">Problem-Solving Skills</h5>
+                            <p class="text-indigo-700 dark:text-indigo-300 text-sm">
+                                Learned systematic debugging approaches for both hardware connections and software logic in embedded systems.
+                            </p>
+                        </div>
+                        <div class="bg-white dark:bg-gray-800 rounded-lg p-4 border border-indigo-200 dark:border-indigo-600">
+                            <h5 class="font-semibold text-indigo-800 dark:text-indigo-200 mb-2">Gateway to Advanced Projects</h5>
+                            <p class="text-indigo-700 dark:text-indigo-300 text-sm">
+                                This foundational experience opened pathways to more complex projects involving IoT, robotics, and advanced embedded systems.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-emerald-50 dark:bg-emerald-900/20 border-l-4 border-emerald-500 p-4 rounded-r-lg">
+                        <h4 class="font-semibold text-emerald-800 dark:text-emerald-200 mb-2">Project Impact & Future Applications</h4>
+                        <p class="text-emerald-700 dark:text-emerald-300 text-sm leading-relaxed">
+                            This seven segment display clock project served as the crucial first step into electronics and embedded programming. The fundamental concepts learned - multiplexing, timing control, and hardware-software integration - became the building blocks for all subsequent projects. Under Prof. M.V. Narayana Sir's guidance, we not only learned the technical implementation but also developed the systematic thinking and problem-solving approach essential for electronics engineering. This project sparked the passion for embedded systems that led to advanced IoT, robotics, and computer vision projects.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 dark:bg-gray-950 text-white py-8">
+        <div class="max-w-6xl mx-auto px-4 text-center">
+            <p>&copy; 2024 AuraAlliance - KSRM College of Engineering. All rights reserved.</p>
+            <div class="mt-4">
+                <a href="/" class="text-gray-300 hover:text-white transition-colors">← Back to Portfolio</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="/assets/js/main.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+</body>
+</html>

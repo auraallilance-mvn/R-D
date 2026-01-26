@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paddy Disease Classification - AuraAlliance</title>
+    <meta name="description" content="ResNet34 deep learning model for rice disease classification with 74% accuracy on 13 disease classes">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: {
+                            50: '#eff6ff',
+                            500: '#1e3a8a',
+                            600: '#1e40af',
+                            700: '#1d4ed8',
+                        },
+                        accent: {
+                            500: '#10b981',
+                            600: '#059669',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/assets/css/style.css">
+    
+    <!-- Prism.js for syntax highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+</head>
+<body class="font-inter bg-white dark:bg-gray-900 text-gray-900 dark:text-white transition-colors duration-300">
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 glass-nav backdrop-blur-md bg-white/80 dark:bg-gray-900/80 border-b border-gray-200/20 dark:border-gray-700/20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex-shrink-0">
+                    <a href="/" class="text-xl font-bold text-primary-500">AuraAlliance</a>
+                </div>
+                
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="/#home" class="nav-link">Home</a>
+                        <a href="/#about" class="nav-link">About</a>
+                        <a href="/#projects" class="nav-link">Projects</a>
+                        <a href="/#contact" class="nav-link">Contact</a>
+                    </div>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <button id="theme-toggle" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+                        <svg class="w-5 h-5 hidden dark:block" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"></path>
+                        </svg>
+                        <svg class="w-5 h-5 block dark:hidden" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="pt-24 pb-12 px-4">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-8">
+                <h1 class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary-500 to-accent-500 bg-clip-text text-transparent">
+                    Paddy Disease Classification
+                </h1>
+                <p class="text-xl text-gray-600 dark:text-gray-300 mb-6">
+                    ResNet34 deep learning model for rice disease classification with 74% accuracy on 13 disease classes
+                </p>
+                <div class="flex flex-wrap justify-center gap-3 mb-8">
+                    <span class="tech-tag">ResNet34</span>
+                    <span class="tech-tag">PyTorch</span>
+                    <span class="tech-tag">Deep Learning</span>
+                    <span class="tech-tag">Computer Vision</span>
+                    <span class="tech-tag">Agriculture AI</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Project Details -->
+    <section class="py-12 px-4">
+        <div class="max-w-4xl mx-auto">
+            <div class="grid md:grid-cols-3 gap-8 mb-12">
+                <div class="glass-card p-6 text-center">
+                    <div class="w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">74% Accuracy</h3>
+                    <p class="text-gray-600 dark:text-gray-300">Current model performance</p>
+                </div>
+                
+                <div class="glass-card p-6 text-center">
+                    <div class="w-16 h-16 bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">13 Classes</h3>
+                    <p class="text-gray-600 dark:text-gray-300">Disease categories</p>
+                </div>
+                
+                <div class="glass-card p-6 text-center">
+                    <div class="w-16 h-16 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">16K+ Images</h3>
+                    <p class="text-gray-600 dark:text-gray-300">Training dataset</p>
+                </div>
+            </div>
+
+            <div class="space-y-8">
+                <div class="glass-card p-8">
+                    <h2 class="text-2xl font-bold mb-4 text-primary-500">Project Overview</h2>
+                    <p class="text-gray-700 dark:text-gray-300 leading-relaxed mb-6">
+                        This deep learning project addresses a critical challenge in agriculture: early detection and classification of rice diseases. Using the comprehensive Paddy Doctor Dataset (2022) with over 16,000 annotated rice leaf images, we trained a ResNet34 model to identify 12 different diseases plus healthy leaves across 13 distinct classes.
+                    </p>
+                    <p class="text-gray-700 dark:text-gray-300 leading-relaxed mb-6">
+                        The model achieved 74% accuracy on the test dataset, with some classes showing excellent performance (91% for yellow stem borer, 87% for normal leaves). The current accuracy reflects class imbalance in the dataset - with proper data balancing and retraining, we project the model could achieve 92% accuracy.
+                    </p>
+                    
+                    <div class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border border-blue-200 dark:border-blue-700 rounded-lg p-6 mb-6">
+                        <h3 class="text-lg font-semibold text-blue-800 dark:text-blue-200 mb-3">Project Guidance & Supervision</h3>
+                        <p class="text-blue-700 dark:text-blue-300 leading-relaxed">
+                            This agricultural AI project was developed under the expert guidance of <strong>Prof. M.V. Narayana Sir</strong>, Head of Department (ECE) and R&D Dean at KSRM College of Engineering. His mentorship in deep learning applications and agricultural technology provided the foundation for understanding computer vision in agriculture and the importance of AI solutions for food security challenges.
+                        </p>
+                    </div>
+                    
+                    <div class="bg-emerald-50 dark:bg-emerald-900/20 border-l-4 border-emerald-500 p-4 rounded-r-lg">
+                        <p class="text-emerald-800 dark:text-emerald-200 font-medium">
+                            <strong>Agricultural Impact:</strong> This AI system can help farmers identify rice diseases early, potentially saving crops and improving food security through timely intervention.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Model Output Screenshot -->
+                <div class="glass-card p-8">
+                    <h2 class="text-2xl font-bold mb-6 text-primary-500 text-center">Model Prediction Results</h2>
+                    <div class="rounded-lg overflow-hidden border-2 border-gray-200 dark:border-gray-700 mb-4">
+                        <img src="/assets/projects/Screenshot 2026-01-23 210910.png" alt="Paddy Disease Classification Results" class="w-full">
+                    </div>
+                    <p class="text-center text-gray-500 dark:text-gray-400 text-sm italic mb-4">
+                        Live model prediction showing 98.47% confidence for bacterial leaf blight detection
+                    </p>
+                    
+                    <div class="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg font-mono text-sm">
+                        <p class="font-semibold mb-2">Sample Prediction Output:</p>
+                        <p class="text-emerald-600">1. bacterial_leaf_blight: 98.47%</p>
+                        <p class="text-blue-600">2. leaf_roller: 0.59%</p>
+                        <p class="text-purple-600">3. brown_spot: 0.44%</p>
+                        <p class="mt-2 text-gray-600 dark:text-gray-400">Inference time: 0.328 seconds</p>
+                    </div>
+                </div>
+
+                <div class="glass-card p-8">
+                    <h2 class="text-2xl font-bold mb-4 text-primary-500">Dataset & Model Architecture</h2>
+                    <div class="space-y-6">
+                        <div>
+                            <h3 class="text-lg font-semibold mb-3 text-accent-500">Paddy Doctor Dataset (2022)</h3>
+                            <ul class="list-disc list-inside text-gray-700 dark:text-gray-300 space-y-1">
+                                <li>16,000+ annotated rice leaf images</li>
+                                <li>High-resolution photographs from real field conditions</li>
+                                <li>12 disease classes + 1 healthy class</li>
+                                <li>Diverse lighting and background conditions</li>
+                                <li>Professional agricultural annotations</li>
+                                <li><strong>Source:</strong> IEEE Portal - <a href="https://arxiv.org/abs/2205.11108" target="_blank" class="text-primary-500 hover:text-primary-600 underline">arXiv:2205.11108</a></li>
+                            </ul>
+                        </div>
+                        
+                        <div>
+                            <h3 class="text-lg font-semibold mb-3 text-accent-500">ResNet34 Architecture</h3>
+                            <ul class="list-disc list-inside text-gray-700 dark:text-gray-300 space-y-1">
+                                <li>34-layer Residual Neural Network</li>
+                                <li>Pre-trained on ImageNet, fine-tuned for rice diseases</li>
+                                <li>Skip connections for better gradient flow</li>
+                                <li>Batch normalization and ReLU activations</li>
+                                <li>Final layer adapted for 13-class classification</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-card p-8">
+                    <h2 class="text-2xl font-bold mb-4 text-primary-500">Disease Classes & Performance</h2>
+                    <div class="grid md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <h3 class="text-lg font-semibold mb-3 text-accent-500">Disease Categories</h3>
+                            <div class="space-y-2 text-gray-700 dark:text-gray-300 text-sm">
+                                <div class="flex justify-between">
+                                    <span>• Bacterial Leaf Blight</span>
+                                    <span class="text-red-500">55% precision</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>• Bacterial Leaf Streak</span>
+                                    <span class="text-green-500">79% precision</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>• Bacterial Panicle Blight</span>
+                                    <span class="text-green-500">83% precision</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>• Black Stem Borer</span>
+                                    <span class="text-green-500">97% precision</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>• Blast</span>
+                                    <span class="text-yellow-500">70% precision</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>• Brown Spot</span>
+                                    <span class="text-yellow-500">56% precision</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>• Downy Mildew</span>
+                                    <span class="text-yellow-500">58% precision</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h3 class="text-lg font-semibold mb-3 text-accent-500">Additional Classes</h3>
+                            <div class="space-y-2 text-gray-700 dark:text-gray-300 text-sm">
+                                <div class="flex justify-between">
+                                    <span>• Hispa</span>
+                                    <span class="text-green-500">73% precision</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>• Leaf Roller</span>
+                                    <span class="text-green-500">85% precision</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>• Normal (Healthy)</span>
+                                    <span class="text-green-500">81% precision</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>• Tungro</span>
+                                    <span class="text-yellow-500">68% precision</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>• White Stem Borer</span>
+                                    <span class="text-green-500">87% precision</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>• Yellow Stem Borer</span>
+                                    <span class="text-green-500">91% precision</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 p-4 rounded-r-lg">
+                        <p class="text-blue-800 dark:text-blue-200 font-medium">
+                            <strong>Performance Note:</strong> Class imbalance affects overall accuracy. Yellow stem borer (91%) and white stem borer (87%) show excellent performance, while bacterial leaf blight (55%) needs more balanced training data.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="glass-card p-8">
+                    <h2 class="text-2xl font-bold mb-4 text-primary-500">Model Deployment Code</h2>
+                    <p class="text-gray-600 dark:text-gray-300 mb-4">Python deployment script for real-time disease classification:</p>
+                    <pre class="rounded-lg overflow-x-auto"><code class="language-python">import torch
+import torchvision.transforms as transforms
+from torchvision import models
+from PIL import Image
+import argparse
+import time
+
+class PaddyDiseaseClassifier:
+    def __init__(self, model_path, num_classes=13):
+        self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        self.classes = [
+            'bacterial_leaf_blight', 'bacterial_leaf_streak', 
+            'bacterial_panicle_blight', 'black_stem_borer', 
+            'blast', 'brown_spot', 'downy_mildew', 'hispa', 
+            'leaf_roller', 'normal', 'tungro', 
+            'white_stem_borer', 'yellow_stem_borer'
+        ]
+        
+        # Load ResNet34 model
+        self.model = models.resnet34(pretrained=False)
+        self.model.fc = torch.nn.Linear(self.model.fc.in_features, num_classes)
+        self.model.load_state_dict(torch.load(model_path, map_location=self.device))
+        self.model.to(self.device)
+        self.model.eval()
+        
+        # Image preprocessing
+        self.transform = transforms.Compose([
+            transforms.Resize((224, 224)),
+            transforms.ToTensor(),
+            transforms.Normalize(mean=[0.485, 0.456, 0.406], 
+                               std=[0.229, 0.224, 0.225])
+        ])
+    
+    def predict(self, image_path):
+        # Load and preprocess image
+        image = Image.open(image_path).convert('RGB')
+        input_tensor = self.transform(image).unsqueeze(0).to(self.device)
+        
+        # Inference
+        start_time = time.time()
+        with torch.no_grad():
+            outputs = self.model(input_tensor)
+            probabilities = torch.nn.functional.softmax(outputs[0], dim=0)
+        
+        inference_time = time.time() - start_time
+        
+        # Get top 3 predictions
+        top3_prob, top3_indices = torch.topk(probabilities, 3)
+        
+        results = []
+        for i in range(3):
+            class_name = self.classes[top3_indices[i]]
+            confidence = top3_prob[i].item() * 100
+            results.append((class_name, confidence))
+        
+        return results, inference_time
+
+# Usage example
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--model', required=True, help='Path to model file')
+    parser.add_argument('--image', required=True, help='Path to image file')
+    args = parser.parse_args()
+    
+    classifier = PaddyDiseaseClassifier(args.model)
+    results, inference_time = classifier.predict(args.image)
+    
+    print(f"Inference time: {inference_time:.3f} seconds")
+    print("Top predictions:")
+    for i, (disease, confidence) in enumerate(results, 1):
+        print(f"{i}. {disease}: {confidence:.2f}%")</code></pre>
+                </div>
+
+                <div class="glass-card p-8">
+                    <h2 class="text-2xl font-bold mb-4 text-primary-500">Classification Report</h2>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead class="bg-gray-100 dark:bg-gray-800">
+                                <tr>
+                                    <th class="text-left p-3">Disease Class</th>
+                                    <th class="text-center p-3">Precision</th>
+                                    <th class="text-center p-3">Recall</th>
+                                    <th class="text-center p-3">F1-Score</th>
+                                    <th class="text-center p-3">Support</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-gray-700 dark:text-gray-300">
+                                <tr class="border-b border-gray-200 dark:border-gray-700">
+                                    <td class="p-3">bacterial_leaf_blight</td>
+                                    <td class="text-center p-3">0.55</td>
+                                    <td class="text-center p-3">0.35</td>
+                                    <td class="text-center p-3">0.43</td>
+                                    <td class="text-center p-3">129</td>
+                                </tr>
+                                <tr class="border-b border-gray-200 dark:border-gray-700">
+                                    <td class="p-3">bacterial_leaf_streak</td>
+                                    <td class="text-center p-3">0.79</td>
+                                    <td class="text-center p-3">0.86</td>
+                                    <td class="text-center p-3">0.82</td>
+                                    <td class="text-center p-3">101</td>
+                                </tr>
+                                <tr class="border-b border-gray-200 dark:border-gray-700">
+                                    <td class="p-3">yellow_stem_borer</td>
+                                    <td class="text-center p-3">0.91</td>
+                                    <td class="text-center p-3">0.84</td>
+                                    <td class="text-center p-3">0.88</td>
+                                    <td class="text-center p-3">153</td>
+                                </tr>
+                                <tr class="bg-gray-50 dark:bg-gray-800 font-semibold">
+                                    <td class="p-3">Overall Accuracy</td>
+                                    <td class="text-center p-3">-</td>
+                                    <td class="text-center p-3">-</td>
+                                    <td class="text-center p-3">0.74</td>
+                                    <td class="text-center p-3">3242</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mt-4">
+                        * Showing selected classes. Full report includes all 13 disease categories with macro avg: 0.72, weighted avg: 0.73
+                    </p>
+                </div>
+
+                <div class="glass-card p-8">
+                    <h2 class="text-2xl font-bold mb-4 text-primary-500">Future Improvements</h2>
+                    <div class="space-y-3">
+                        <div class="flex items-start space-x-3">
+                            <div class="w-6 h-6 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mt-0.5">
+                                <span class="w-2 h-2 bg-blue-600 rounded-full"></span>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold">Data Balancing</h3>
+                                <p class="text-gray-600 dark:text-gray-300">Address class imbalance through data augmentation and balanced sampling to achieve projected 92% accuracy</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start space-x-3">
+                            <div class="w-6 h-6 bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center mt-0.5">
+                                <span class="w-2 h-2 bg-emerald-600 rounded-full"></span>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold">Mobile Deployment</h3>
+                                <p class="text-gray-600 dark:text-gray-300">Convert to TensorFlow Lite for on-device inference on smartphones and edge devices</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start space-x-3">
+                            <div class="w-6 h-6 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center mt-0.5">
+                                <span class="w-2 h-2 bg-purple-600 rounded-full"></span>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold">Real-time Processing</h3>
+                                <p class="text-gray-600 dark:text-gray-300">Implement video stream processing for continuous field monitoring</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start space-x-3">
+                            <div class="w-6 h-6 bg-orange-100 dark:bg-orange-900/30 rounded-full flex items-center justify-center mt-0.5">
+                                <span class="w-2 h-2 bg-orange-600 rounded-full"></span>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold">Treatment Recommendations</h3>
+                                <p class="text-gray-600 dark:text-gray-300">Integrate with agricultural databases to provide treatment suggestions for detected diseases</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-card p-8">
+                    <h2 class="text-2xl font-bold mb-4 text-primary-500">Technical Achievements</h2>
+                    <div class="grid md:grid-cols-3 gap-6 mb-6">
+                        <div class="text-center">
+                            <div class="text-3xl font-bold text-accent-500 mb-2">0.328s</div>
+                            <div class="text-gray-600 dark:text-gray-300">Inference Time</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-3xl font-bold text-accent-500 mb-2">98.47%</div>
+                            <div class="text-gray-600 dark:text-gray-300">Peak Confidence</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-3xl font-bold text-accent-500 mb-2">92%</div>
+                            <div class="text-gray-600 dark:text-gray-300">Projected Accuracy</div>
+                        </div>
+                    </div>
+                    <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
+                        This project demonstrates the practical application of deep learning in agriculture. The ResNet34 model successfully learned to distinguish between 13 different rice disease classes, providing a foundation for automated crop health monitoring systems that could significantly impact food security and agricultural productivity.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Related Projects -->
+    <section class="py-12 px-4 bg-gray-50 dark:bg-gray-800/50">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-2xl font-bold text-center mb-8 text-primary-500">Related Projects</h2>
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="project-card">
+                    <div class="project-image">
+                        <img src="/assets/projects/image.png" alt="Steel Plate Detection" class="w-full h-48 object-cover">
+                        <div class="project-overlay">
+                            <a href="https://universe.roboflow.com/milk-packet/steel-testing" target="_blank" class="btn-primary">View Project</a>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-lg font-semibold mb-2">Steel Plate Detection</h3>
+                        <p class="text-gray-600 dark:text-gray-300 mb-4">Computer vision model with 92% accuracy</p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="tech-tag">Roboflow</span>
+                            <span class="tech-tag">Computer Vision</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="project-card">
+                    <div class="project-image">
+                        <img src="/assets/projects/milk-freshness-hero.jpg" alt="Milk Freshness Detection" class="w-full h-48 object-cover">
+                        <div class="project-overlay">
+                            <a href="/projects/milk-freshness.html" class="btn-primary">View Project</a>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-lg font-semibold mb-2">Milk Freshness Detection</h3>
+                        <p class="text-gray-600 dark:text-gray-300 mb-4">IoT-based freshness monitoring system</p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="tech-tag">FDC1004</span>
+                            <span class="tech-tag">ESP32</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="project-card">
+                    <div class="project-image">
+                        <img src="/assets/projects/parcel-detection.jpg" alt="Parcel Damage Detection" class="w-full h-48 object-cover">
+                        <div class="project-overlay">
+                            <a href="#" class="btn-primary">View Project</a>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-lg font-semibold mb-2">Parcel Damage Detection</h3>
+                        <p class="text-gray-600 dark:text-gray-300 mb-4">AI-powered logistics automation</p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="tech-tag">Roboflow</span>
+                            <span class="tech-tag">Logistics</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- What We Learned Section -->
+    <section class="py-12 px-4 bg-blue-50 dark:bg-gray-800">
+        <div class="max-w-4xl mx-auto">
+            <div class="bg-white dark:bg-gray-900 rounded-lg shadow-lg p-8">
+                <h2 class="text-3xl font-bold mb-6 text-blue-600 text-center">What We Learned</h2>
+                <div class="bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 border border-indigo-200 dark:border-indigo-700 rounded-lg p-6">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 bg-indigo-500 rounded-full flex items-center justify-center mr-4">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-indigo-800 dark:text-indigo-200">Key Learning Outcomes</h3>
+                            <p class="text-indigo-600 dark:text-indigo-300">Under the guidance of Prof. M.V. Narayana Sir</p>
+                        </div>
+                    </div>
+                    
+                    <div class="grid md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <h4 class="font-semibold text-indigo-800 dark:text-indigo-200 mb-3">Deep Learning & AI Skills</h4>
+                            <ul class="text-sm text-indigo-700 dark:text-indigo-300 space-y-2">
+                                <li>• <strong>ResNet34 Architecture:</strong> Understanding residual networks and their effectiveness in image classification tasks</li>
+                                <li>• <strong>Transfer Learning:</strong> Leveraging pre-trained models and fine-tuning for agricultural applications</li>
+                                <li>• <strong>Multi-class Classification:</strong> Handling 13-class classification with imbalanced datasets</li>
+                                <li>• <strong>PyTorch Framework:</strong> Practical experience with deep learning frameworks and model training</li>
+                                <li>• <strong>Data Augmentation:</strong> Techniques to improve model generalization and handle limited data</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-indigo-800 dark:text-indigo-200 mb-3">Agricultural AI & Domain Knowledge</h4>
+                            <ul class="text-sm text-indigo-700 dark:text-indigo-300 space-y-2">
+                                <li>• <strong>Agricultural Applications:</strong> Understanding how AI can address real-world farming challenges</li>
+                                <li>• <strong>Disease Recognition:</strong> Learning to identify visual patterns in plant diseases through computer vision</li>
+                                <li>• <strong>Dataset Curation:</strong> Working with specialized agricultural datasets and understanding annotation quality</li>
+                                <li>• <strong>Class Imbalance:</strong> Handling uneven data distribution common in agricultural datasets</li>
+                                <li>• <strong>Food Security Impact:</strong> Understanding the broader implications of AI in agriculture and food production</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="grid md:grid-cols-3 gap-4 mb-6">
+                        <div class="bg-white dark:bg-gray-800 rounded-lg p-4 border border-indigo-200 dark:border-indigo-600">
+                            <h5 class="font-semibold text-indigo-800 dark:text-indigo-200 mb-2">Model Development</h5>
+                            <p class="text-indigo-700 dark:text-indigo-300 text-sm">
+                                Gained comprehensive experience in the complete ML pipeline from dataset preparation to model deployment and evaluation.
+                            </p>
+                        </div>
+                        <div class="bg-white dark:bg-gray-800 rounded-lg p-4 border border-indigo-200 dark:border-indigo-600">
+                            <h5 class="font-semibold text-indigo-800 dark:text-indigo-200 mb-2">Performance Analysis</h5>
+                            <p class="text-indigo-700 dark:text-indigo-300 text-sm">
+                                Learned to analyze model performance, identify class-specific issues, and propose solutions for accuracy improvement.
+                            </p>
+                        </div>
+                        <div class="bg-white dark:bg-gray-800 rounded-lg p-4 border border-indigo-200 dark:border-indigo-600">
+                            <h5 class="font-semibold text-indigo-800 dark:text-indigo-200 mb-2">Real-world Impact</h5>
+                            <p class="text-indigo-700 dark:text-indigo-300 text-sm">
+                                Understanding how AI solutions can address critical challenges in agriculture and contribute to food security.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-emerald-50 dark:bg-emerald-900/20 border-l-4 border-emerald-500 p-4 rounded-r-lg">
+                        <h4 class="font-semibold text-emerald-800 dark:text-emerald-200 mb-2">Project Impact & Future Applications</h4>
+                        <p class="text-emerald-700 dark:text-emerald-300 text-sm leading-relaxed">
+                            This agricultural AI project provided comprehensive experience in applying deep learning to real-world challenges. The skills gained in ResNet architectures, multi-class classification, and agricultural domain knowledge are directly applicable to precision agriculture, crop monitoring, and food security applications. Under Prof. M.V. Narayana Sir's guidance, we learned not only the technical aspects of deep learning but also the importance of understanding domain-specific challenges and the potential of AI to address critical societal needs. This project demonstrated how computer vision can be leveraged to support farmers and contribute to sustainable agriculture practices.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 dark:bg-gray-950 text-white py-8">
+        <div class="max-w-6xl mx-auto px-4 text-center">
+            <p>&copy; 2024 AuraAlliance - KSRM College of Engineering. All rights reserved.</p>
+            <div class="mt-4">
+                <a href="/" class="text-gray-300 hover:text-white transition-colors">← Back to Portfolio</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="/assets/js/main.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+</body>
+</html>

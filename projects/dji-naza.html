@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DJI NAZA-M Lite Drone - AuraAlliance</title>
+    <meta name="description" content="Complete assembly and configuration of DJI NAZA-M Lite flight controller system with GPS navigation.">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: {
+                            50: '#eff6ff',
+                            500: '#1e3a8a',
+                            600: '#1e40af',
+                            700: '#1d4ed8',
+                        },
+                        accent: {
+                            500: '#10b981',
+                            600: '#059669',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body class="font-inter bg-white dark:bg-gray-900 text-gray-900 dark:text-white transition-colors duration-300">
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 glass-nav backdrop-blur-md bg-white/80 dark:bg-gray-900/80 border-b border-gray-200/20 dark:border-gray-700/20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex-shrink-0">
+                    <a href="/" class="text-xl font-bold text-primary-500">AuraAlliance</a>
+                </div>
+                
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="/#home" class="nav-link">Home</a>
+                        <a href="/#about" class="nav-link">About</a>
+                        <a href="/#projects" class="nav-link">Projects</a>
+                        <a href="/#contact" class="nav-link">Contact</a>
+                    </div>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <!-- Theme Toggle -->
+                    <button id="theme-toggle" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+                        <svg class="w-5 h-5 hidden dark:block" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"></path>
+                        </svg>
+                        <svg class="w-5 h-5 block dark:hidden" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="pt-24 pb-12 px-4">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-8">
+                <h1 class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary-500 to-accent-500 bg-clip-text text-transparent">
+                    DJI NAZA-M Lite Drone Assembly
+                </h1>
+                <p class="text-xl text-gray-600 dark:text-gray-300 mb-6">
+                    Complete assembly and configuration of professional-grade quadcopter with GPS navigation
+                </p>
+                <div class="flex flex-wrap justify-center gap-3 mb-8">
+                    <span class="tech-tag">DJI NAZA-M Lite</span>
+                    <span class="tech-tag">GPS Navigation</span>
+                    <span class="tech-tag">S500 Carbon Frame</span>
+                    <span class="tech-tag">Team Project</span>
+                    <span class="tech-tag">Flight Control</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Project Details -->
+    <section class="py-12 px-4">
+        <div class="max-w-4xl mx-auto">
+            <div class="grid md:grid-cols-3 gap-8 mb-12">
+                <div class="glass-card p-6 text-center">
+                    <div class="w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">95% Stability</h3>
+                    <p class="text-gray-600 dark:text-gray-300">GPS-ATTI mode flight stability</p>
+                </div>
+                
+                <div class="glass-card p-6 text-center">
+                    <div class="w-16 h-16 bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Team Project</h3>
+                    <p class="text-gray-600 dark:text-gray-300">College R&D lab collaboration</p>
+                </div>
+                
+                <div class="glass-card p-6 text-center">
+                    <div class="w-16 h-16 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Return to Home</h3>
+                    <p class="text-gray-600 dark:text-gray-300">Successful RTH implementation</p>
+                </div>
+            </div>
+
+            <div class="space-y-8">
+                <div class="glass-card p-8">
+                    <h2 class="text-2xl font-bold mb-4 text-blue-600">Project Overview</h2>
+                    <p class="text-gray-700 dark:text-gray-300 leading-relaxed mb-6">
+                        This was a collaborative <strong>team project</strong> conducted at our college R&D laboratory. We focused on the complete assembly and configuration of a high-performance quadcopter using the DJI NAZA-M Lite flight controller system. The primary objective was to master hardware-software integration for stable, GPS-assisted flight and professional-grade stabilization.
+                    </p>
+                    
+                    <div class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border border-blue-200 dark:border-blue-700 rounded-lg p-6 mb-6">
+                        <h3 class="text-lg font-semibold text-blue-800 dark:text-blue-200 mb-3">Project Guidance & Supervision</h3>
+                        <p class="text-blue-700 dark:text-blue-300 leading-relaxed">
+                            This advanced drone assembly project was developed under the expert guidance of <strong>Prof. M.V. Narayana Sir</strong>, Head of Department (ECE) and R&D Dean at KSRM College of Engineering. His mentorship in unmanned aerial systems and flight control technology provided the foundation for understanding drone mechanics, flight controllers, and autonomous navigation systems.
+                        </p>
+                    </div>
+                    </p>
+                    <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
+                        The project involved careful selection of components, precise assembly of the S500 carbon fiber frame, motor calibration, GPS configuration, and extensive flight testing to achieve optimal performance and reliability.
+                    </p>
+                </div>
+
+                <!-- Flight Video Section -->
+                <div class="glass-card p-8">
+                    <h2 class="text-2xl font-bold mb-6 text-primary-500 text-center">Flight Demonstration</h2>
+                    <div class="relative aspect-video rounded-xl overflow-hidden border-2 border-gray-700 dark:border-gray-600 bg-black mb-4">
+                        <video controls class="w-full h-full object-contain">
+                            <source src="/assets/videos/dji-naza-flight.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                    <p class="text-center text-gray-500 dark:text-gray-400 text-sm italic">
+                        Field test demonstrating position hold and GPS precision
+                    </p>
+                </div>
+
+                <div class="glass-card p-8">
+                    <h2 class="text-2xl font-bold mb-4 text-primary-500">Technical Implementation</h2>
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div>
+                            <h3 class="text-lg font-semibold mb-4 text-accent-500">Hardware Components</h3>
+                            <ul class="space-y-3 text-gray-700 dark:text-gray-300">
+                                <li class="flex items-start space-x-3">
+                                    <span class="w-2 h-2 bg-accent-500 rounded-full mt-2"></span>
+                                    <span><strong>DJI NAZA-M Lite:</strong> Advanced flight controller with GPS</span>
+                                </li>
+                                <li class="flex items-start space-x-3">
+                                    <span class="w-2 h-2 bg-accent-500 rounded-full mt-2"></span>
+                                    <span><strong>S500 Frame:</strong> Carbon fiber quadcopter frame</span>
+                                </li>
+                                <li class="flex items-start space-x-3">
+                                    <span class="w-2 h-2 bg-accent-500 rounded-full mt-2"></span>
+                                    <span><strong>GPS Module:</strong> External GPS with compass</span>
+                                </li>
+                                <li class="flex items-start space-x-3">
+                                    <span class="w-2 h-2 bg-accent-500 rounded-full mt-2"></span>
+                                    <span><strong>Brushless Motors:</strong> High-efficiency 920KV motors</span>
+                                </li>
+                                <li class="flex items-start space-x-3">
+                                    <span class="w-2 h-2 bg-accent-500 rounded-full mt-2"></span>
+                                    <span><strong>ESCs:</strong> 30A electronic speed controllers</span>
+                                </li>
+                                <li class="flex items-start space-x-3">
+                                    <span class="w-2 h-2 bg-accent-500 rounded-full mt-2"></span>
+                                    <span><strong>Battery:</strong> 3S/4S LiPo high-discharge battery</span>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <div>
+                            <h3 class="text-lg font-semibold mb-4 text-accent-500">Flight Modes</h3>
+                            <ul class="space-y-3 text-gray-700 dark:text-gray-300">
+                                <li class="flex items-start space-x-3">
+                                    <span class="w-2 h-2 bg-blue-500 rounded-full mt-2"></span>
+                                    <span><strong>GPS Mode:</strong> Position hold with GPS lock</span>
+                                </li>
+                                <li class="flex items-start space-x-3">
+                                    <span class="w-2 h-2 bg-blue-500 rounded-full mt-2"></span>
+                                    <span><strong>ATTI Mode:</strong> Attitude stabilization</span>
+                                </li>
+                                <li class="flex items-start space-x-3">
+                                    <span class="w-2 h-2 bg-blue-500 rounded-full mt-2"></span>
+                                    <span><strong>Manual Mode:</strong> Full manual control</span>
+                                </li>
+                                <li class="flex items-start space-x-3">
+                                    <span class="w-2 h-2 bg-blue-500 rounded-full mt-2"></span>
+                                    <span><strong>Failsafe RTH:</strong> Automatic return to home</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-card p-8">
+                    <h2 class="text-2xl font-bold mb-4 text-primary-500">Key Features</h2>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="space-y-4">
+                            <div class="flex items-start space-x-4">
+                                <div class="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <span class="text-blue-600 font-bold">1</span>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold mb-1">GPS-Assisted Navigation</h3>
+                                    <p class="text-gray-600 dark:text-gray-300 text-sm">Precise position hold and waypoint navigation</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start space-x-4">
+                                <div class="w-10 h-10 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <span class="text-emerald-600 font-bold">2</span>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold mb-1">Intelligent Orientation Control</h3>
+                                    <p class="text-gray-600 dark:text-gray-300 text-sm">IOC for simplified flight control</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-4">
+                            <div class="flex items-start space-x-4">
+                                <div class="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <span class="text-purple-600 font-bold">3</span>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold mb-1">Failsafe Protection</h3>
+                                    <p class="text-gray-600 dark:text-gray-300 text-sm">Automatic RTH on signal loss</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start space-x-4">
+                                <div class="w-10 h-10 bg-yellow-100 dark:bg-yellow-900/30 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <span class="text-yellow-600 font-bold">4</span>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold mb-1">LED Status Indicators</h3>
+                                    <p class="text-gray-600 dark:text-gray-300 text-sm">Real-time flight status feedback</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-card p-8">
+                    <h2 class="text-2xl font-bold mb-4 text-primary-500">Results & Achievements</h2>
+                    <div class="grid md:grid-cols-3 gap-6 mb-6">
+                        <div class="text-center">
+                            <div class="text-3xl font-bold text-accent-500 mb-2">95%</div>
+                            <div class="text-gray-600 dark:text-gray-300">Flight Stability</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-3xl font-bold text-accent-500 mb-2">100%</div>
+                            <div class="text-gray-600 dark:text-gray-300">RTH Success Rate</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-3xl font-bold text-accent-500 mb-2">15min</div>
+                            <div class="text-gray-600 dark:text-gray-300">Flight Time</div>
+                        </div>
+                    </div>
+                    <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
+                        The project successfully demonstrated stable autonomous flight with GPS position hold, automatic return to home functionality, and reliable failsafe mechanisms. The team gained valuable hands-on experience in drone assembly, flight controller configuration, and aerial systems integration.
+                    </p>
+                </div>
+
+                <div class="glass-card p-8">
+                    <h2 class="text-2xl font-bold mb-4 text-primary-500">Learning Outcomes</h2>
+                    <div class="space-y-3">
+                        <div class="flex items-start space-x-3">
+                            <div class="w-6 h-6 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mt-0.5">
+                                <span class="w-2 h-2 bg-blue-600 rounded-full"></span>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold">Flight Controller Configuration</h3>
+                                <p class="text-gray-600 dark:text-gray-300">Mastered DJI NAZA Assistant software for parameter tuning</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start space-x-3">
+                            <div class="w-6 h-6 bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center mt-0.5">
+                                <span class="w-2 h-2 bg-emerald-600 rounded-full"></span>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold">GPS Integration</h3>
+                                <p class="text-gray-600 dark:text-gray-300">Learned GPS module calibration and compass setup</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start space-x-3">
+                            <div class="w-6 h-6 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center mt-0.5">
+                                <span class="w-2 h-2 bg-purple-600 rounded-full"></span>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold">Safety Protocols</h3>
+                                <p class="text-gray-600 dark:text-gray-300">Implemented comprehensive pre-flight checks and failsafe systems</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start space-x-3">
+                            <div class="w-6 h-6 bg-yellow-100 dark:bg-yellow-900/30 rounded-full flex items-center justify-center mt-0.5">
+                                <span class="w-2 h-2 bg-yellow-600 rounded-full"></span>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold">Team Collaboration</h3>
+                                <p class="text-gray-600 dark:text-gray-300">Effective teamwork in R&D lab environment</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Related Projects -->
+    <section class="py-12 px-4 bg-gray-50 dark:bg-gray-800/50">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-2xl font-bold text-center mb-8 text-primary-500">Related Projects</h2>
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="project-card">
+                    <div class="project-image">
+                        <img src="/assets/projects/ultrasonic-robot-hero.jpg" alt="Autonomous Robot" class="w-full h-48 object-cover">
+                        <div class="project-overlay">
+                            <a href="/projects/autonomous-robot.html" class="btn-primary">View Project</a>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-lg font-semibold mb-2">Autonomous Navigation Robot</h3>
+                        <p class="text-gray-600 dark:text-gray-300 mb-4">Obstacle avoidance with ultrasonic sensors</p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="tech-tag">HC-SR04</span>
+                            <span class="tech-tag">Arduino</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="project-card">
+                    <div class="project-image">
+                        <img src="/assets/projects/gps-tracking-hero.jpg" alt="GPS Tracking" class="w-full h-48 object-cover">
+                        <div class="project-overlay">
+                            <a href="/projects/gps-tracking.html" class="btn-primary">View Project</a>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-lg font-semibold mb-2">GPS Tracking System</h3>
+                        <p class="text-gray-600 dark:text-gray-300 mb-4">Real-time location tracking with NEO-6M</p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="tech-tag">NEO-6M</span>
+                            <span class="tech-tag">GPS</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="project-card">
+                    <div class="project-image">
+                        <img src="/assets/projects/raspberry-pi-hero.jpg" alt="Raspberry Pi" class="w-full h-48 object-cover">
+                        <div class="project-overlay">
+                            <a href="/projects/raspberry-pi-gpio.html" class="btn-primary">View Project</a>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-lg font-semibold mb-2">Raspberry Pi GPIO Control</h3>
+                        <p class="text-gray-600 dark:text-gray-300 mb-4">Python-based hardware interfacing</p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="tech-tag">Raspberry Pi</span>
+                            <span class="tech-tag">Python</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- What We Learned Section -->
+    <section class="py-12 px-4 bg-blue-50 dark:bg-gray-800">
+        <div class="max-w-4xl mx-auto">
+            <div class="bg-white dark:bg-gray-900 rounded-lg shadow-lg p-8">
+                <h2 class="text-3xl font-bold mb-6 text-blue-600 text-center">What We Learned</h2>
+                <div class="bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 border border-indigo-200 dark:border-indigo-700 rounded-lg p-6">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 bg-indigo-500 rounded-full flex items-center justify-center mr-4">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-indigo-800 dark:text-indigo-200">Key Learning Outcomes</h3>
+                            <p class="text-indigo-600 dark:text-indigo-300">Under the guidance of Prof. M.V. Narayana Sir</p>
+                        </div>
+                    </div>
+                    
+                    <div class="grid md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <h4 class="font-semibold text-indigo-800 dark:text-indigo-200 mb-3">Drone Technology & Flight Systems</h4>
+                            <ul class="text-sm text-indigo-700 dark:text-indigo-300 space-y-2">
+                                <li>• <strong>DJI NAZA-M Lite:</strong> Understanding professional flight controller architecture, IMU sensors, and stabilization algorithms</li>
+                                <li>• <strong>Quadcopter Assembly:</strong> Learning frame construction, motor mounting, and propeller balancing for optimal flight performance</li>
+                                <li>• <strong>GPS Integration:</strong> Implementing GPS-assisted flight modes including position hold and return-to-home functionality</li>
+                                <li>• <strong>ESC Configuration:</strong> Understanding electronic speed controllers, motor timing, and power distribution systems</li>
+                                <li>• <strong>Flight Dynamics:</strong> Learning principles of lift, thrust, pitch, roll, and yaw control in multirotor aircraft</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-indigo-800 dark:text-indigo-200 mb-3">System Integration & Safety</h4>
+                            <ul class="text-sm text-indigo-700 dark:text-indigo-300 space-y-2">
+                                <li>• <strong>DJI Assistant Software:</strong> Mastering flight controller configuration, parameter tuning, and firmware updates</li>
+                                <li>• <strong>Radio Control Systems:</strong> Understanding transmitter-receiver communication, failsafe mechanisms, and control mapping</li>
+                                <li>• <strong>Safety Protocols:</strong> Learning pre-flight checks, emergency procedures, and safe flight operation practices</li>
+                                <li>• <strong>Team Collaboration:</strong> Developing skills in collaborative technical projects and shared responsibility</li>
+                                <li>• <strong>Troubleshooting:</strong> Systematic approach to diagnosing and resolving hardware and software integration issues</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="grid md:grid-cols-3 gap-4 mb-6">
+                        <div class="bg-white dark:bg-gray-800 rounded-lg p-4 border border-indigo-200 dark:border-indigo-600">
+                            <h5 class="font-semibold text-indigo-800 dark:text-indigo-200 mb-2">Unmanned Aerial Systems</h5>
+                            <p class="text-indigo-700 dark:text-indigo-300 text-sm">
+                                Comprehensive understanding of UAV technology, flight control systems, and autonomous navigation principles.
+                            </p>
+                        </div>
+                        <div class="bg-white dark:bg-gray-800 rounded-lg p-4 border border-indigo-200 dark:border-indigo-600">
+                            <h5 class="font-semibold text-indigo-800 dark:text-indigo-200 mb-2">Professional Assembly</h5>
+                            <p class="text-indigo-700 dark:text-indigo-300 text-sm">
+                                Learned industry-standard assembly techniques, quality control, and systematic testing procedures for aerial vehicles.
+                            </p>
+                        </div>
+                        <div class="bg-white dark:bg-gray-800 rounded-lg p-4 border border-indigo-200 dark:border-indigo-600">
+                            <h5 class="font-semibold text-indigo-800 dark:text-indigo-200 mb-2">Advanced Robotics</h5>
+                            <p class="text-indigo-700 dark:text-indigo-300 text-sm">
+                                Bridge between basic robotics and advanced autonomous systems with real-world flight applications.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-emerald-50 dark:bg-emerald-900/20 border-l-4 border-emerald-500 p-4 rounded-r-lg">
+                        <h4 class="font-semibold text-emerald-800 dark:text-emerald-200 mb-2">Project Impact & Future Applications</h4>
+                        <p class="text-emerald-700 dark:text-emerald-300 text-sm leading-relaxed">
+                            This drone assembly project provided hands-on experience with advanced unmanned aerial systems and professional-grade flight control technology. The skills gained in UAV assembly, flight controller configuration, and autonomous navigation are directly applicable to aerial photography, surveillance systems, and commercial drone applications. Under Prof. M.V. Narayana Sir's guidance, we learned not only the technical aspects of drone technology but also the importance of safety protocols, team collaboration, and systematic approaches to complex aerospace projects. This experience established the foundation for understanding advanced robotics and autonomous systems.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 dark:bg-gray-950 text-white py-8">
+        <div class="max-w-6xl mx-auto px-4 text-center">
+            <p>&copy; 2024 AuraAlliance - KSRM College of Engineering. All rights reserved.</p>
+            <div class="mt-4">
+                <a href="/" class="text-gray-300 hover:text-white transition-colors">← Back to Portfolio</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="/assets/js/main.js"></script>
+</body>
+</html>

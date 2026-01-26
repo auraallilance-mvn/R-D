@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IoT Weather Station - AuraAlliance</title>
+    <meta name="description" content="Cloud-connected environmental monitoring with DHT22 sensor and ThingSpeak">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: {
+                            50: '#eff6ff',
+                            500: '#1e3a8a',
+                            600: '#1e40af',
+                            700: '#1d4ed8',
+                        },
+                        accent: {
+                            500: '#10b981',
+                            600: '#059669',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/assets/css/style.css">
+    
+    <!-- Prism.js for syntax highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+</head>
+<body class="font-inter bg-white dark:bg-gray-900 text-gray-900 dark:text-white transition-colors duration-300">
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 glass-nav backdrop-blur-md bg-white/80 dark:bg-gray-900/80 border-b border-gray-200/20 dark:border-gray-700/20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex-shrink-0">
+                    <a href="/" class="text-xl font-bold text-primary-500">AuraAlliance</a>
+                </div>
+                
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="/#home" class="nav-link">Home</a>
+                        <a href="/#about" class="nav-link">About</a>
+                        <a href="/#projects" class="nav-link">Projects</a>
+                        <a href="/#contact" class="nav-link">Contact</a>
+                    </div>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <button id="theme-toggle" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+                        <svg class="w-5 h-5 hidden dark:block" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"></path>
+                        </svg>
+                        <svg class="w-5 h-5 block dark:hidden" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="pt-24 pb-12 px-4">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-8">
+                <h1 class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary-500 to-accent-500 bg-clip-text text-transparent">
+                    IoT Weather Station
+                </h1>
+                <p class="text-xl text-gray-600 dark:text-gray-300 mb-6">
+                    Real-time environmental monitoring with DHT22 sensor and ThingSpeak cloud
+                </p>
+                <div class="flex flex-wrap justify-center gap-3 mb-8">
+                    <span class="tech-tag">DHT22</span>
+                    <span class="tech-tag">ESP32</span>
+                    <span class="tech-tag">ThingSpeak</span>
+                    <span class="tech-tag">IoT</span>
+                    <span class="tech-tag">Data Analytics</span>
+                </div>
+            </div>
+            
+            <div class="glass-card overflow-hidden">
+                <img src="/assets/projects/weather-station-hero.jpg" alt="IoT Weather Station" class="w-full h-64 md:h-96 object-cover">
+            </div>
+        </div>
+    </section>
+
+    <!-- Project Details -->
+    <section class="py-12 px-4">
+        <div class="max-w-4xl mx-auto">
+            <div class="grid md:grid-cols-3 gap-8 mb-12">
+                <div class="glass-card p-6 text-center">
+                    <div class="w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Real-time Data</h3>
+                    <p class="text-gray-600 dark:text-gray-300">20-second update intervals</p>
+                </div>
+                
+                <div class="glass-card p-6 text-center">
+                    <div class="w-16 h-16 bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Cloud Graphs</h3>
+                    <p class="text-gray-600 dark:text-gray-300">Auto-generated charts</p>
+                </div>
+                
+                <div class="glass-card p-6 text-center">
+                    <div class="w-16 h-16 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Historical Data</h3>
+                    <p class="text-gray-600 dark:text-gray-300">Long-term trend analysis</p>
+                </div>
+            </div>
+
+            <div class="space-y-8">
+                <div class="glass-card p-8">
+                    <h2 class="text-2xl font-bold mb-4 text-blue-600">Project Overview</h2>
+                    <p class="text-gray-700 dark:text-gray-300 leading-relaxed mb-6">
+                        This IoT weather station automates environmental monitoring by capturing temperature and humidity data using a DHT22 sensor and transmitting it to the ThingSpeak cloud platform. The system enables remote monitoring of weather trends through automatically generated graphical dashboards.
+                    </p>
+                    
+                    <div class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border border-blue-200 dark:border-blue-700 rounded-lg p-6 mb-6">
+                        <h3 class="text-lg font-semibold text-blue-800 dark:text-blue-200 mb-3">Project Guidance & Supervision</h3>
+                        <p class="text-blue-700 dark:text-blue-300 leading-relaxed">
+                            This IoT weather monitoring project was developed under the expert guidance of <strong>Prof. M.V. Narayana Sir</strong>, Head of Department (ECE) and R&D Dean at KSRM College of Engineering. His mentorship in environmental monitoring systems and cloud data integration provided the foundation for understanding sensor networks, data visualization, and IoT-based monitoring solutions.
+                        </p>
+                    </div>
+                    </p>
+                    <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
+                        Data is uploaded every 20 seconds, providing near real-time insights into environmental conditions. The ThingSpeak platform automatically generates time-series charts, making it easy to identify patterns and trends over time.
+                    </p>
+                </div>
+
+                <div class="glass-card p-8">
+                    <h2 class="text-2xl font-bold mb-4 text-primary-500">ThingSpeak IoT Platform</h2>
+                    <p class="text-gray-700 dark:text-gray-300 leading-relaxed mb-6">
+                        <strong>ThingSpeak</strong> is a powerful open IoT platform that enables data collection, visualization, and analysis from connected devices. We utilized ThingSpeak to store and visualize our weather data in real-time, but the platform offers extensive capabilities for IoT applications.
+                    </p>
+                    
+                    <div class="mb-6">
+                        <h3 class="text-lg font-semibold mb-3 text-accent-500">Platform Features</h3>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <ul class="space-y-2 text-gray-700 dark:text-gray-300">
+                                <li class="flex items-start space-x-2">
+                                    <span class="w-2 h-2 bg-accent-500 rounded-full mt-2"></span>
+                                    <span><strong>Real-time Charts:</strong> Auto-generated time-series visualizations</span>
+                                </li>
+                                <li class="flex items-start space-x-2">
+                                    <span class="w-2 h-2 bg-accent-500 rounded-full mt-2"></span>
+                                    <span><strong>MATLAB Analytics:</strong> Advanced data analysis and processing</span>
+                                </li>
+                                <li class="flex items-start space-x-2">
+                                    <span class="w-2 h-2 bg-accent-500 rounded-full mt-2"></span>
+                                    <span><strong>RESTful API:</strong> Easy integration with any device</span>
+                                </li>
+                                <li class="flex items-start space-x-2">
+                                    <span class="w-2 h-2 bg-accent-500 rounded-full mt-2"></span>
+                                    <span><strong>Data Export:</strong> CSV, JSON, and XML formats</span>
+                                </li>
+                            </ul>
+                            <ul class="space-y-2 text-gray-700 dark:text-gray-300">
+                                <li class="flex items-start space-x-2">
+                                    <span class="w-2 h-2 bg-accent-500 rounded-full mt-2"></span>
+                                    <span><strong>Alerts & Triggers:</strong> Automated notifications</span>
+                                </li>
+                                <li class="flex items-start space-x-2">
+                                    <span class="w-2 h-2 bg-accent-500 rounded-full mt-2"></span>
+                                    <span><strong>Public/Private Channels:</strong> Flexible data sharing</span>
+                                </li>
+                                <li class="flex items-start space-x-2">
+                                    <span class="w-2 h-2 bg-accent-500 rounded-full mt-2"></span>
+                                    <span><strong>Mobile Apps:</strong> iOS and Android support</span>
+                                </li>
+                                <li class="flex items-start space-x-2">
+                                    <span class="w-2 h-2 bg-accent-500 rounded-full mt-2"></span>
+                                    <span><strong>Free Tier:</strong> Perfect for prototyping and learning</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- ThingSpeak Screenshots -->
+                    <div class="space-y-6">
+                        <div>
+                            <h3 class="text-lg font-semibold mb-3 text-accent-500">Temperature Data Visualization</h3>
+                            <div class="rounded-lg overflow-hidden border-2 border-gray-200 dark:border-gray-700">
+                                <img src="/assets/images/Screenshot 2026-01-16 191827.png" alt="ThingSpeak Temperature Chart" class="w-full">
+                            </div>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mt-2 italic">
+                                Real-time temperature data displayed on ThingSpeak with automatic chart generation
+                            </p>
+                        </div>
+
+                        <div>
+                            <h3 class="text-lg font-semibold mb-3 text-accent-500">Humidity Data Visualization</h3>
+                            <div class="rounded-lg overflow-hidden border-2 border-gray-200 dark:border-gray-700">
+                                <img src="/assets/images/Screenshot 2026-01-16 191923.png" alt="ThingSpeak Humidity Chart" class="w-full">
+                            </div>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mt-2 italic">
+                                Humidity trends over time with ThingSpeak's interactive charting system
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 space-y-4">
+                        <div class="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                            <p class="text-gray-700 dark:text-gray-300">
+                                <strong>🔬 MATLAB Integration:</strong> ThingSpeak provides built-in MATLAB analytics, allowing you to perform advanced signal processing, statistical analysis, and machine learning directly on your IoT data without downloading it.
+                            </p>
+                        </div>
+                        
+                        <div class="p-4 bg-emerald-50 dark:bg-emerald-900/20 rounded-lg border border-emerald-200 dark:border-emerald-800">
+                            <p class="text-gray-700 dark:text-gray-300">
+                                <strong>📊 Data Analysis Features:</strong> Create custom visualizations, run scheduled MATLAB code, trigger actions based on data thresholds, and integrate with other web services through webhooks and APIs.
+                            </p>
+                        </div>
+                        
+                        <div class="p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg border border-purple-200 dark:border-purple-800">
+                            <p class="text-gray-700 dark:text-gray-300">
+                                <strong>💡 Why ThingSpeak?</strong> As an open platform by MathWorks, ThingSpeak eliminates the complexity of building your own IoT infrastructure. With instant data visualization, MATLAB analytics, and RESTful APIs, developers can focus on insights rather than infrastructure.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-card p-8">
+                    <h2 class="text-2xl font-bold mb-4 text-primary-500">Full Source Code</h2>
+                    <p class="text-gray-600 dark:text-gray-300 mb-4">Complete ESP32 implementation with ThingSpeak integration:</p>
+                    <pre class="rounded-lg overflow-x-auto"><code class="language-cpp">#include "ThingSpeak.h"
+#include <WiFi.h>
+#include "DHT.h"
+
+// WiFi credentials
+const char* ssid = "YOUR_WIFI_SSID";
+const char* password = "YOUR_WIFI_PASSWORD";
+
+// ThingSpeak settings
+unsigned long myChannelNumber = YOUR_CHANNEL_NUMBER;
+const char* myWriteAPIKey = "YOUR_WRITE_API_KEY";
+
+// DHT22 sensor setup
+#define DHTPIN 4
+#define DHTTYPE DHT22
+DHT dht(DHTPIN, DHTTYPE);
+
+WiFiClient client;
+
+void setup() {
+  Serial.begin(115200);
+  
+  // Initialize DHT sensor
+  dht.begin();
+  
+  // Connect to WiFi
+  WiFi.begin(ssid, password);
+  Serial.print("Connecting to WiFi");
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+  Serial.println("\n✅ WiFi Connected!");
+  Serial.print("IP Address: ");
+  Serial.println(WiFi.localIP());
+  
+  // Initialize ThingSpeak
+  ThingSpeak.begin(client);
+}
+
+void loop() {
+  // Read temperature and humidity
+  float h = dht.readHumidity();
+  float t = dht.readTemperature();
+  
+  // Check if readings are valid
+  if (isnan(h) || isnan(t)) {
+    Serial.println("❌ Failed to read from DHT sensor!");
+    delay(2000);
+    return;
+  }
+  
+  // Display readings
+  Serial.println("=== Weather Data ===");
+  Serial.print("Temperature: ");
+  Serial.print(t);
+  Serial.println(" °C");
+  Serial.print("Humidity: ");
+  Serial.print(h);
+  Serial.println(" %");
+  
+  // Upload to ThingSpeak
+  ThingSpeak.setField(1, t);  // Field 1: Temperature
+  ThingSpeak.setField(2, h);  // Field 2: Humidity
+  
+  int response = ThingSpeak.writeFields(myChannelNumber, myWriteAPIKey);
+  
+  if (response == 200) {
+    Serial.println("✅ Data uploaded to ThingSpeak successfully");
+  } else {
+    Serial.print("❌ Upload failed. Error code: ");
+    Serial.println(response);
+  }
+  
+  // Wait 20 seconds (ThingSpeak free tier limit: 15s minimum)
+  delay(20000);
+}</code></pre>
+                </div>
+
+                <div class="glass-card p-8">
+                    <h2 class="text-2xl font-bold mb-4 text-primary-500">Hardware Setup</h2>
+                    <div class="space-y-4">
+                        <div>
+                            <h3 class="text-lg font-semibold mb-2">Components Required</h3>
+                            <ul class="list-disc list-inside text-gray-700 dark:text-gray-300 space-y-1">
+                                <li>ESP32 Development Board</li>
+                                <li>DHT22 Temperature & Humidity Sensor</li>
+                                <li>10kΩ Pull-up Resistor</li>
+                                <li>Breadboard and jumper wires</li>
+                                <li>USB cable for power</li>
+                            </ul>
+                        </div>
+                        
+                        <div>
+                            <h3 class="text-lg font-semibold mb-2">Wiring Diagram</h3>
+                            <div class="rounded-lg overflow-hidden border-2 border-gray-200 dark:border-gray-700 mb-4">
+                                <img src="/assets/images/image.png" alt="DHT22 ESP32 Circuit Diagram" class="w-full bg-white">
+                            </div>
+                            <div class="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg font-mono text-sm">
+                                <p>DHT22 VCC → ESP32 3.3V</p>
+                                <p>DHT22 DATA → ESP32 GPIO 4 (with 10kΩ pull-up to 3.3V)</p>
+                                <p>DHT22 GND → ESP32 GND</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-card p-8">
+                    <h2 class="text-2xl font-bold mb-4 text-primary-500">Key Features</h2>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <h3 class="text-lg font-semibold mb-3 text-accent-500">Sensor Capabilities</h3>
+                            <ul class="space-y-2 text-gray-700 dark:text-gray-300">
+                                <li class="flex items-center space-x-2">
+                                    <span class="w-2 h-2 bg-accent-500 rounded-full"></span>
+                                    <span>Temperature: -40°C to 80°C</span>
+                                </li>
+                                <li class="flex items-center space-x-2">
+                                    <span class="w-2 h-2 bg-accent-500 rounded-full"></span>
+                                    <span>Humidity: 0-100% RH</span>
+                                </li>
+                                <li class="flex items-center space-x-2">
+                                    <span class="w-2 h-2 bg-accent-500 rounded-full"></span>
+                                    <span>±0.5°C accuracy</span>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <div>
+                            <h3 class="text-lg font-semibold mb-3 text-accent-500">Cloud Features</h3>
+                            <ul class="space-y-2 text-gray-700 dark:text-gray-300">
+                                <li class="flex items-center space-x-2">
+                                    <span class="w-2 h-2 bg-accent-500 rounded-full"></span>
+                                    <span>Auto-generated time-series charts</span>
+                                </li>
+                                <li class="flex items-center space-x-2">
+                                    <span class="w-2 h-2 bg-accent-500 rounded-full"></span>
+                                    <span>Historical data storage</span>
+                                </li>
+                                <li class="flex items-center space-x-2">
+                                    <span class="w-2 h-2 bg-accent-500 rounded-full"></span>
+                                    <span>Public/private channel options</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-card p-8">
+                    <h2 class="text-2xl font-bold mb-4 text-primary-500">Results & Performance</h2>
+                    <div class="grid md:grid-cols-3 gap-6 mb-6">
+                        <div class="text-center">
+                            <div class="text-3xl font-bold text-accent-500 mb-2">20s</div>
+                            <div class="text-gray-600 dark:text-gray-300">Update Interval</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-3xl font-bold text-accent-500 mb-2">±0.5°C</div>
+                            <div class="text-gray-600 dark:text-gray-300">Accuracy</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-3xl font-bold text-accent-500 mb-2">24/7</div>
+                            <div class="text-gray-600 dark:text-gray-300">Monitoring</div>
+                        </div>
+                    </div>
+                    <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
+                        The system provides reliable environmental monitoring with consistent 20-second update intervals. ThingSpeak's cloud platform automatically generates professional charts and graphs, making it easy to analyze weather patterns and trends over time.
+                    </p>
+                </div>
+
+                <div class="glass-card p-8">
+                    <h2 class="text-2xl font-bold mb-4 text-primary-500">Applications</h2>
+                    <div class="space-y-3">
+                        <div class="flex items-start space-x-3">
+                            <div class="w-6 h-6 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mt-0.5">
+                                <span class="w-2 h-2 bg-blue-600 rounded-full"></span>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold">Home Weather Monitoring</h3>
+                                <p class="text-gray-600 dark:text-gray-300">Track indoor/outdoor temperature and humidity conditions</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start space-x-3">
+                            <div class="w-6 h-6 bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center mt-0.5">
+                                <span class="w-2 h-2 bg-emerald-600 rounded-full"></span>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold">Greenhouse Automation</h3>
+                                <p class="text-gray-600 dark:text-gray-300">Monitor and optimize growing conditions for plants</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start space-x-3">
+                            <div class="w-6 h-6 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center mt-0.5">
+                                <span class="w-2 h-2 bg-purple-600 rounded-full"></span>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold">Data Center Monitoring</h3>
+                                <p class="text-gray-600 dark:text-gray-300">Ensure optimal environmental conditions for servers</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- What We Learned Section -->
+    <section class="py-12 px-4 bg-blue-50 dark:bg-gray-800">
+        <div class="max-w-4xl mx-auto">
+            <div class="bg-white dark:bg-gray-900 rounded-lg shadow-lg p-8">
+                <h2 class="text-3xl font-bold mb-6 text-blue-600 text-center">What We Learned</h2>
+                <div class="bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 border border-indigo-200 dark:border-indigo-700 rounded-lg p-6">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 bg-indigo-500 rounded-full flex items-center justify-center mr-4">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-indigo-800 dark:text-indigo-200">Key Learning Outcomes</h3>
+                            <p class="text-indigo-600 dark:text-indigo-300">Under the guidance of Prof. M.V. Narayana Sir</p>
+                        </div>
+                    </div>
+                    
+                    <div class="grid md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <h4 class="font-semibold text-indigo-800 dark:text-indigo-200 mb-3">Environmental Sensing & IoT</h4>
+                            <ul class="text-sm text-indigo-700 dark:text-indigo-300 space-y-2">
+                                <li>• <strong>DHT22 Sensor:</strong> Understanding digital temperature and humidity sensors, calibration, and accuracy considerations</li>
+                                <li>• <strong>Environmental Monitoring:</strong> Learning principles of weather data collection and sensor placement strategies</li>
+                                <li>• <strong>ESP32 Integration:</strong> Mastering WiFi-enabled microcontroller programming for IoT applications</li>
+                                <li>• <strong>Data Sampling:</strong> Implementing proper timing intervals and data collection strategies for weather monitoring</li>
+                                <li>• <strong>Sensor Interfacing:</strong> Understanding digital sensor communication protocols and data validation</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-indigo-800 dark:text-indigo-200 mb-3">Cloud Integration & Data Visualization</h4>
+                            <ul class="text-sm text-indigo-700 dark:text-indigo-300 space-y-2">
+                                <li>• <strong>ThingSpeak Platform:</strong> Learning cloud-based IoT data collection and visualization services</li>
+                                <li>• <strong>API Integration:</strong> Understanding REST APIs and HTTP communication for data transmission</li>
+                                <li>• <strong>Real-time Dashboards:</strong> Creating automated graphical displays for environmental data trends</li>
+                                <li>• <strong>Data Analytics:</strong> Understanding time-series data analysis and weather pattern recognition</li>
+                                <li>• <strong>Remote Monitoring:</strong> Implementing systems for continuous environmental surveillance</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="grid md:grid-cols-3 gap-4 mb-6">
+                        <div class="bg-white dark:bg-gray-800 rounded-lg p-4 border border-indigo-200 dark:border-indigo-600">
+                            <h5 class="font-semibold text-indigo-800 dark:text-indigo-200 mb-2">IoT Architecture</h5>
+                            <p class="text-indigo-700 dark:text-indigo-300 text-sm">
+                                Learned complete IoT system design from sensor data collection to cloud visualization and remote monitoring capabilities.
+                            </p>
+                        </div>
+                        <div class="bg-white dark:bg-gray-800 rounded-lg p-4 border border-indigo-200 dark:border-indigo-600">
+                            <h5 class="font-semibold text-indigo-800 dark:text-indigo-200 mb-2">Environmental Science</h5>
+                            <p class="text-indigo-700 dark:text-indigo-300 text-sm">
+                                Understanding meteorological principles, weather data interpretation, and environmental monitoring best practices.
+                            </p>
+                        </div>
+                        <div class="bg-white dark:bg-gray-800 rounded-lg p-4 border border-indigo-200 dark:border-indigo-600">
+                            <h5 class="font-semibold text-indigo-800 dark:text-indigo-200 mb-2">Data Management</h5>
+                            <p class="text-indigo-700 dark:text-indigo-300 text-sm">
+                                Mastering cloud data storage, real-time streaming, and automated visualization for continuous monitoring systems.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-emerald-50 dark:bg-emerald-900/20 border-l-4 border-emerald-500 p-4 rounded-r-lg">
+                        <h4 class="font-semibold text-emerald-800 dark:text-emerald-200 mb-2">Project Impact & Future Applications</h4>
+                        <p class="text-emerald-700 dark:text-emerald-300 text-sm leading-relaxed">
+                            This IoT weather station project provided comprehensive experience in environmental monitoring and cloud-based data systems. The skills gained in sensor integration, cloud platforms, and data visualization are directly applicable to smart agriculture, building automation, and environmental research applications. Under Prof. M.V. Narayana Sir's guidance, we learned not only the technical implementation but also the importance of reliable environmental monitoring for climate research, agricultural optimization, and smart city applications.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 dark:bg-gray-950 text-white py-8">
+        <div class="max-w-6xl mx-auto px-4 text-center">
+            <p>&copy; 2024 AuraAlliance - KSRM College of Engineering. All rights reserved.</p>
+            <div class="mt-4">
+                <a href="/" class="text-gray-300 hover:text-white transition-colors">← Back to Portfolio</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="/assets/js/main.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+</body>
+</html>

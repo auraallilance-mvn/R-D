@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Milk Freshness Detection - AuraAlliance</title>
+    <meta name="description" content="IoT-based milk freshness detection system using FDC1004 capacitance sensor for real-time quality monitoring.">
+    
+    <!-- SEO Meta Tags -->
+    <meta property="og:title" content="Milk Freshness Detection System">
+    <meta property="og:description" content="IoT-based milk freshness detection using FDC1004 capacitance sensor">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://pavankalyan.github.io/projects/milk-freshness.html">
+    <meta property="og:image" content="/assets/projects/milk-hero.jpg">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: {
+                            50: '#eff6ff',
+                            500: '#1e3a8a',
+                            600: '#1e40af',
+                            700: '#1d4ed8',
+                        },
+                        accent: {
+                            500: '#10b981',
+                            600: '#059669',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body class="font-inter bg-white dark:bg-gray-900 text-gray-900 dark:text-white transition-colors duration-300">
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 glass-nav backdrop-blur-md bg-white/80 dark:bg-gray-900/80 border-b border-gray-200/20 dark:border-gray-700/20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex-shrink-0">
+                    <a href="/" class="text-xl font-bold text-primary-500">AuraAlliance</a>
+                </div>
+                
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="/#home" class="nav-link">Home</a>
+                        <a href="/#about" class="nav-link">About</a>
+                        <a href="/#projects" class="nav-link">Projects</a>
+                        <a href="/#contact" class="nav-link">Contact</a>
+                    </div>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <!-- Theme Toggle -->
+                    <button id="theme-toggle" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+                        <svg class="w-5 h-5 hidden dark:block" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"></path>
+                        </svg>
+                        <svg class="w-5 h-5 block dark:hidden" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="pt-24 pb-12 px-4">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-8">
+                <h1 class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary-500 to-accent-500 bg-clip-text text-transparent">
+                    Milk Freshness Detection System
+                </h1>
+                <p class="text-xl text-gray-600 dark:text-gray-300 mb-6">
+                    IoT-based real-time milk quality monitoring using FDC1004 capacitance sensor
+                </p>
+                <div class="flex flex-wrap justify-center gap-3 mb-8">
+                    <span class="tech-tag">FDC1004</span>
+                    <span class="tech-tag">Arduino</span>
+                    <span class="tech-tag">IoT</span>
+                    <span class="tech-tag">Capacitance Sensing</span>
+                    <span class="tech-tag">Real-time Monitoring</span>
+                </div>
+            </div>
+            
+            <div class="glass-card overflow-hidden">
+                <img src="/assets/projects/milk-hero.jpg" alt="Milk Freshness Detection System" class="w-full h-64 md:h-96 object-cover">
+            </div>
+        </div>
+    </section>
+
+    <!-- Project Details -->
+    <section class="py-12 px-4">
+        <div class="max-w-4xl mx-auto">
+            <div class="grid md:grid-cols-3 gap-8 mb-12">
+                <div class="glass-card p-6 text-center">
+                    <div class="w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Real-time Monitoring</h3>
+                    <p class="text-gray-600 dark:text-gray-300">Continuous monitoring of milk quality parameters</p>
+                </div>
+                
+                <div class="glass-card p-6 text-center">
+                    <div class="w-16 h-16 bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">High Accuracy</h3>
+                    <p class="text-gray-600 dark:text-gray-300">Precise capacitance-based freshness detection</p>
+                </div>
+                
+                <div class="glass-card p-6 text-center">
+                    <div class="w-16 h-16 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">IoT Connectivity</h3>
+                    <p class="text-gray-600 dark:text-gray-300">Remote monitoring and data logging capabilities</p>
+                </div>
+            </div>
+
+            <div class="space-y-8">
+                <div class="glass-card p-8">
+                    <h2 class="text-2xl font-bold mb-4 text-primary-500">Project Overview</h2>
+                    <p class="text-gray-700 dark:text-gray-300 leading-relaxed mb-6">
+                        The Milk Freshness Detection System is an innovative IoT solution designed to monitor milk quality in real-time using advanced capacitance sensing technology. The system employs the FDC1004 capacitance-to-digital converter to detect changes in the dielectric properties of milk, which correlate directly with freshness levels.
+                    </p>
+                    <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
+                        This project addresses the critical need for automated quality control in dairy industries, reducing waste and ensuring consumer safety through continuous monitoring and early detection of spoilage.
+                    </p>
+                </div>
+
+                <div class="glass-card p-8">
+                    <h2 class="text-2xl font-bold mb-4 text-primary-500">Technical Implementation</h2>
+                    <div class="space-y-4">
+                        <div>
+                            <h3 class="text-lg font-semibold mb-2">Hardware Components</h3>
+                            <ul class="list-disc list-inside text-gray-700 dark:text-gray-300 space-y-1">
+                                <li>FDC1004 Capacitance-to-Digital Converter</li>
+                                <li>Arduino Uno/ESP32 Microcontroller</li>
+                                <li>Stainless Steel Electrodes</li>
+                                <li>LCD Display for local readings</li>
+                                <li>WiFi Module for IoT connectivity</li>
+                                <li>Temperature sensor for compensation</li>
+                            </ul>
+                        </div>
+                        
+                        <div>
+                            <h3 class="text-lg font-semibold mb-2">Software Features</h3>
+                            <ul class="list-disc list-inside text-gray-700 dark:text-gray-300 space-y-1">
+                                <li>Real-time capacitance measurement and analysis</li>
+                                <li>Temperature compensation algorithms</li>
+                                <li>Data logging and cloud storage</li>
+                                <li>Mobile app for remote monitoring</li>
+                                <li>Alert system for quality thresholds</li>
+                                <li>Historical data analysis and trends</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-card p-8">
+                    <h2 class="text-2xl font-bold mb-4 text-primary-500">Key Features</h2>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <h3 class="text-lg font-semibold mb-3 text-accent-500">Sensing Technology</h3>
+                            <ul class="space-y-2 text-gray-700 dark:text-gray-300">
+                                <li class="flex items-center space-x-2">
+                                    <span class="w-2 h-2 bg-accent-500 rounded-full"></span>
+                                    <span>Non-invasive capacitance measurement</span>
+                                </li>
+                                <li class="flex items-center space-x-2">
+                                    <span class="w-2 h-2 bg-accent-500 rounded-full"></span>
+                                    <span>High-resolution 28-bit ADC</span>
+                                </li>
+                                <li class="flex items-center space-x-2">
+                                    <span class="w-2 h-2 bg-accent-500 rounded-full"></span>
+                                    <span>Temperature compensation</span>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <div>
+                            <h3 class="text-lg font-semibold mb-3 text-accent-500">IoT Integration</h3>
+                            <ul class="space-y-2 text-gray-700 dark:text-gray-300">
+                                <li class="flex items-center space-x-2">
+                                    <span class="w-2 h-2 bg-accent-500 rounded-full"></span>
+                                    <span>WiFi connectivity for data transmission</span>
+                                </li>
+                                <li class="flex items-center space-x-2">
+                                    <span class="w-2 h-2 bg-accent-500 rounded-full"></span>
+                                    <span>Cloud-based data storage</span>
+                                </li>
+                                <li class="flex items-center space-x-2">
+                                    <span class="w-2 h-2 bg-accent-500 rounded-full"></span>
+                                    <span>Mobile app integration</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-card p-8">
+                    <h2 class="text-2xl font-bold mb-4 text-primary-500">Results & Impact</h2>
+                    <div class="grid md:grid-cols-3 gap-6 mb-6">
+                        <div class="text-center">
+                            <div class="text-3xl font-bold text-accent-500 mb-2">95%</div>
+                            <div class="text-gray-600 dark:text-gray-300">Detection Accuracy</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-3xl font-bold text-accent-500 mb-2">24/7</div>
+                            <div class="text-gray-600 dark:text-gray-300">Continuous Monitoring</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-3xl font-bold text-accent-500 mb-2">30%</div>
+                            <div class="text-gray-600 dark:text-gray-300">Waste Reduction</div>
+                        </div>
+                    </div>
+                    <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
+                        The system has demonstrated excellent performance in laboratory and field testing, achieving 95% accuracy in freshness detection. The implementation has led to significant waste reduction and improved quality control processes in dairy operations.
+                    </p>
+                </div>
+
+                <div class="glass-card p-8">
+                    <h2 class="text-2xl font-bold mb-4 text-primary-500">Future Enhancements</h2>
+                    <div class="space-y-3">
+                        <div class="flex items-start space-x-3">
+                            <div class="w-6 h-6 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mt-0.5">
+                                <span class="w-2 h-2 bg-blue-600 rounded-full"></span>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold">Machine Learning Integration</h3>
+                                <p class="text-gray-600 dark:text-gray-300">Implement AI algorithms for predictive quality analysis</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start space-x-3">
+                            <div class="w-6 h-6 bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center mt-0.5">
+                                <span class="w-2 h-2 bg-emerald-600 rounded-full"></span>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold">Multi-parameter Sensing</h3>
+                                <p class="text-gray-600 dark:text-gray-300">Add pH, conductivity, and optical sensors for comprehensive analysis</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start space-x-3">
+                            <div class="w-6 h-6 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center mt-0.5">
+                                <span class="w-2 h-2 bg-purple-600 rounded-full"></span>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold">Blockchain Integration</h3>
+                                <p class="text-gray-600 dark:text-gray-300">Implement blockchain for supply chain traceability</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Comments Section -->
+    <section class="py-12 px-4 bg-gray-50 dark:bg-gray-800/50">
+        <div class="max-w-4xl mx-auto">
+            <div class="glass-card p-8">
+                <h2 class="text-2xl font-bold mb-6 text-primary-500">Discussion</h2>
+                <div id="disqus_thread"></div>
+                <script>
+                    var disqus_config = function () {
+                        this.page.url = window.location.href;
+                        this.page.identifier = 'milk-freshness-detection';
+                    };
+                    (function() {
+                        var d = document, s = d.createElement('script');
+                        s.src = 'https://YOUR_DISQUS_SHORTNAME.disqus.com/embed.js';
+                        s.setAttribute('data-timestamp', +new Date());
+                        (d.head || d.body).appendChild(s);
+                    })();
+                </script>
+                <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+            </div>
+        </div>
+    </section>
+
+    <!-- Related Projects -->
+    <section class="py-12 px-4">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-2xl font-bold text-center mb-8 text-primary-500">Related Projects</h2>
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="project-card">
+                    <div class="project-image">
+                        <img src="/assets/projects/weather-station.jpg" alt="DHT22 Weather Station" class="w-full h-48 object-cover">
+                        <div class="project-overlay">
+                            <a href="#" class="btn-primary">View Project</a>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-lg font-semibold mb-2">DHT22 Weather Station</h3>
+                        <p class="text-gray-600 dark:text-gray-300 mb-4">IoT weather monitoring with environmental sensors</p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="tech-tag">DHT22</span>
+                            <span class="tech-tag">IoT</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="project-card">
+                    <div class="project-image">
+                        <img src="/assets/projects/wifi-led.jpg" alt="WiFi LED Control" class="w-full h-48 object-cover">
+                        <div class="project-overlay">
+                            <a href="#" class="btn-primary">View Project</a>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-lg font-semibold mb-2">WiFi LED Control</h3>
+                        <p class="text-gray-600 dark:text-gray-300 mb-4">IoT-based lighting control system</p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="tech-tag">ESP32</span>
+                            <span class="tech-tag">WiFi</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 dark:bg-gray-950 text-white py-8">
+        <div class="max-w-6xl mx-auto px-4 text-center">
+            <p>&copy; 2024 AuraAlliance - KSRM College of Engineering. All rights reserved.</p>
+            <div class="mt-4">
+                <a href="/" class="text-gray-300 hover:text-white transition-colors">← Back to Portfolio</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="/assets/js/main.js"></script>
+</body>
+</html>

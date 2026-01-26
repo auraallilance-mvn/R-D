@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abilix Krypton 8 Robots - AuraAlliance</title>
+    <meta name="description" content="Built and programmed 10 Abilix Krypton 8 robots using Scratch programming for various automation tasks">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: {
+                            50: '#eff6ff',
+                            500: '#1e3a8a',
+                            600: '#1e40af',
+                            700: '#1d4ed8',
+                        },
+                        accent: {
+                            500: '#10b981',
+                            600: '#059669',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/assets/css/style.css">
+    
+    <!-- Prism.js for syntax highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+</head>
+<body class="font-inter bg-white dark:bg-gray-900 text-gray-900 dark:text-white transition-colors duration-300">
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 glass-nav backdrop-blur-md bg-white/80 dark:bg-gray-900/80 border-b border-gray-200/20 dark:border-gray-700/20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex-shrink-0">
+                    <a href="/" class="text-xl font-bold text-primary-500">AuraAlliance</a>
+                </div>
+                
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="/#home" class="nav-link">Home</a>
+                        <a href="/#about" class="nav-link">About</a>
+                        <a href="/#projects" class="nav-link">Projects</a>
+                        <a href="/#contact" class="nav-link">Contact</a>
+                    </div>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <button id="theme-toggle" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+                        <svg class="w-5 h-5 hidden dark:block" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"></path>
+                        </svg>
+                        <svg class="w-5 h-5 block dark:hidden" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="pt-24 pb-12 px-4">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-8">
+                <h1 class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary-500 to-accent-500 bg-clip-text text-transparent">
+                    Abilix Krypton 8 Robots
+                </h1>
+                <p class="text-xl text-gray-600 dark:text-gray-300 mb-6">
+                    Built and programmed 10 Abilix Krypton 8 robots using Scratch programming for various automation tasks
+                </p>
+                <div class="flex flex-wrap justify-center gap-3 mb-8">
+                    <span class="tech-tag">Abilix Krypton 8</span>
+                    <span class="tech-tag">Scratch Programming</span>
+                    <span class="tech-tag">Robotics</span>
+                    <span class="tech-tag">Automation</span>
+                    <span class="tech-tag">Educational Robotics</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Project Details -->
+    <section class="py-12 px-4">
+        <div class="max-w-4xl mx-auto">
+            <div class="grid md:grid-cols-3 gap-8 mb-12">
+                <div class="glass-card p-6 text-center">
+                    <div class="w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 7.172V5L8 4z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">1 Robot</h3>
+                    <p class="text-gray-600 dark:text-gray-300">Built and programmed</p>
+                </div>
+                
+                <div class="glass-card p-6 text-center">
+                    <div class="w-16 h-16 bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Scratch Programming</h3>
+                    <p class="text-gray-600 dark:text-gray-300">Visual programming</p>
+                </div>
+                
+                <div class="glass-card p-6 text-center">
+                    <div class="w-16 h-16 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">R&D Lab</h3>
+                    <p class="text-gray-600 dark:text-gray-300">Team project</p>
+                </div>
+            </div>
+
+            <div class="space-y-8">
+                <div class="glass-card p-8">
+                    <h2 class="text-2xl font-bold mb-4 text-primary-500">Project Overview</h2>
+                    <p class="text-gray-700 dark:text-gray-300 leading-relaxed mb-6">
+                        This project involved working with an Abilix Krypton 8 educational robot in our AuraAlliance laboratory. We systematically assembled the robot following the comprehensive manual, learning about mechanical construction, sensor integration, and actuator control. The hands-on assembly process provided valuable insights into robotics hardware and component interfacing.
+                    </p>
+                    <p class="text-gray-700 dark:text-gray-300 leading-relaxed mb-6">
+                        After successful assembly, we programmed the robot using Scratch, a visual programming language that makes robotics accessible while teaching fundamental programming concepts. The robot was programmed to perform various automation tasks, demonstrating different aspects of robotics including movement control, sensor feedback, and autonomous behavior.
+                    </p>
+                    
+                    <div class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border border-blue-200 dark:border-blue-700 rounded-lg p-6">
+                        <h3 class="text-lg font-semibold text-blue-800 dark:text-blue-200 mb-3">Project Guidance & Supervision</h3>
+                        <p class="text-blue-700 dark:text-blue-300 leading-relaxed">
+                            This robotics project was developed under the expert guidance of <strong>Prof. M.V. Narayana Sir</strong>, Head of Department (ECE) and R&D Dean at KSRM College of Engineering. His mentorship in robotics fundamentals and educational programming provided the foundation for understanding mechanical systems, sensor integration, and visual programming concepts essential for robotics development.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Robot Demo Video -->
+                <div class="glass-card p-8">
+                    <h2 class="text-2xl font-bold mb-6 text-primary-500 text-center">Robot Demonstration</h2>
+                    <div class="relative aspect-video rounded-xl overflow-hidden border-2 border-gray-700 dark:border-gray-600 bg-black mb-4">
+                        <video controls class="w-full h-full object-cover">
+                            <source src="/assets/videos/krypthon video.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                    <p class="text-center text-gray-500 dark:text-gray-400 text-sm italic">
+                        Live demonstration of Abilix Krypton 8 robots performing programmed automation tasks
+                    </p>
+                </div>
+
+                <!-- Scratch Programming Screenshots -->
+                <div class="glass-card p-8">
+                    <h2 class="text-2xl font-bold mb-4 text-primary-500">Scratch Programming Interface</h2>
+                    <div class="grid md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <div class="rounded-lg overflow-hidden border-2 border-gray-200 dark:border-gray-700 mb-4">
+                                <img src="/assets/projects/scratchprogram.jpeg" alt="Scratch Programming Interface 1" class="w-full">
+                            </div>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 text-center italic">
+                                Scratch programming blocks for robot movement and sensor control
+                            </p>
+                        </div>
+                        
+                        <div>
+                            <div class="rounded-lg overflow-hidden border-2 border-gray-200 dark:border-gray-700 mb-4">
+                                <img src="/assets/projects/scratchprogram2.jpeg" alt="Scratch Programming Interface 2" class="w-full">
+                            </div>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 text-center italic">
+                                Advanced automation logic with conditional statements and loops
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-emerald-50 dark:bg-emerald-900/20 border-l-4 border-emerald-500 p-4 rounded-r-lg">
+                        <p class="text-emerald-800 dark:text-emerald-200 font-medium">
+                            <strong>Visual Programming:</strong> Scratch's drag-and-drop interface made it easy to implement complex robotics behaviors while learning programming fundamentals through visual blocks.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="glass-card p-8">
+                    <h2 class="text-2xl font-bold mb-4 text-primary-500">Abilix Krypton 8 Specifications</h2>
+                    <div class="space-y-6">
+                        <div>
+                            <h3 class="text-lg font-semibold mb-3 text-accent-500">Hardware Components</h3>
+                            <ul class="list-disc list-inside text-gray-700 dark:text-gray-300 space-y-1">
+                                <li>Main control unit with ARM Cortex processor</li>
+                                <li>Multiple servo motors for precise movement</li>
+                                <li>Ultrasonic sensors for distance measurement</li>
+                                <li>Color sensors for object recognition</li>
+                                <li>Touch sensors for interaction</li>
+                                <li>LED indicators and sound modules</li>
+                                <li>Rechargeable battery pack</li>
+                                <li>Modular construction system with various structural parts</li>
+                            </ul>
+                        </div>
+                        
+                        <div>
+                            <h3 class="text-lg font-semibold mb-3 text-accent-500">Programming Features</h3>
+                            <ul class="list-disc list-inside text-gray-700 dark:text-gray-300 space-y-1">
+                                <li>Scratch-based visual programming environment</li>
+                                <li>Drag-and-drop programming blocks</li>
+                                <li>Real-time program execution and debugging</li>
+                                <li>Sensor data visualization</li>
+                                <li>Motor control and movement programming</li>
+                                <li>Conditional logic and loop structures</li>
+                                <li>Event-driven programming support</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-card p-8">
+                    <h2 class="text-2xl font-bold mb-4 text-primary-500">Assembly & Programming Process</h2>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="space-y-4">
+                            <div class="flex items-start space-x-4">
+                                <div class="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <span class="text-blue-600 font-bold">1</span>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold mb-1">Manual Assembly</h3>
+                                    <p class="text-gray-600 dark:text-gray-300 text-sm">Followed comprehensive assembly manual to build each robot from components</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start space-x-4">
+                                <div class="w-10 h-10 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <span class="text-emerald-600 font-bold">2</span>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold mb-1">Component Integration</h3>
+                                    <p class="text-gray-600 dark:text-gray-300 text-sm">Connected sensors, motors, and control units according to specifications</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-4">
+                            <div class="flex items-start space-x-4">
+                                <div class="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <span class="text-purple-600 font-bold">3</span>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold mb-1">Scratch Programming</h3>
+                                    <p class="text-gray-600 dark:text-gray-300 text-sm">Developed automation programs using visual programming blocks</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start space-x-4">
+                                <div class="w-10 h-10 bg-yellow-100 dark:bg-yellow-900/30 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <span class="text-yellow-600 font-bold">4</span>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold mb-1">Testing & Debugging</h3>
+                                    <p class="text-gray-600 dark:text-gray-300 text-sm">Tested robot behaviors and refined programs for optimal performance</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-card p-8">
+                    <h2 class="text-2xl font-bold mb-4 text-primary-500">Automation Tasks Implemented</h2>
+                    <div class="space-y-3">
+                        <div class="flex items-start space-x-3">
+                            <div class="w-6 h-6 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mt-0.5">
+                                <span class="w-2 h-2 bg-blue-600 rounded-full"></span>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold">Obstacle Avoidance</h3>
+                                <p class="text-gray-600 dark:text-gray-300">Programmed the robot to detect and navigate around obstacles using ultrasonic sensors</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start space-x-3">
+                            <div class="w-6 h-6 bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center mt-0.5">
+                                <span class="w-2 h-2 bg-emerald-600 rounded-full"></span>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold">Line Following</h3>
+                                <p class="text-gray-600 dark:text-gray-300">Implemented line-following behavior using color sensors for path tracking</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start space-x-3">
+                            <div class="w-6 h-6 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center mt-0.5">
+                                <span class="w-2 h-2 bg-purple-600 rounded-full"></span>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold">Interactive Responses</h3>
+                                <p class="text-gray-600 dark:text-gray-300">Created touch-responsive behaviors with LED and sound feedback</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start space-x-3">
+                            <div class="w-6 h-6 bg-orange-100 dark:bg-orange-900/30 rounded-full flex items-center justify-center mt-0.5">
+                                <span class="w-2 h-2 bg-orange-600 rounded-full"></span>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold">Autonomous Movement</h3>
+                                <p class="text-gray-600 dark:text-gray-300">Programmed complex movement patterns and autonomous exploration behaviors</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-card p-8">
+                    <h2 class="text-2xl font-bold mb-4 text-primary-500">Learning Outcomes</h2>
+                    <div class="grid md:grid-cols-3 gap-6 mb-6">
+                        <div class="text-center">
+                            <div class="text-3xl font-bold text-accent-500 mb-2">1</div>
+                            <div class="text-gray-600 dark:text-gray-300">Robot Built</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-3xl font-bold text-accent-500 mb-2">100%</div>
+                            <div class="text-gray-600 dark:text-gray-300">Success Rate</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-3xl font-bold text-accent-500 mb-2">Multiple</div>
+                            <div class="text-gray-600 dark:text-gray-300">Automation Tasks</div>
+                        </div>
+                    </div>
+                    <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
+                        This project provided comprehensive experience in educational robotics, from mechanical assembly to visual programming. Working with the Abilix Krypton 8 robot allowed us to explore different automation scenarios and understand the versatility of the platform. The combination of hands-on assembly and Scratch programming created a solid foundation for understanding robotics principles and automation concepts.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Related Projects -->
+    <section class="py-12 px-4 bg-gray-50 dark:bg-gray-800/50">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-2xl font-bold text-center mb-8 text-primary-500">Related Projects</h2>
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="project-card">
+                    <div class="project-image">
+                        <video class="w-full h-48 object-cover" muted autoplay loop>
+                            <source src="/assets/videos/dji-naza-flight.mp4" type="video/mp4">
+                            <img src="/assets/projects/dji-drone.jpg" alt="DJI NAZA Drone" class="w-full h-48 object-cover">
+                        </video>
+                        <div class="project-overlay">
+                            <a href="/projects/dji-naza.html" class="btn-primary">View Project</a>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-lg font-semibold mb-2">DJI NAZA Drone Assembly</h3>
+                        <p class="text-gray-600 dark:text-gray-300 mb-4">Professional quadcopter assembly and configuration</p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="tech-tag">DJI NAZA</span>
+                            <span class="tech-tag">GPS</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="project-card">
+                    <div class="project-image">
+                        <video class="w-full h-48 object-cover" muted autoplay loop>
+                            <source src="/assets/videos/seven-segment-thumb.mp4" type="video/mp4">
+                            <img src="/assets/images/seven-segment-fallback.jpg" alt="Seven Segment Display" class="w-full h-48 object-cover">
+                        </video>
+                        <div class="project-overlay">
+                            <a href="/projects/seven-segment-display.html" class="btn-primary">View Project</a>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-lg font-semibold mb-2">Seven Segment Display Clock</h3>
+                        <p class="text-gray-600 dark:text-gray-300 mb-4">First electronics learning experience</p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="tech-tag">Arduino</span>
+                            <span class="tech-tag">Seven Segment</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="project-card">
+                    <div class="project-image">
+                        <img src="/assets/projects/rassperrypi.webp" alt="Raspberry Pi GPIO Control" class="w-full h-48 object-cover">
+                        <div class="project-overlay">
+                            <a href="/projects/raspberry-pi-gpio.html" class="btn-primary">View Project</a>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-lg font-semibold mb-2">Raspberry Pi GPIO Control</h3>
+                        <p class="text-gray-600 dark:text-gray-300 mb-4">Python-based hardware interfacing</p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="tech-tag">Raspberry Pi</span>
+                            <span class="tech-tag">Python</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- What We Learned Section -->
+    <section class="py-12 px-4 bg-blue-50 dark:bg-gray-800">
+        <div class="max-w-4xl mx-auto">
+            <div class="bg-white dark:bg-gray-900 rounded-lg shadow-lg p-8">
+                <h2 class="text-3xl font-bold mb-6 text-blue-600 text-center">What We Learned</h2>
+                <div class="bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 border border-indigo-200 dark:border-indigo-700 rounded-lg p-6">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 bg-indigo-500 rounded-full flex items-center justify-center mr-4">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-indigo-800 dark:text-indigo-200">Key Learning Outcomes</h3>
+                            <p class="text-indigo-600 dark:text-indigo-300">Under the guidance of Prof. M.V. Narayana Sir</p>
+                        </div>
+                    </div>
+                    
+                    <div class="grid md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <h4 class="font-semibold text-indigo-800 dark:text-indigo-200 mb-3">Robotics & Mechanical Systems</h4>
+                            <ul class="text-sm text-indigo-700 dark:text-indigo-300 space-y-2">
+                                <li>• <strong>Robot Assembly:</strong> Systematic approach to mechanical construction following technical manuals and assembly procedures</li>
+                                <li>• <strong>Component Integration:</strong> Understanding how sensors, actuators, and control systems work together in robotics</li>
+                                <li>• <strong>Mechanical Design:</strong> Learning about gear systems, motor control, and structural components in educational robots</li>
+                                <li>• <strong>Sensor Systems:</strong> Hands-on experience with various sensors including ultrasonic, touch, and motion sensors</li>
+                                <li>• <strong>Actuator Control:</strong> Understanding servo motors, DC motors, and their control mechanisms</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-indigo-800 dark:text-indigo-200 mb-3">Visual Programming & Logic</h4>
+                            <ul class="text-sm text-indigo-700 dark:text-indigo-300 space-y-2">
+                                <li>• <strong>Scratch Programming:</strong> Introduction to visual programming concepts using drag-and-drop block-based coding</li>
+                                <li>• <strong>Logic Flow Design:</strong> Creating sequential and conditional logic for robot behavior programming</li>
+                                <li>• <strong>Event-Driven Programming:</strong> Understanding sensor inputs and corresponding robot responses</li>
+                                <li>• <strong>Automation Concepts:</strong> Programming autonomous behaviors and task-specific robot functions</li>
+                                <li>• <strong>Debugging Skills:</strong> Systematic troubleshooting of both hardware connections and software logic</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="grid md:grid-cols-3 gap-4 mb-6">
+                        <div class="bg-white dark:bg-gray-800 rounded-lg p-4 border border-indigo-200 dark:border-indigo-600">
+                            <h5 class="font-semibold text-indigo-800 dark:text-indigo-200 mb-2">Educational Robotics</h5>
+                            <p class="text-indigo-700 dark:text-indigo-300 text-sm">
+                                Gained comprehensive understanding of educational robotics platforms and their role in learning fundamental engineering concepts.
+                            </p>
+                        </div>
+                        <div class="bg-white dark:bg-gray-800 rounded-lg p-4 border border-indigo-200 dark:border-indigo-600">
+                            <h5 class="font-semibold text-indigo-800 dark:text-indigo-200 mb-2">Systematic Assembly</h5>
+                            <p class="text-indigo-700 dark:text-indigo-300 text-sm">
+                                Developed methodical approaches to complex assembly tasks and technical documentation interpretation.
+                            </p>
+                        </div>
+                        <div class="bg-white dark:bg-gray-800 rounded-lg p-4 border border-indigo-200 dark:border-indigo-600">
+                            <h5 class="font-semibold text-indigo-800 dark:text-indigo-200 mb-2">Programming Foundation</h5>
+                            <p class="text-indigo-700 dark:text-indigo-300 text-sm">
+                                Built programming logic foundation through visual programming that translates to advanced robotics development.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-emerald-50 dark:bg-emerald-900/20 border-l-4 border-emerald-500 p-4 rounded-r-lg">
+                        <h4 class="font-semibold text-emerald-800 dark:text-emerald-200 mb-2">Project Impact & Future Applications</h4>
+                        <p class="text-emerald-700 dark:text-emerald-300 text-sm leading-relaxed">
+                            This educational robotics project provided essential hands-on experience with mechanical systems, sensor integration, and visual programming. The skills gained in systematic assembly, component interfacing, and logic programming became foundational for advanced robotics projects including drone assembly and autonomous systems. Under Prof. M.V. Narayana Sir's guidance, we learned not only the technical aspects of robotics but also the importance of methodical approaches to complex engineering tasks. This project bridged the gap between theoretical knowledge and practical robotics implementation, preparing us for more sophisticated automation and robotics challenges.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 dark:bg-gray-950 text-white py-8">
+        <div class="max-w-6xl mx-auto px-4 text-center">
+            <p>&copy; 2024 AuraAlliance - KSRM College of Engineering. All rights reserved.</p>
+            <div class="mt-4">
+                <a href="/" class="text-gray-300 hover:text-white transition-colors">← Back to Portfolio</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="/assets/js/main.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,42 @@
+# Site settings
+title: "AuraAlliance - IoT & Robotics Team"
+email: auraallilance@gmail.com
+description: "Student-driven R&D group at KSRM College of Engineering specializing in IoT, Robotics, and Computer Vision. Building innovative solutions with Arduino, ESP32, and AI."
+baseurl: ""
+url: "https://pavankalyan.github.io"
+twitter_username: pavankalyan
+github_username: pavankalyan
+
+# Build settings
+markdown: kramdown
+highlighter: rouge
+permalink: pretty
+
+# SEO
+lang: en_US
+author: N. Pavan Kalyan
+logo: /assets/images/logo.png
+
+# Analytics
+google_analytics: G-XXXXXXXXXX
+
+# Social
+social:
+  name: N. Pavan Kalyan
+  links:
+    - https://github.com/pavankalyan
+    - https://linkedin.com/in/pavankalyan
+
+# Collections
+collections:
+  projects:
+    output: true
+    permalink: /:collection/:name/
+
+# Defaults
+defaults:
+  - scope:
+      path: ""
+      type: "projects"
+    values:
+      layout: "project"

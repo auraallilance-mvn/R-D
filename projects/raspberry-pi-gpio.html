@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Raspberry Pi GPIO LED Control - AuraAlliance</title>
+    <meta name="description" content="Foundation of hardware interfacing with Python and Raspberry Pi GPIO">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: {
+                            50: '#eff6ff',
+                            500: '#1e3a8a',
+                            600: '#1e40af',
+                            700: '#1d4ed8',
+                        },
+                        accent: {
+                            500: '#10b981',
+                            600: '#059669',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/assets/css/style.css">
+    
+    <!-- Prism.js for syntax highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+</head>
+<body class="font-inter bg-white dark:bg-gray-900 text-gray-900 dark:text-white transition-colors duration-300">
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 glass-nav backdrop-blur-md bg-white/80 dark:bg-gray-900/80 border-b border-gray-200/20 dark:border-gray-700/20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex-shrink-0">
+                    <a href="/" class="text-xl font-bold text-primary-500">AuraAlliance</a>
+                </div>
+                
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="/#home" class="nav-link">Home</a>
+                        <a href="/#about" class="nav-link">About</a>
+                        <a href="/#projects" class="nav-link">Projects</a>
+                        <a href="/#contact" class="nav-link">Contact</a>
+                    </div>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <button id="theme-toggle" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+                        <svg class="w-5 h-5 hidden dark:block" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"></path>
+                        </svg>
+                        <svg class="w-5 h-5 block dark:hidden" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="pt-24 pb-12 px-4">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-8">
+                <h1 class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary-500 to-accent-500 bg-clip-text text-transparent">
+                    Raspberry Pi GPIO LED Control
+                </h1>
+                <p class="text-xl text-gray-600 dark:text-gray-300 mb-6">
+                    Foundation of hardware interfacing with Python and Raspberry Pi 4
+                </p>
+                <div class="flex flex-wrap justify-center gap-3 mb-8">
+                    <span class="tech-tag">Raspberry Pi 4</span>
+                    <span class="tech-tag">Python</span>
+                    <span class="tech-tag">GPIO</span>
+                    <span class="tech-tag">Hardware</span>
+                    <span class="tech-tag">RPi.GPIO</span>
+                </div>
+            </div>
+            
+            <div class="glass-card overflow-hidden">
+                <img src="/assets/projects/raspberry-pi-hero.jpg" alt="Raspberry Pi GPIO LED Control" class="w-full h-64 md:h-96 object-cover">
+            </div>
+        </div>
+    </section>
+
+    <!-- Project Details -->
+    <section class="py-12 px-4">
+        <div class="max-w-4xl mx-auto">
+            <div class="grid md:grid-cols-3 gap-8 mb-12">
+                <div class="glass-card p-6 text-center">
+                    <div class="w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Python Control</h3>
+                    <p class="text-gray-600 dark:text-gray-300">RPi.GPIO library</p>
+                </div>
+                
+                <div class="glass-card p-6 text-center">
+                    <div class="w-16 h-16 bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">40-Pin GPIO</h3>
+                    <p class="text-gray-600 dark:text-gray-300">Hardware interface</p>
+                </div>
+                
+                <div class="glass-card p-6 text-center">
+                    <div class="w-16 h-16 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Foundation</h3>
+                    <p class="text-gray-600 dark:text-gray-300">IoT basics</p>
+                </div>
+            </div>
+
+            <div class="space-y-8">
+                <div class="glass-card p-8">
+                    <h2 class="text-2xl font-bold mb-4 text-blue-600">Project Overview</h2>
+                    <p class="text-gray-700 dark:text-gray-300 leading-relaxed mb-6">
+                        To master the Raspberry Pi 4's GPIO (General Purpose Input/Output) architecture, I implemented this foundational project. Using Python and the RPi.GPIO library, I created a controlled LED blink pattern that demonstrates the core concepts of hardware interfacing.
+                    </p>
+                    
+                    <div class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border border-blue-200 dark:border-blue-700 rounded-lg p-6 mb-6">
+                        <h3 class="text-lg font-semibold text-blue-800 dark:text-blue-200 mb-3">Project Guidance & Supervision</h3>
+                        <p class="text-blue-700 dark:text-blue-300 leading-relaxed">
+                            This foundational GPIO project was developed under the expert guidance of <strong>Prof. M.V. Narayana Sir</strong>, Head of Department (ECE) and R&D Dean at KSRM College of Engineering. His mentorship in embedded Linux systems and hardware interfacing provided the foundation for understanding GPIO programming and the bridge between software and hardware in embedded systems.
+                        </p>
+                    </div>
+                    </p>
+                    <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
+                        This project serves as the foundation for all IoT hardware interfacing work. Understanding GPIO pin control, proper setup/cleanup procedures, and timing control is essential for building more complex embedded systems and IoT applications.
+                    </p>
+                </div>
+
+                <div class="glass-card p-8">
+                    <h2 class="text-2xl font-bold mb-4 text-primary-500">Full Source Code</h2>
+                    <p class="text-gray-600 dark:text-gray-300 mb-4">Complete Python implementation with GPIO control:</p>
+                    <pre class="rounded-lg overflow-x-auto"><code class="language-python">import RPi.GPIO as GPIO
+import time
+
+# Pin configuration
+LED_PIN = 18  # GPIO 18 (Physical pin 12)
+
+# Setup
+GPIO.setmode(GPIO.BCM)  # Use BCM pin numbering
+GPIO.setup(LED_PIN, GPIO.OUT)
+
+print("✅ Raspberry Pi GPIO LED Control")
+print("Press Ctrl+C to exit")
+
+try:
+    while True:
+        # Turn LED ON
+        GPIO.output(LED_PIN, GPIO.HIGH)
+        print("💡 LED ON")
+        time.sleep(1)
+        
+        # Turn LED OFF
+        GPIO.output(LED_PIN, GPIO.LOW)
+        print("⚫ LED OFF")
+        time.sleep(1)
+
+except KeyboardInterrupt:
+    print("\n🛑 Program stopped by user")
+
+finally:
+    # Cleanup GPIO pins
+    GPIO.cleanup()
+    print("✅ GPIO pins cleaned up")</code></pre>
+                </div>
+
+                <div class="glass-card p-8">
+                    <h2 class="text-2xl font-bold mb-4 text-primary-500">Advanced: PWM Breathing Effect</h2>
+                    <p class="text-gray-600 dark:text-gray-300 mb-4">Smooth LED fading using Pulse Width Modulation:</p>
+                    <pre class="rounded-lg overflow-x-auto"><code class="language-python">import RPi.GPIO as GPIO
+import time
+
+LED_PIN = 18
+
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(LED_PIN, GPIO.OUT)
+
+# Create PWM instance (100 Hz frequency)
+pwm = GPIO.PWM(LED_PIN, 100)
+pwm.start(0)  # Start with 0% duty cycle
+
+print("✅ PWM Breathing Effect Started")
+
+try:
+    while True:
+        # Fade in (0% to 100%)
+        for duty_cycle in range(0, 101, 5):
+            pwm.ChangeDutyCycle(duty_cycle)
+            time.sleep(0.05)
+        
+        # Fade out (100% to 0%)
+        for duty_cycle in range(100, -1, -5):
+            pwm.ChangeDutyCycle(duty_cycle)
+            time.sleep(0.05)
+
+except KeyboardInterrupt:
+    print("\n🛑 Stopped")
+
+finally:
+    pwm.stop()
+    GPIO.cleanup()
+    print("✅ Cleanup complete")</code></pre>
+                </div>
+
+                <div class="glass-card p-8">
+                    <h2 class="text-2xl font-bold mb-4 text-primary-500">Hardware Setup</h2>
+                    <div class="space-y-4">
+                        <div>
+                            <h3 class="text-lg font-semibold mb-2">Components Required</h3>
+                            <ul class="list-disc list-inside text-gray-700 dark:text-gray-300 space-y-1">
+                                <li>Raspberry Pi 4 (or any model with 40-pin GPIO)</li>
+                                <li>LED (any color)</li>
+                                <li>220Ω Resistor</li>
+                                <li>Breadboard</li>
+                                <li>Jumper wires (Male-to-Female)</li>
+                            </ul>
+                        </div>
+                        
+                        <div>
+                            <h3 class="text-lg font-semibold mb-2">Wiring Diagram</h3>
+                            <div class="rounded-lg overflow-hidden border-2 border-gray-200 dark:border-gray-700 mb-4">
+                                <img src="/assets/projects/rassperrypi.webp" alt="Raspberry Pi GPIO LED Wiring Diagram" class="w-full">
+                            </div>
+                            <div class="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg font-mono text-sm">
+                                <p>GPIO 18 (Pin 12) → 220Ω Resistor → LED Anode (+)</p>
+                                <p>LED Cathode (-) → GND (Pin 6 or any GND pin)</p>
+                                <p class="mt-2 text-gray-600 dark:text-gray-400">Note: Always use a current-limiting resistor with LEDs</p>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h3 class="text-lg font-semibold mb-2">GPIO Pin Modes</h3>
+                            <div class="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg text-sm">
+                                <p class="font-semibold mb-2">BCM Mode (Broadcom SOC channel):</p>
+                                <p class="text-gray-600 dark:text-gray-400">Uses GPIO numbers (e.g., GPIO 18)</p>
+                                <p class="font-semibold mt-3 mb-2">BOARD Mode (Physical pin numbers):</p>
+                                <p class="text-gray-600 dark:text-gray-400">Uses physical pin position (e.g., Pin 12)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-card p-8">
+                    <h2 class="text-2xl font-bold mb-4 text-primary-500">Key Concepts</h2>
+                    <div class="space-y-4">
+                        <div class="border-l-4 border-blue-500 pl-4">
+                            <h3 class="font-semibold mb-2">GPIO.setmode()</h3>
+                            <p class="text-gray-600 dark:text-gray-300">Defines pin numbering scheme - BCM or BOARD mode</p>
+                        </div>
+                        
+                        <div class="border-l-4 border-emerald-500 pl-4">
+                            <h3 class="font-semibold mb-2">GPIO.setup()</h3>
+                            <p class="text-gray-600 dark:text-gray-300">Configures pin as INPUT or OUTPUT</p>
+                        </div>
+                        
+                        <div class="border-l-4 border-purple-500 pl-4">
+                            <h3 class="font-semibold mb-2">GPIO.output()</h3>
+                            <p class="text-gray-600 dark:text-gray-300">Sets pin to HIGH (3.3V) or LOW (0V)</p>
+                        </div>
+                        
+                        <div class="border-l-4 border-orange-500 pl-4">
+                            <h3 class="font-semibold mb-2">GPIO.cleanup()</h3>
+                            <p class="text-gray-600 dark:text-gray-300">Resets all GPIO pins to safe state - always call in finally block</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-card p-8">
+                    <h2 class="text-2xl font-bold mb-4 text-primary-500">Installation</h2>
+                    <p class="text-gray-600 dark:text-gray-300 mb-4">Install RPi.GPIO library on Raspberry Pi:</p>
+                    <pre class="rounded-lg overflow-x-auto bg-gray-900 text-gray-100 p-4"><code class="language-bash"># Update package list
+sudo apt-get update
+
+# Install RPi.GPIO
+sudo apt-get install python3-rpi.gpio
+
+# Verify installation
+python3 -c "import RPi.GPIO as GPIO; print('✅ RPi.GPIO installed')"</code></pre>
+                </div>
+
+                <div class="glass-card p-8">
+                    <h2 class="text-2xl font-bold mb-4 text-primary-500">Applications</h2>
+                    <div class="space-y-3">
+                        <div class="flex items-start space-x-3">
+                            <div class="w-6 h-6 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mt-0.5">
+                                <span class="w-2 h-2 bg-blue-600 rounded-full"></span>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold">Home Automation</h3>
+                                <p class="text-gray-600 dark:text-gray-300">Control lights, fans, and appliances via GPIO relays</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start space-x-3">
+                            <div class="w-6 h-6 bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center mt-0.5">
+                                <span class="w-2 h-2 bg-emerald-600 rounded-full"></span>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold">Sensor Integration</h3>
+                                <p class="text-gray-600 dark:text-gray-300">Foundation for reading temperature, motion, and other sensors</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start space-x-3">
+                            <div class="w-6 h-6 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center mt-0.5">
+                                <span class="w-2 h-2 bg-purple-600 rounded-full"></span>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold">Robotics Control</h3>
+                                <p class="text-gray-600 dark:text-gray-300">Motor control, servo positioning, and robot navigation</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- What We Learned Section -->
+    <section class="py-12 px-4 bg-blue-50 dark:bg-gray-800">
+        <div class="max-w-4xl mx-auto">
+            <div class="bg-white dark:bg-gray-900 rounded-lg shadow-lg p-8">
+                <h2 class="text-3xl font-bold mb-6 text-blue-600 text-center">What We Learned</h2>
+                <div class="bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 border border-indigo-200 dark:border-indigo-700 rounded-lg p-6">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 bg-indigo-500 rounded-full flex items-center justify-center mr-4">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-indigo-800 dark:text-indigo-200">Key Learning Outcomes</h3>
+                            <p class="text-indigo-600 dark:text-indigo-300">Under the guidance of Prof. M.V. Narayana Sir</p>
+                        </div>
+                    </div>
+                    
+                    <div class="grid md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <h4 class="font-semibold text-indigo-800 dark:text-indigo-200 mb-3">Embedded Linux & GPIO Programming</h4>
+                            <ul class="text-sm text-indigo-700 dark:text-indigo-300 space-y-2">
+                                <li>• <strong>Raspberry Pi Architecture:</strong> Understanding ARM-based single-board computers and their GPIO capabilities</li>
+                                <li>• <strong>RPi.GPIO Library:</strong> Mastering Python GPIO control library for hardware interfacing</li>
+                                <li>• <strong>Pin Configuration:</strong> Learning GPIO pin modes, pull-up/pull-down resistors, and electrical characteristics</li>
+                                <li>• <strong>Digital I/O Control:</strong> Implementing precise timing control for LED patterns and hardware responses</li>
+                                <li>• <strong>Linux Hardware Interface:</strong> Understanding how Linux kernel interfaces with hardware through device drivers</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-indigo-800 dark:text-indigo-200 mb-3">Python Programming & Hardware Integration</h4>
+                            <ul class="text-sm text-indigo-700 dark:text-indigo-300 space-y-2">
+                                <li>• <strong>Python Hardware Control:</strong> Using high-level programming languages for low-level hardware manipulation</li>
+                                <li>• <strong>Timing and Delays:</strong> Implementing precise timing control with time.sleep() and hardware timing considerations</li>
+                                <li>• <strong>Exception Handling:</strong> Proper GPIO cleanup and error handling in hardware control applications</li>
+                                <li>• <strong>Hardware Abstraction:</strong> Understanding how software abstracts hardware complexity through libraries</li>
+                                <li>• <strong>Embedded Programming:</strong> Foundation concepts for embedded systems programming and hardware control</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="grid md:grid-cols-3 gap-4 mb-6">
+                        <div class="bg-white dark:bg-gray-800 rounded-lg p-4 border border-indigo-200 dark:border-indigo-600">
+                            <h5 class="font-semibold text-indigo-800 dark:text-indigo-200 mb-2">Foundation Building</h5>
+                            <p class="text-indigo-700 dark:text-indigo-300 text-sm">
+                                Established fundamental understanding of hardware-software integration essential for all embedded systems projects.
+                            </p>
+                        </div>
+                        <div class="bg-white dark:bg-gray-800 rounded-lg p-4 border border-indigo-200 dark:border-indigo-600">
+                            <h5 class="font-semibold text-indigo-800 dark:text-indigo-200 mb-2">Linux Embedded Systems</h5>
+                            <p class="text-indigo-700 dark:text-indigo-300 text-sm">
+                                Learning embedded Linux concepts that scale to industrial IoT and edge computing applications.
+                            </p>
+                        </div>
+                        <div class="bg-white dark:bg-gray-800 rounded-lg p-4 border border-indigo-200 dark:border-indigo-600">
+                            <h5 class="font-semibold text-indigo-800 dark:text-indigo-200 mb-2">Hardware Control Mastery</h5>
+                            <p class="text-indigo-700 dark:text-indigo-300 text-sm">
+                                Developed skills in precise hardware control that enable complex sensor integration and actuator management.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-emerald-50 dark:bg-emerald-900/20 border-l-4 border-emerald-500 p-4 rounded-r-lg">
+                        <h4 class="font-semibold text-emerald-800 dark:text-emerald-200 mb-2">Project Impact & Future Applications</h4>
+                        <p class="text-emerald-700 dark:text-emerald-300 text-sm leading-relaxed">
+                            This GPIO control project provided essential foundation in embedded Linux programming and hardware interfacing. The skills gained in Raspberry Pi programming, GPIO control, and Python hardware integration became the building blocks for all subsequent IoT and embedded projects. Under Prof. M.V. Narayana Sir's guidance, we learned not only the technical implementation but also the systematic approach to hardware-software integration that scales from simple LED control to complex sensor networks and industrial automation systems.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 dark:bg-gray-950 text-white py-8">
+        <div class="max-w-6xl mx-auto px-4 text-center">
+            <p>&copy; 2024 AuraAlliance - KSRM College of Engineering. All rights reserved.</p>
+            <div class="mt-4">
+                <a href="/" class="text-gray-300 hover:text-white transition-colors">← Back to Portfolio</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="/assets/js/main.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+</body>
+</html>
