@@ -6,37 +6,25 @@ All project detail pages have been created with full source code, professional f
 
 ### 📄 Created Files:
 
-1. **projects/milk-freshness.html** ⭐ (Featured)
-   - FDC1004 + ESP32 capacitance sensing
-   - Full Arduino C++ source code
-   - Hardware wiring diagrams
-   - Results table with capacitance readings
-
-2. **projects/wifi-led-control.html**
+1. **projects/wifi-led-control.html**
    - Arduino IoT Cloud integration
    - ESP32 WiFi control
    - onLedControlChange() callback function
    - < 200ms cloud latency
 
-3. **projects/weather-station.html**
+2. **projects/weather-station.html**
    - DHT22 + ESP32 + ThingSpeak
    - Real-time temperature & humidity monitoring
    - ThingSpeak.writeFields() implementation
    - Auto-generated cloud charts
 
-4. **projects/autonomous-robot.html**
-   - HC-SR04 ultrasonic sensor
-   - L298N motor driver
-   - Obstacle avoidance algorithm
-   - 95% detection accuracy
-
-5. **projects/raspberry-pi-gpio.html**
+3. **projects/raspberry-pi-gpio.html**
    - Python RPi.GPIO library
    - LED blink + PWM breathing effect
    - GPIO pin configuration
    - Foundation of IoT hardware interfacing
 
-6. **projects/gps-tracking.html**
+4. **projects/gps-tracking.html**
    - NEO-6M GPS module
    - TinyGPS++ library
    - Real-time lat/lng coordinates
@@ -57,10 +45,8 @@ All project detail pages have been created with full source code, professional f
 ### 🔗 Updated index.html
 
 All project cards now link to their respective detail pages:
-- Milk Freshness → `/projects/milk-freshness.html`
 - WiFi LED Control → `/projects/wifi-led-control.html`
 - Weather Station → `/projects/weather-station.html`
-- Autonomous Robot → `/projects/autonomous-robot.html`
 - Raspberry Pi GPIO → `/projects/raspberry-pi-gpio.html`
 - GPS Tracking → `/projects/gps-tracking.html`
 

@@ -10,7 +10,7 @@ const STATIC_FILES = [
   '/404.html',
   '/assets/css/style.css',
   '/assets/js/main.js',
-  '/projects/milk-freshness.html',
+  '/projects/raspberry-pi-gpio.html',
   '/manifest.json',
   // Add more critical files as needed
 ];

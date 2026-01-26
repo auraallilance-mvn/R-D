@@ -1,0 +1,84 @@
+<!-- ALTERNATIVE: Direct Gmail Contact Form using EmailJS -->
+<!-- Replace the current form section in index.html with this if you prefer EmailJS -->
+
+<div class="glass-card p-6">
+    <form id="contact-form" class="space-y-6">
+        <div>
+            <label for="name" class="block text-sm font-medium mb-2">Name</label>
+            <input type="text" id="name" name="from_name" required class="form-input" placeholder="Your full name">
+        </div>
+        
+        <div>
+            <label for="email" class="block text-sm font-medium mb-2">Email</label>
+            <input type="email" id="email" name="from_email" required class="form-input" placeholder="your.email@example.com">
+        </div>
+        
+        <div>
+            <label for="subject" class="block text-sm font-medium mb-2">Subject</label>
+            <input type="text" id="subject" name="subject" required class="form-input" placeholder="Project inquiry, collaboration, etc.">
+        </div>
+        
+        <div>
+            <label for="message" class="block text-sm font-medium mb-2">Message</label>
+            <textarea id="message" name="message" rows="4" required class="form-input" placeholder="Tell me about your project or inquiry..."></textarea>
+        </div>
+        
+        <button type="submit" id="submit-btn" class="btn-primary w-full">
+            <span id="btn-text">Send Message</span>
+            <span id="btn-loading" class="hidden">Sending...</span>
+        </button>
+        
+        <div id="form-status" class="hidden text-center p-3 rounded-lg"></div>
+    </form>
+</div>
+
+<!-- EmailJS Script -->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+<script>
+    // Initialize EmailJS
+    emailjs.init("YOUR_PUBLIC_KEY"); // Replace with your EmailJS public key
+    
+    document.getElementById('contact-form').addEventListener('submit', function(event) {
+        event.preventDefault();
+        
+        const submitBtn = document.getElementById('submit-btn');
+        const btnText = document.getElementById('btn-text');
+        const btnLoading = document.getElementById('btn-loading');
+        const formStatus = document.getElementById('form-status');
+        
+        // Show loading state
+        submitBtn.disabled = true;
+        btnText.classList.add('hidden');
+        btnLoading.classList.remove('hidden');
+        
+        // Send email
+        emailjs.sendForm('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', this)
+            .then(function() {
+                // Success
+                formStatus.className = 'text-center p-3 rounded-lg bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-200';
+                formStatus.textContent = '✅ Message sent successfully! We\'ll get back to you soon.';
+                formStatus.classList.remove('hidden');
+                
+                // Reset form
+                document.getElementById('contact-form').reset();
+                
+                // Redirect to success page after 2 seconds
+                setTimeout(() => {
+                    window.location.href = '/R-D/success.html';
+                }, 2000);
+                
+            }, function(error) {
+                // Error
+                formStatus.className = 'text-center p-3 rounded-lg bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-200';
+                formStatus.textContent = '❌ Failed to send message. Please try again or email us directly.';
+                formStatus.classList.remove('hidden');
+                console.error('EmailJS error:', error);
+            })
+            .finally(function() {
+                // Reset button state
+                submitBtn.disabled = false;
+                btnText.classList.remove('hidden');
+                btnLoading.classList.add('hidden');
+            });
+    });
+</script>

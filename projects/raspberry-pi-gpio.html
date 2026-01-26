@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Raspberry Pi GPIO LED Control - AuraAlliance</title>
+    <meta name="description" content="Python RPi.GPIO controlled LED pattern - Foundation of IoT hardware interfacing with complete source code">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: {
+                            50: '#eff6ff',
+                            500: '#1e3a8a',
+                            600: '#1e40af',
+                            700: '#1d4ed8',
+                        },
+                        accent: {
+                            500: '#10b981',
+                            600: '#059669',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/R-D/assets/css/style.css">
+    
+    <!-- Prism.js for syntax highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+</head>
+<body class="font-inter bg-white dark:bg-gray-900 text-gray-900 dark:text-white transition-colors duration-300">
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 glass-nav backdrop-blur-md bg-white/80 dark:bg-gray-900/80 border-b border-gray-200/20 dark:border-gray-700/20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex-shrink-0">
+                    <a href="/R-D/" class="text-xl font-bold text-primary-500">AuraAlliance</a>
+                </div>
+                
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="/R-D/#home" class="nav-link">Home</a>
+                        <a href="/R-D/#about" class="nav-link">About</a>
+                        <a href="/R-D/#projects" class="nav-link">Projects</a>
+                        <a href="/R-D/#contact" class="nav-link">Contact</a>
+                    </div>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <button id="theme-toggle" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+                        <svg class="w-5 h-5 hidden dark:block" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"></path>
+                        </svg>
+                        <svg class="w-5 h-5 block dark:hidden" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="pt-24 pb-12 px-4">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-8">
+                <h1 class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary-500 to-accent-500 bg-clip-text text-transparent">
+                    Raspberry Pi GPIO LED Control
+                </h1>
+                <p class="text-xl text-gray-600 dark:text-gray-300 mb-6">
+                    Python RPi.GPIO controlled LED pattern - Foundation of IoT hardware interfacing
+                </p>
+                <div class="flex flex-wrap justify-center gap-3 mb-8">
+                    <span class="tech-tag">Raspberry Pi</span>
+                    <span class="tech-tag">Python</span>
+                    <span class="tech-tag">RPi.GPIO</span>
+                    <span class="tech-tag">LED Control</span>
+                    <span class="tech-tag">PWM</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Project Details -->
+    <section class="py-12 px-4">
+        <div class="max-w-4xl mx-auto">
+            <div class="grid md:grid-cols-3 gap-8 mb-12">
+                <div class="glass-card p-6 text-center">
+                    <div class="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">GPIO Control</h3>
+                    <p class="text-gray-600 dark:text-gray-300">Digital output control</p>
+                </div>
+                
+                <div class="glass-card p-6 text-center">
+                    <div class="w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">PWM Control</h3>
+                    <p class="text-gray-600 dark:text-gray-300">Brightness modulation</p>
+                </div>
+                
+                <div class="glass-card p-6 text-center">
+                    <div class="w-16 h-16 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Python Programming</h3>
+                    <p class="text-gray-600 dark:text-gray-300">RPi.GPIO library</p>
+                </div>
+            </div>
+
+            <div class="space-y-8">
+                <div class="glass-card p-8">
+                    <h2 class="text-2xl font-bold mb-4 text-primary-500">Project Overview</h2>
+                    <p class="text-gray-700 dark:text-gray-300 leading-relaxed mb-6">
+                        This foundation project introduces GPIO programming on Raspberry Pi using Python and the RPi.GPIO library. The project demonstrates digital output control, PWM (Pulse Width Modulation) for brightness control, and multiple LED patterns including basic blinking, breathing effects, and SOS morse code.
+                    </p>
+                    <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
+                        As a foundational IoT project, it covers essential concepts like GPIO pin configuration, current limiting with resistors, proper resource cleanup, and hardware interfacing that are crucial for more complex robotics and automation projects.
+                    </p>
+                </div>
+
+                <div class="glass-card p-8">
+                    <h2 class="text-2xl font-bold mb-4 text-primary-500">Hardware Setup</h2>
+                    <div class="grid md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <h3 class="text-lg font-semibold mb-3 text-accent-500">Components Required</h3>
+                            <ul class="list-disc list-inside text-gray-700 dark:text-gray-300 space-y-1">
+                                <li>Raspberry Pi (any model with GPIO)</li>
+                                <li>LED (any color)</li>
+                                <li>330Ω resistor</li>
+                                <li>Breadboard</li>
+                                <li>Jumper wires</li>
+                            </ul>
+                        </div>
+                        
+                        <div>
+                            <h3 class="text-lg font-semibold mb-3 text-accent-500">Wiring Diagram</h3>
+                            <div class="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg font-mono text-sm">
+                                <div class="text-gray-700 dark:text-gray-300">
+                                    <div>Pin 1:  3.3V</div>
+                                    <div>Pin 6:  GND</div>
+                                    <div>Pin 11: GPIO 17 → LED+</div>
+                                    <div class="mt-2">
+                                        <div>GPIO 17 → 330Ω → LED+</div>
+                                        <div>LED- → GND</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-card p-8">
+                    <h2 class="text-2xl font-bold mb-4 text-primary-500">Complete Source Code</h2>
+                    
+                    <div class="mb-8">
+                        <h3 class="text-lg font-semibold mb-3 text-accent-500">Basic LED Blink</h3>
+                        <pre class="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto"><code class="language-python">#!/usr/bin/env python3
+"""
+Raspberry Pi GPIO LED Control
+Basic LED blinking with RPi.GPIO library
+"""
+
+import RPi.GPIO as GPIO
+import time
+
+# GPIO Setup
+LED_PIN = 17  # BCM pin 17 (Physical pin 11)
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(LED_PIN, GPIO.OUT)
+
+def basic_blink():
+    """Basic LED blinking pattern"""
+    print("Starting basic LED blink...")
+    
+    try:
+        for i in range(20):  # Blink 20 times
+            GPIO.output(LED_PIN, GPIO.HIGH)  # LED ON
+            print(f"Blink {i+1}: LED ON")
+            time.sleep(0.5)
+            
+            GPIO.output(LED_PIN, GPIO.LOW)   # LED OFF
+            print(f"Blink {i+1}: LED OFF")
+            time.sleep(0.5)
+            
+    except KeyboardInterrupt:
+        print("\nProgram interrupted by user")
+    finally:
+        GPIO.cleanup()
+        print("GPIO cleanup completed")
+
+if __name__ == "__main__":
+    basic_blink()</code></pre>
+                    </div>
+
+                    <div class="mb-8">
+                        <h3 class="text-lg font-semibold mb-3 text-accent-500">PWM Breathing Effect</h3>
+                        <pre class="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto"><code class="language-python">#!/usr/bin/env python3
+"""
+Raspberry Pi GPIO LED PWM Control
+Breathing effect using PWM (Pulse Width Modulation)
+"""
+
+import RPi.GPIO as GPIO
+import time
+
+# GPIO Setup
+LED_PIN = 17
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(LED_PIN, GPIO.OUT)
+
+# Create PWM instance
+pwm = GPIO.PWM(LED_PIN, 1000)  # 1000Hz frequency
+pwm.start(0)  # Start with 0% duty cycle
+
+def breathing_effect():
+    """Create breathing effect using PWM"""
+    print("Starting LED breathing effect...")
+    
+    try:
+        while True:
+            # Fade in (0% to 100%)
+            for duty_cycle in range(0, 101, 2):
+                pwm.ChangeDutyCycle(duty_cycle)
+                time.sleep(0.05)
+            
+            # Fade out (100% to 0%)
+            for duty_cycle in range(100, -1, -2):
+                pwm.ChangeDutyCycle(duty_cycle)
+                time.sleep(0.05)
+                
+    except KeyboardInterrupt:
+        print("\nBreathing effect stopped")
+    finally:
+        pwm.stop()
+        GPIO.cleanup()
+        print("PWM stopped and GPIO cleaned up")
+
+if __name__ == "__main__":
+    breathing_effect()</code></pre>
+                    </div>
+                </div>
+
+                <div class="glass-card p-8">
+                    <h2 class="text-2xl font-bold mb-4 text-primary-500">Key Concepts & Learning</h2>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <h3 class="text-lg font-semibold mb-3 text-accent-500">GPIO Programming</h3>
+                            <ul class="list-disc list-inside text-gray-700 dark:text-gray-300 space-y-1">
+                                <li><strong>GPIO.setmode()</strong>: Pin numbering mode</li>
+                                <li><strong>GPIO.setup()</strong>: Configure pins as input/output</li>
+                                <li><strong>GPIO.output()</strong>: Control digital output states</li>
+                                <li><strong>GPIO.cleanup()</strong>: Proper resource cleanup</li>
+                            </ul>
+                        </div>
+                        
+                        <div>
+                            <h3 class="text-lg font-semibold mb-3 text-accent-500">PWM Control</h3>
+                            <ul class="list-disc list-inside text-gray-700 dark:text-gray-300 space-y-1">
+                                <li><strong>PWM frequency</strong>: Controls switching speed (1000Hz)</li>
+                                <li><strong>Duty cycle</strong>: Controls brightness (0-100%)</li>
+                                <li><strong>ChangeDutyCycle()</strong>: Dynamic brightness control</li>
+                                <li><strong>Hardware PWM</strong>: Smooth LED dimming</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-card p-8">
+                    <h2 class="text-2xl font-bold mb-4 text-primary-500">Installation & Setup</h2>
+                    <div class="space-y-4">
+                        <div>
+                            <h3 class="text-lg font-semibold mb-2 text-accent-500">1. Enable GPIO on Raspberry Pi</h3>
+                            <pre class="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto"><code class="language-bash"># Update system
+sudo apt update && sudo apt upgrade -y
+
+# Install Python GPIO library
+sudo apt install python3-rpi.gpio -y
+
+# Enable GPIO interface
+sudo raspi-config
+# Navigate to: Interface Options → GPIO → Enable</code></pre>
+                        </div>
+                        
+                        <div>
+                            <h3 class="text-lg font-semibold mb-2 text-accent-500">2. Run the Programs</h3>
+                            <pre class="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto"><code class="language-bash"># Make scripts executable
+chmod +x led_basic.py
+chmod +x led_pwm.py
+
+# Run basic blink
+python3 led_basic.py
+
+# Run PWM breathing effect
+python3 led_pwm.py</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-card p-8">
+                    <h2 class="text-2xl font-bold mb-4 text-primary-500">Results & Performance</h2>
+                    <div class="overflow-x-auto">
+                        <table class="w-full border-collapse border border-gray-300 dark:border-gray-600">
+                            <thead>
+                                <tr class="bg-gray-100 dark:bg-gray-800">
+                                    <th class="border border-gray-300 dark:border-gray-600 px-4 py-2 text-left">Pattern</th>
+                                    <th class="border border-gray-300 dark:border-gray-600 px-4 py-2 text-left">Duration</th>
+                                    <th class="border border-gray-300 dark:border-gray-600 px-4 py-2 text-left">Current Draw</th>
+                                    <th class="border border-gray-300 dark:border-gray-600 px-4 py-2 text-left">Brightness Control</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="border border-gray-300 dark:border-gray-600 px-4 py-2">Basic Blink</td>
+                                    <td class="border border-gray-300 dark:border-gray-600 px-4 py-2">Variable</td>
+                                    <td class="border border-gray-300 dark:border-gray-600 px-4 py-2">~20mA</td>
+                                    <td class="border border-gray-300 dark:border-gray-600 px-4 py-2">On/Off only</td>
+                                </tr>
+                                <tr>
+                                    <td class="border border-gray-300 dark:border-gray-600 px-4 py-2">PWM Breathing</td>
+                                    <td class="border border-gray-300 dark:border-gray-600 px-4 py-2">Variable</td>
+                                    <td class="border border-gray-300 dark:border-gray-600 px-4 py-2">0-20mA</td>
+                                    <td class="border border-gray-300 dark:border-gray-600 px-4 py-2">0-100% smooth</td>
+                                </tr>
+                                <tr>
+                                    <td class="border border-gray-300 dark:border-gray-600 px-4 py-2">SOS Pattern</td>
+                                    <td class="border border-gray-300 dark:border-gray-600 px-4 py-2">~15s</td>
+                                    <td class="border border-gray-300 dark:border-gray-600 px-4 py-2">~20mA</td>
+                                    <td class="border border-gray-300 dark:border-gray-600 px-4 py-2">On/Off only</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="glass-card p-8">
+                    <h2 class="text-2xl font-bold mb-4 text-primary-500">Applications & Use Cases</h2>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <h3 class="text-lg font-semibold mb-3 text-accent-500">Educational Applications</h3>
+                            <ul class="list-disc list-inside text-gray-700 dark:text-gray-300 space-y-1">
+                                <li>GPIO programming fundamentals</li>
+                                <li>Hardware interfacing basics</li>
+                                <li>Digital electronics concepts</li>
+                                <li>Python programming with hardware</li>
+                            </ul>
+                        </div>
+                        
+                        <div>
+                            <h3 class="text-lg font-semibold mb-3 text-accent-500">Practical Applications</h3>
+                            <ul class="list-disc list-inside text-gray-700 dark:text-gray-300 space-y-1">
+                                <li>Status indicators for IoT devices</li>
+                                <li>Visual feedback systems</li>
+                                <li>Prototyping LED control</li>
+                                <li>Foundation for complex projects</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-card p-8">
+                    <h2 class="text-2xl font-bold mb-4 text-primary-500">Future Enhancements</h2>
+                    <div class="space-y-3">
+                        <div class="flex items-start space-x-3">
+                            <div class="w-6 h-6 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mt-0.5">
+                                <span class="w-2 h-2 bg-blue-600 rounded-full"></span>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold">Multiple LEDs</h3>
+                                <p class="text-gray-600 dark:text-gray-300">RGB color mixing and multi-LED patterns</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start space-x-3">
+                            <div class="w-6 h-6 bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center mt-0.5">
+                                <span class="w-2 h-2 bg-emerald-600 rounded-full"></span>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold">Sensor Integration</h3>
+                                <p class="text-gray-600 dark:text-gray-300">Light-dependent control and environmental response</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start space-x-3">
+                            <div class="w-6 h-6 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center mt-0.5">
+                                <span class="w-2 h-2 bg-purple-600 rounded-full"></span>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold">Web Interface</h3>
+                                <p class="text-gray-600 dark:text-gray-300">Remote LED control via web browser</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start space-x-3">
+                            <div class="w-6 h-6 bg-orange-100 dark:bg-orange-900/30 rounded-full flex items-center justify-center mt-0.5">
+                                <span class="w-2 h-2 bg-orange-600 rounded-full"></span>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold">MQTT Integration</h3>
+                                <p class="text-gray-600 dark:text-gray-300">IoT connectivity and remote control</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Related Projects -->
+    <section class="py-12 px-4 bg-gray-50 dark:bg-gray-800/50">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-2xl font-bold text-center mb-8 text-primary-500">Related Projects</h2>
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="project-card">
+                    <div class="project-image">
+                        <img src="/R-D/assets/projects/wifi-led-hero.jpg" alt="WiFi LED Control" class="w-full h-48 object-cover">
+                        <div class="project-overlay">
+                            <a href="/R-D/projects/wifi-led-control.html" class="btn-primary">View Project</a>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-lg font-semibold mb-2">WiFi LED Control System</h3>
+                        <p class="text-gray-600 dark:text-gray-300 mb-4">ESP32 cloud-controlled LED system</p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="tech-tag">ESP32</span>
+                            <span class="tech-tag">Arduino IoT Cloud</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="project-card">
+                    <div class="project-image">
+                        <video class="w-full h-48 object-cover" muted autoplay loop>
+                            <source src="/R-D/assets/videos/neopixel-display.mp4" type="video/mp4">
+                            <img src="/R-D/assets/images/screen.png" alt="NeoPixel Display" class="w-full h-48 object-cover">
+                        </video>
+                        <div class="project-overlay">
+                            <a href="/R-D/projects/neopixel-display.html" class="btn-primary">View Project</a>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-lg font-semibold mb-2">NeoPixel Scrolling Display</h3>
+                        <p class="text-gray-600 dark:text-gray-300 mb-4">WiFi-controlled LED matrix display</p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="tech-tag">ESP8266</span>
+                            <span class="tech-tag">NeoPixel</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="project-card">
+                    <div class="project-image">
+                        <img src="/R-D/assets/projects/weather-station-hero.jpg" alt="Weather Station" class="w-full h-48 object-cover">
+                        <div class="project-overlay">
+                            <a href="/R-D/projects/weather-station.html" class="btn-primary">View Project</a>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-lg font-semibold mb-2">IoT Weather Station</h3>
+                        <p class="text-gray-600 dark:text-gray-300 mb-4">DHT22 sensor with cloud logging</p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="tech-tag">DHT22</span>
+                            <span class="tech-tag">ESP32</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 dark:bg-gray-950 text-white py-8">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            <p class="mb-4">&copy; 2024 AuraAlliance - KSRM College of Engineering. All rights reserved.</p>
+            <a href="/R-D/" class="text-accent-500 hover:text-accent-400 transition-colors">← Back to Portfolio</a>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="/R-D/assets/js/main.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body>
+</html>

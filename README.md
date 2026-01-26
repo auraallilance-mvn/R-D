@@ -39,7 +39,7 @@ A modern, responsive portfolio website showcasing IoT and Robotics projects buil
 │   │   └── main.js          # JavaScript functionality
 │   └── projects/            # Project images (placeholders)
 ├── projects/
-│   └── milk-freshness.html  # Sample project page
+│   └── [project-pages].html  # Project detail pages
 └── README.md               # This file
 ```
 
@@ -127,7 +127,7 @@ jekyll serve
 ### Adding New Projects
 
 1. Create a new HTML file in the `projects/` directory
-2. Follow the structure of `milk-freshness.html`
+2. Follow the structure of existing project pages
 3. Add project card to `index.html` in the projects section
 4. Update project images in `assets/projects/`
 
