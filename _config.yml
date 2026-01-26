@@ -27,16 +27,16 @@ social:
     - https://github.com/pavankalyan
     - https://linkedin.com/in/pavankalyan
 
-# Collections
-collections:
-  projects:
-    output: true
-    permalink: /:collection/:name/
+# Collections (disabled - using regular HTML files)
+# collections:
+#   projects:
+#     output: true
+#     permalink: /:collection/:name/
 
 # Defaults
 defaults:
   - scope:
-      path: ""
-      type: "projects"
+      path: "projects"
+      type: "pages"
     values:
-      layout: "project"
+      layout: "default"
