@@ -338,10 +338,12 @@ class PerformanceMonitor {
 
     optimizeImages() {
         const images = document.querySelectorAll('img');
+        const baseUrl = document.querySelector('meta[name="baseurl"]')?.content || '';
         images.forEach(img => {
             img.loading = 'lazy';
             img.addEventListener('error', () => {
-                img.src = '/assets/images/placeholder.jpg';
+                // Use the placeholder.svg that exists in the assets/projects folder
+                img.src = baseUrl + '/assets/projects/placeholder.svg';
             });
         });
     }
