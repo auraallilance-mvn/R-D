@@ -2,8 +2,8 @@
 title: "AuraAlliance - IoT & Robotics Team"
 email: auraallilance@gmail.com
 description: "Student-driven R&D group at KSRM College of Engineering specializing in IoT, Robotics, and Computer Vision. Building innovative solutions with Arduino, ESP32, and AI."
-baseurl: ""
-url: "https://pavankalyan.github.io"
+baseurl: "/R-D"
+url: "https://auraallilance-mvn.github.io"
 twitter_username: pavankalyan
 github_username: pavankalyan
 
