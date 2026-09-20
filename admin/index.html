@@ -1,339 +1,884 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="utf-8" />
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Portfolio Admin - N. Pavan Kalyan</title>
+  <title>AuraAlliance Admin Panel</title>
   <link rel="icon" type="image/x-icon" href="/R-D/assets/images/favicon.ico">
-  
-  <!-- Netlify CMS Styles -->
-  <link rel="stylesheet" href="https://unpkg.com/netlify-cms@^2.0.0/dist/cms.css" />
-  
-  <!-- Custom Admin Styles -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    :root {
-      --primary-color: #1e3a8a;
-      --accent-color: #10b981;
-    }
-    
-    /* Custom admin panel styling */
-    .nc-app-header {
-      background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%) !important;
-    }
-    
-    .nc-app-header h1 {
-      color: white !important;
-    }
-    
-    .nc-entryEditor-widget {
-      margin-bottom: 20px;
-    }
-    
-    .nc-controlPane-widget {
-      border: 1px solid #e5e7eb;
-      border-radius: 8px;
-      padding: 16px;
-      margin-bottom: 16px;
-    }
-    
-    .nc-controlPane-widget label {
-      font-weight: 600;
-      color: var(--primary-color);
-      margin-bottom: 8px;
-      display: block;
-    }
-    
-    /* Preview styling */
-    .nc-previewPane {
-      background: #f9fafb;
-    }
-    
-    /* Custom button styling */
-    .nc-button-primary {
-      background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%) !important;
-      border: none !important;
-    }
-    
-    .nc-button-primary:hover {
-      opacity: 0.9 !important;
-    }
-    
-    /* Media library styling */
-    .nc-mediaLibrary-card {
-      border-radius: 8px;
-      overflow: hidden;
-    }
-    
-    /* Collection list styling */
-    .nc-collectionPage-sidebar {
-      background: #f8fafc;
-    }
-    
-    .nc-collectionPage-sidebar .nc-listCard {
-      border-radius: 8px;
-      margin-bottom: 8px;
-    }
-    
-    /* Entry editor styling */
-    .nc-entryEditor-editor {
-      background: white;
-      border-radius: 8px;
-    }
-    
-    /* Widget styling */
-    .nc-textControl-input,
-    .nc-textareaControl-input,
-    .nc-selectControl-input {
-      border: 1px solid #d1d5db !important;
-      border-radius: 6px !important;
-      padding: 8px 12px !important;
-    }
-    
-    .nc-textControl-input:focus,
-    .nc-textareaControl-input:focus,
-    .nc-selectControl-input:focus {
-      border-color: var(--primary-color) !important;
-      box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1) !important;
-    }
-    
-    /* Image widget styling */
-    .nc-imageControl-imageWrapper {
-      border-radius: 8px;
-      overflow: hidden;
-    }
-    
-    /* Rich text editor styling */
-    .nc-richTextControl-editor {
-      border: 1px solid #d1d5db;
-      border-radius: 6px;
-      min-height: 200px;
-    }
-    
-    /* Loading states */
-    .nc-loader {
-      color: var(--primary-color);
-    }
-    
-    /* Success messages */
-    .nc-toast-success {
-      background: var(--accent-color) !important;
-    }
-    
-    /* Error messages */
-    .nc-toast-error {
-      background: #ef4444 !important;
-    }
-    
-    /* Custom dashboard styling */
-    .dashboard-welcome {
-      background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
-      color: white;
-      padding: 2rem;
-      border-radius: 12px;
-      margin-bottom: 2rem;
-      text-align: center;
-    }
-    
-    .dashboard-stats {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 1rem;
-      margin-bottom: 2rem;
-    }
-    
-    .stat-card {
-      background: white;
-      padding: 1.5rem;
-      border-radius: 8px;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-      text-align: center;
-    }
-    
-    .stat-number {
-      font-size: 2rem;
-      font-weight: bold;
-      color: var(--primary-color);
-    }
-    
-    .stat-label {
-      color: #6b7280;
-      margin-top: 0.5rem;
-    }
+    body { font-family: 'Inter', sans-serif; }
+    .tab-active { background: linear-gradient(135deg, #1e3a8a, #10b981); color: white; }
+    .tab-inactive { background: #f1f5f9; color: #64748b; }
+    .field-label { font-weight: 600; font-size: 0.875rem; color: #374151; margin-bottom: 4px; display: block; }
+    .field-input { width: 100%; border: 1px solid #d1d5db; border-radius: 8px; padding: 10px 14px; font-size: 0.9rem; outline: none; transition: border 0.2s; }
+    .field-input:focus { border-color: #1e3a8a; box-shadow: 0 0 0 3px rgba(30,58,138,0.1); }
+    textarea.field-input { resize: vertical; min-height: 90px; }
+    .btn-primary { background: linear-gradient(135deg, #1e3a8a, #10b981); color: white; border: none; padding: 10px 24px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: opacity 0.2s; }
+    .btn-primary:hover { opacity: 0.9; }
+    .btn-secondary { background: #f1f5f9; color: #374151; border: 1px solid #d1d5db; padding: 10px 24px; border-radius: 8px; font-weight: 600; cursor: pointer; }
+    .btn-danger { background: #fee2e2; color: #dc2626; border: none; padding: 6px 14px; border-radius: 6px; font-weight: 500; cursor: pointer; font-size: 0.8rem; }
+    .card { background: white; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); padding: 24px; margin-bottom: 20px; }
+    .section-divider { border: none; border-top: 2px dashed #e5e7eb; margin: 24px 0; }
+    .tag-chip { background: #dbeafe; color: #1e40af; padding: 4px 10px; border-radius: 16px; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 6px; margin: 3px; }
+    .tag-chip button { background: none; border: none; cursor: pointer; color: #1e40af; font-size: 1rem; line-height: 1; padding: 0; }
+    .code-output { background: #0f172a; color: #e2e8f0; border-radius: 10px; padding: 20px; font-family: 'Courier New', monospace; font-size: 0.8rem; max-height: 400px; overflow-y: auto; white-space: pre-wrap; word-break: break-all; }
+    .login-card { max-width: 420px; margin: 80px auto; }
+    .stat-box { background: linear-gradient(135deg, #1e3a8a10, #10b98110); border: 1px solid #1e3a8a20; border-radius: 10px; padding: 20px; text-align: center; }
+    .sidebar-link { display: flex; align-items: center; gap: 10px; padding: 10px 16px; border-radius: 8px; cursor: pointer; font-weight: 500; color: #374151; transition: all 0.15s; }
+    .sidebar-link:hover { background: #f1f5f9; }
+    .sidebar-link.active { background: linear-gradient(135deg, #1e3a8a, #10b981); color: white; }
+    .video-entry { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px; margin-bottom: 10px; }
+    .img-entry { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px; margin-bottom: 10px; }
+    select.field-input { cursor: pointer; }
+    #loginSection, #adminSection { transition: all 0.3s; }
+    .copy-btn { background: #10b981; color: white; border: none; padding: 8px 18px; border-radius: 6px; font-size: 0.85rem; cursor: pointer; font-weight: 600; }
+    .copy-btn:hover { background: #059669; }
+    .badge { padding: 3px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; }
+    .badge-green { background: #dcfce7; color: #16a34a; }
+    .badge-blue { background: #dbeafe; color: #1d4ed8; }
+    .badge-yellow { background: #fef9c3; color: #b45309; }
+    .toast { position: fixed; bottom: 24px; right: 24px; background: #10b981; color: white; padding: 12px 24px; border-radius: 10px; font-weight: 600; z-index: 9999; box-shadow: 0 4px 12px rgba(0,0,0,0.15); display: none; }
   </style>
 </head>
-<body>
-  <!-- Netlify CMS App -->
-  <script src="https://unpkg.com/netlify-cms@^2.0.0/dist/netlify-cms.js"></script>
-  
-  <!-- Custom Admin Scripts -->
-  <script>
-    // Custom preview templates
-    CMS.registerPreviewTemplate('projects', ProjectPreview);
-    CMS.registerPreviewTemplate('settings', SettingsPreview);
-    CMS.registerPreviewTemplate('about', AboutPreview);
-    
-    // Project preview template
-    function ProjectPreview({ entry, widgetFor, widgetsFor }) {
-      const data = entry.getIn(['data']).toJS();
-      
-      return `
-        <div style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: Inter, sans-serif;">
-          <div style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
-            ${data.featured_image ? `
-              <img src="${data.featured_image}" alt="${data.title}" style="width: 100%; height: 200px; object-fit: cover;">
-            ` : ''}
-            <div style="padding: 24px;">
-              <h2 style="color: #1e3a8a; margin-bottom: 12px; font-size: 1.5rem; font-weight: 600;">${data.title}</h2>
-              <p style="color: #6b7280; margin-bottom: 16px; line-height: 1.6;">${data.description}</p>
-              <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px;">
-                ${data.technologies ? data.technologies.map(tech => `
-                  <span style="background: #dbeafe; color: #1e40af; padding: 4px 12px; border-radius: 16px; font-size: 0.875rem;">${tech}</span>
-                `).join('') : ''}
-              </div>
-              <div style="display: flex; gap: 12px;">
-                <span style="background: #10b981; color: white; padding: 8px 16px; border-radius: 6px; font-size: 0.875rem; text-transform: capitalize;">${data.category}</span>
-                ${data.featured ? '<span style="background: #f59e0b; color: white; padding: 8px 16px; border-radius: 6px; font-size: 0.875rem;">Featured</span>' : ''}
-              </div>
-            </div>
+<body class="bg-gray-50 min-h-screen">
+
+<!-- Toast -->
+<div id="toast" class="toast">✓ Copied to clipboard!</div>
+
+<!-- ===== LOGIN SECTION ===== -->
+<div id="loginSection">
+  <div class="login-card card">
+    <div class="text-center mb-8">
+      <div class="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4" style="background: linear-gradient(135deg,#1e3a8a,#10b981)">
+        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+        </svg>
+      </div>
+      <h1 class="text-2xl font-bold text-gray-800">AuraAlliance Admin</h1>
+      <p class="text-gray-500 text-sm mt-1">Sign in to manage your portfolio</p>
+    </div>
+
+    <div class="mb-5">
+      <label class="field-label">Username</label>
+      <input id="loginUser" class="field-input" type="text" placeholder="admin" autocomplete="username" />
+    </div>
+    <div class="mb-6">
+      <label class="field-label">Password</label>
+      <input id="loginPass" class="field-input" type="password" placeholder="••••••••" autocomplete="current-password" />
+    </div>
+    <div id="loginError" class="text-red-600 text-sm mb-4 hidden">❌ Invalid username or password.</div>
+    <button class="btn-primary w-full text-center" onclick="doLogin()">Sign In</button>
+    <p class="text-center text-xs text-gray-400 mt-4">AuraAlliance R&D Team — Admin Portal</p>
+  </div>
+</div>
+
+<!-- ===== ADMIN SECTION ===== -->
+<div id="adminSection" class="hidden">
+  <div class="flex min-h-screen">
+
+    <!-- Sidebar -->
+    <aside class="w-64 bg-white shadow-sm border-r border-gray-100 flex flex-col" style="min-height:100vh">
+      <div class="p-6 border-b border-gray-100">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:linear-gradient(135deg,#1e3a8a,#10b981)">
+            <span class="text-white font-bold text-sm">A</span>
+          </div>
+          <div>
+            <div class="font-bold text-gray-800 text-sm">AuraAlliance</div>
+            <div class="text-xs text-gray-500">Admin Panel</div>
           </div>
         </div>
-      `;
-    }
-    
-    // Settings preview template
-    function SettingsPreview({ entry }) {
-      const data = entry.getIn(['data']).toJS();
-      
-      return `
-        <div style="max-width: 600px; margin: 0 auto; padding: 20px; font-family: Inter, sans-serif;">
-          <div style="background: white; border-radius: 12px; padding: 24px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
-            <h2 style="color: #1e3a8a; margin-bottom: 20px;">Site Settings Preview</h2>
-            <div style="space-y: 16px;">
-              <div>
-                <strong>Site Title:</strong> ${data.site_title || 'N. Pavan Kalyan'}
-              </div>
-              <div>
-                <strong>Email:</strong> ${data.email || 'pavankalyanoffical31@gmail.com'}
-              </div>
-              <div>
-                <strong>Phone:</strong> ${data.phone || '+91 7569963393'}
-              </div>
-              <div>
-                <strong>Location:</strong> ${data.location || 'Nandyal, Banaganapalle'}
-              </div>
-              <div>
-                <strong>Summary:</strong><br>
-                <p style="margin-top: 8px; color: #6b7280; line-height: 1.6;">${data.summary || 'IoT/Robotics expert...'}</p>
-              </div>
-            </div>
+      </div>
+
+      <nav class="p-4 flex-1">
+        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3 px-2">Menu</p>
+        <div class="sidebar-link active" id="nav-dashboard" onclick="showSection('dashboard')">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+          Dashboard
+        </div>
+        <div class="sidebar-link" id="nav-add-project" onclick="showSection('add-project')">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+          Add New Project
+        </div>
+        <div class="sidebar-link" id="nav-projects" onclick="showSection('projects')">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+          Projects
+        </div>
+        <div class="sidebar-link" id="nav-media" onclick="showSection('media')">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+          Media Guide
+        </div>
+      </nav>
+
+      <div class="p-4 border-t border-gray-100">
+        <button onclick="doLogout()" class="sidebar-link w-full text-red-500 hover:bg-red-50">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+          Logout
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-8 overflow-y-auto">
+
+      <!-- ===== DASHBOARD ===== -->
+      <div id="section-dashboard">
+        <div class="mb-8">
+          <h1 class="text-2xl font-bold text-gray-800">Welcome back, Admin 👋</h1>
+          <p class="text-gray-500 mt-1">Manage your AuraAlliance portfolio projects and media.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div class="stat-box">
+            <div class="text-3xl font-bold text-blue-700" id="statProjects">0</div>
+            <div class="text-gray-600 text-sm mt-1 font-medium">Saved Projects</div>
+          </div>
+          <div class="stat-box">
+            <div class="text-3xl font-bold text-green-600">10</div>
+            <div class="text-gray-600 text-sm mt-1 font-medium">Live on Website</div>
+          </div>
+          <div class="stat-box">
+            <div class="text-3xl font-bold text-purple-600">∞</div>
+            <div class="text-gray-600 text-sm mt-1 font-medium">Team Members</div>
           </div>
         </div>
-      `;
-    }
-    
-    // About preview template
-    function AboutPreview({ entry }) {
-      const data = entry.getIn(['data']).toJS();
-      
-      return `
-        <div style="max-width: 600px; margin: 0 auto; padding: 20px; font-family: Inter, sans-serif;">
-          <div style="background: white; border-radius: 12px; padding: 24px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
-            <h2 style="color: #1e3a8a; margin-bottom: 20px;">About Section Preview</h2>
+
+        <div class="card">
+          <h2 class="text-lg font-bold text-gray-800 mb-4">🚀 How to Add a New Project</h2>
+          <ol class="space-y-3 text-gray-600 text-sm">
+            <li class="flex gap-3"><span class="font-bold text-blue-700 w-6 text-center">1</span><span>Click <strong>"Add New Project"</strong> in the sidebar and fill out all the project details.</span></li>
+            <li class="flex gap-3"><span class="font-bold text-blue-700 w-6 text-center">2</span><span>Add thumbnail path, demo videos, gallery images, and all relevant info.</span></li>
+            <li class="flex gap-3"><span class="font-bold text-blue-700 w-6 text-center">3</span><span>Click <strong>"Generate Project HTML"</strong> — the complete project page code is generated for you.</span></li>
+            <li class="flex gap-3"><span class="font-bold text-blue-700 w-6 text-center">4</span><span>Copy the code and save it as <code class="bg-gray-100 px-1 rounded">projects/your-project-name.html</code> in the repo.</span></li>
+            <li class="flex gap-3"><span class="font-bold text-blue-700 w-6 text-center">5</span><span>Copy the <strong>Project Card snippet</strong> and paste it into <code class="bg-gray-100 px-1 rounded">index.html</code> in the Projects section.</span></li>
+            <li class="flex gap-3"><span class="font-bold text-blue-700 w-6 text-center">6</span><span>Commit and push to GitHub — site goes live automatically!</span></li>
+          </ol>
+        </div>
+
+        <div class="card">
+          <h2 class="text-lg font-bold text-gray-800 mb-3">📂 Folder Structure for Media</h2>
+          <div class="bg-gray-900 text-green-400 rounded-lg p-4 font-mono text-sm">
+            <div>assets/</div>
+            <div class="ml-4">├── videos/        ← .mp4 demo videos</div>
+            <div class="ml-4">├── projects/      ← thumbnail images (.jpg/.webp)</div>
+            <div class="ml-4">└── images/        ← general images</div>
+            <div>projects/            ← HTML project pages go here</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== ADD PROJECT ===== -->
+      <div id="section-add-project" class="hidden">
+        <div class="mb-6 flex items-center justify-between">
+          <div>
+            <h1 class="text-2xl font-bold text-gray-800">Add New Project</h1>
+            <p class="text-gray-500 text-sm mt-1">Fill in all details — then generate the HTML file.</p>
+          </div>
+          <button class="btn-primary" onclick="generateHTML()">⚡ Generate Project HTML</button>
+        </div>
+
+        <!-- Basic Info -->
+        <div class="card">
+          <h2 class="font-bold text-gray-700 mb-4 flex items-center gap-2">
+            <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs text-white font-bold" style="background:#1e3a8a">1</span>
+            Basic Information
+          </h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <h3 style="margin-bottom: 12px;">Skills:</h3>
-              <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-                ${data.skills ? data.skills.map(skill => `
-                  <span style="background: linear-gradient(135deg, #dbeafe 0%, #dcfce7 100%); color: #1e40af; padding: 6px 12px; border-radius: 16px; font-size: 0.875rem;">${skill}</span>
-                `).join('') : ''}
+              <label class="field-label">Project Title *</label>
+              <input id="pTitle" class="field-input" type="text" placeholder="e.g. Seven Segment Display Clock" />
+            </div>
+            <div>
+              <label class="field-label">File Slug (for filename) *</label>
+              <input id="pSlug" class="field-input" type="text" placeholder="e.g. seven-segment-display" />
+              <p class="text-xs text-gray-400 mt-1">Used as: projects/<span id="slugPreview">slug</span>.html</p>
+            </div>
+            <div class="md:col-span-2">
+              <label class="field-label">Short Description * <span class="text-gray-400 font-normal">(shown on project cards)</span></label>
+              <input id="pDesc" class="field-input" type="text" placeholder="e.g. Digital clock using seven segment displays - First electronics learning experience" />
+            </div>
+            <div>
+              <label class="field-label">Category *</label>
+              <select id="pCategory" class="field-input">
+                <option value="IoT">IoT</option>
+                <option value="Robotics">Robotics</option>
+                <option value="Computer Vision">Computer Vision</option>
+                <option value="Electronics">Electronics</option>
+                <option value="Embedded Systems">Embedded Systems</option>
+                <option value="Drone">Drone / Aerial</option>
+                <option value="Machine Learning">Machine Learning</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div>
+              <label class="field-label">Project Status</label>
+              <select id="pStatus" class="field-input">
+                <option value="Completed">Completed</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Planning">Planning</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Thumbnail & Media -->
+        <div class="card">
+          <h2 class="font-bold text-gray-700 mb-4 flex items-center gap-2">
+            <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs text-white font-bold" style="background:#1e3a8a">2</span>
+            Thumbnail &amp; Media
+          </h2>
+
+          <div class="mb-4">
+            <label class="field-label">Thumbnail Image Path *</label>
+            <input id="pThumbnail" class="field-input" type="text" placeholder="e.g. /R-D/assets/projects/seven-segment.jpg" />
+            <p class="text-xs text-gray-400 mt-1">Upload the image to <code>assets/projects/</code> folder first, then enter path here.</p>
+          </div>
+
+          <hr class="section-divider">
+
+          <div class="mb-3">
+            <label class="field-label">Demo Videos</label>
+            <p class="text-xs text-gray-400 mb-3">Add one or more video files. Upload to <code>assets/videos/</code> first.</p>
+            <div id="videosContainer"></div>
+            <button type="button" class="btn-secondary text-sm mt-2" onclick="addVideoField()">+ Add Video</button>
+          </div>
+
+          <hr class="section-divider">
+
+          <div>
+            <label class="field-label">Gallery Images</label>
+            <p class="text-xs text-gray-400 mb-3">Add extra screenshots or photos. Upload to <code>assets/images/</code> or <code>assets/projects/</code> first.</p>
+            <div id="galleryContainer"></div>
+            <button type="button" class="btn-secondary text-sm mt-2" onclick="addGalleryField()">+ Add Image</button>
+          </div>
+        </div>
+
+        <!-- Technologies -->
+        <div class="card">
+          <h2 class="font-bold text-gray-700 mb-4 flex items-center gap-2">
+            <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs text-white font-bold" style="background:#1e3a8a">3</span>
+            Technologies Used
+          </h2>
+          <div class="flex gap-2 mb-3">
+            <input id="techInput" class="field-input flex-1" type="text" placeholder="e.g. Arduino, ESP32, Raspberry Pi..." onkeydown="if(event.key==='Enter'){event.preventDefault();addTech()}" />
+            <button type="button" class="btn-primary px-4" onclick="addTech()">Add</button>
+          </div>
+          <div id="techTags"></div>
+          <p class="text-xs text-gray-400 mt-2">Press Enter or click Add after each technology.</p>
+        </div>
+
+        <!-- Project Details -->
+        <div class="card">
+          <h2 class="font-bold text-gray-700 mb-4 flex items-center gap-2">
+            <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs text-white font-bold" style="background:#1e3a8a">4</span>
+            Project Details
+          </h2>
+          <div class="space-y-4">
+            <div>
+              <label class="field-label">Project Overview *</label>
+              <textarea id="pOverview" class="field-input" placeholder="Describe the project in detail — what it does, why you built it, how it works..." style="min-height:120px"></textarea>
+            </div>
+            <div>
+              <label class="field-label">Mentor / Supervisor <span class="text-gray-400 font-normal">(optional)</span></label>
+              <input id="pMentor" class="field-input" type="text" placeholder="e.g. Prof. M.V. Narayana Sir, Head of Department ECE" />
+            </div>
+            <div>
+              <label class="field-label">Hardware / Components Used <span class="text-gray-400 font-normal">(one per line)</span></label>
+              <textarea id="pComponents" class="field-input" placeholder="Arduino Uno&#10;4× Seven Segment Displays&#10;Breadboard and jumper wires&#10;5V Power supply"></textarea>
+            </div>
+            <div>
+              <label class="field-label">Key Learning Outcomes <span class="text-gray-400 font-normal">(one per line)</span></label>
+              <textarea id="pLearnings" class="field-input" placeholder="Understanding seven segment displays&#10;Multiplexing techniques&#10;Arduino programming basics"></textarea>
+            </div>
+            <div>
+              <label class="field-label">Results &amp; Impact <span class="text-gray-400 font-normal">(optional)</span></label>
+              <textarea id="pResults" class="field-input" placeholder="e.g. Achieved 92% accuracy, reduced latency by 30%, won first place..."></textarea>
+            </div>
+            <div>
+              <label class="field-label">GitHub Repository URL <span class="text-gray-400 font-normal">(optional)</span></label>
+              <input id="pGithub" class="field-input" type="text" placeholder="https://github.com/username/repo" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Stats / Highlights -->
+        <div class="card">
+          <h2 class="font-bold text-gray-700 mb-4 flex items-center gap-2">
+            <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs text-white font-bold" style="background:#1e3a8a">5</span>
+            Project Stats / Highlights <span class="text-gray-400 font-normal text-sm ml-2">(shown as big numbers)</span>
+          </h2>
+          <div id="statsContainer"></div>
+          <button type="button" class="btn-secondary text-sm" onclick="addStatField()">+ Add Stat</button>
+        </div>
+
+        <!-- Generate Button -->
+        <div class="card bg-gradient-to-r from-blue-50 to-green-50 border border-blue-100">
+          <div class="flex items-center justify-between">
+            <div>
+              <h3 class="font-bold text-gray-800">Ready to Generate?</h3>
+              <p class="text-sm text-gray-500 mt-1">This will create the full project HTML page + a card snippet for index.html</p>
+            </div>
+            <button class="btn-primary text-lg px-8 py-3" onclick="generateHTML()">⚡ Generate HTML</button>
+          </div>
+        </div>
+
+        <!-- Output Section -->
+        <div id="outputSection" class="hidden">
+          <!-- Project Page HTML -->
+          <div class="card">
+            <div class="flex items-center justify-between mb-4">
+              <div>
+                <h2 class="font-bold text-gray-800">📄 Project Page HTML</h2>
+                <p class="text-xs text-gray-500 mt-1">Save as <code id="outputFilename" class="bg-gray-100 px-1 rounded">projects/slug.html</code></p>
+              </div>
+              <button class="copy-btn" onclick="copyCode('projectHTML')">📋 Copy Code</button>
+            </div>
+            <div id="projectHTML" class="code-output"></div>
+          </div>
+
+          <!-- Index Card Snippet -->
+          <div class="card">
+            <div class="flex items-center justify-between mb-4">
+              <div>
+                <h2 class="font-bold text-gray-800">🃏 Project Card for index.html</h2>
+                <p class="text-xs text-gray-500 mt-1">Paste this inside the Projects section of <code class="bg-gray-100 px-1 rounded">index.html</code></p>
+              </div>
+              <button class="copy-btn" onclick="copyCode('cardHTML')">📋 Copy Card</button>
+            </div>
+            <div id="cardHTML" class="code-output"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== PROJECTS LIST ===== -->
+      <div id="section-projects" class="hidden">
+        <div class="mb-6">
+          <h1 class="text-2xl font-bold text-gray-800">Saved Projects</h1>
+          <p class="text-gray-500 text-sm mt-1">Projects you've created in this session (stored locally in browser).</p>
+        </div>
+        <div id="projectsList">
+          <div class="card text-center text-gray-400 py-12">
+            <svg class="w-12 h-12 mx-auto mb-3 opacity-30" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+            <p>No projects saved yet. Add your first project!</p>
+            <button class="btn-primary mt-4" onclick="showSection('add-project')">+ Add New Project</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== MEDIA GUIDE ===== -->
+      <div id="section-media" class="hidden">
+        <div class="mb-6">
+          <h1 class="text-2xl font-bold text-gray-800">Media Guide</h1>
+          <p class="text-gray-500 text-sm mt-1">How to add and reference images, videos, and documents.</p>
+        </div>
+
+        <div class="card">
+          <h2 class="font-bold text-gray-800 mb-4">📁 Where to Put Files</h2>
+          <div class="space-y-3">
+            <div class="flex gap-4 p-3 bg-blue-50 rounded-lg">
+              <span class="text-2xl">🖼️</span>
+              <div>
+                <div class="font-semibold text-blue-800">Thumbnail Images</div>
+                <div class="text-sm text-blue-700">Folder: <code>assets/projects/</code></div>
+                <div class="text-xs text-blue-600 mt-1">Recommended: .jpg or .webp, 400×300px</div>
+                <div class="text-xs font-mono bg-white rounded px-2 py-1 mt-1 border border-blue-200">/R-D/assets/projects/your-image.jpg</div>
+              </div>
+            </div>
+            <div class="flex gap-4 p-3 bg-green-50 rounded-lg">
+              <span class="text-2xl">🎥</span>
+              <div>
+                <div class="font-semibold text-green-800">Demo Videos</div>
+                <div class="text-sm text-green-700">Folder: <code>assets/videos/</code></div>
+                <div class="text-xs text-green-600 mt-1">Recommended: .mp4, keep under 50MB for GitHub</div>
+                <div class="text-xs font-mono bg-white rounded px-2 py-1 mt-1 border border-green-200">/R-D/assets/videos/your-video.mp4</div>
+              </div>
+            </div>
+            <div class="flex gap-4 p-3 bg-purple-50 rounded-lg">
+              <span class="text-2xl">📄</span>
+              <div>
+                <div class="font-semibold text-purple-800">Documents / PDFs</div>
+                <div class="text-sm text-purple-700">Folder: <code>assets/videos/</code> or <code>assets/images/</code></div>
+                <div class="text-xs text-purple-600 mt-1">Any document type supported</div>
+                <div class="text-xs font-mono bg-white rounded px-2 py-1 mt-1 border border-purple-200">/R-D/assets/videos/your-document.pdf</div>
+              </div>
+            </div>
+            <div class="flex gap-4 p-3 bg-yellow-50 rounded-lg">
+              <span class="text-2xl">🖼️</span>
+              <div>
+                <div class="font-semibold text-yellow-800">General Images</div>
+                <div class="text-sm text-yellow-700">Folder: <code>assets/images/</code></div>
+                <div class="text-xs font-mono bg-white rounded px-2 py-1 mt-1 border border-yellow-200">/R-D/assets/images/your-image.png</div>
               </div>
             </div>
           </div>
         </div>
-      `;
-    }
-    
-    // Custom editor components
-    CMS.registerEditorComponent({
-      id: "youtube",
-      label: "YouTube Video",
-      fields: [
-        {
-          name: "id",
-          label: "YouTube Video ID",
-          widget: "string"
-        },
-        {
-          name: "title",
-          label: "Video Title",
-          widget: "string"
-        }
-      ],
-      pattern: /^{{< youtube ([a-zA-Z0-9_-]+) "([^"]+)" >}}$/,
-      fromBlock: function(match) {
-        return {
-          id: match[1],
-          title: match[2]
-        };
-      },
-      toBlock: function(obj) {
-        return `{{< youtube ${obj.id} "${obj.title}" >}}`;
-      },
-      toPreview: function(obj) {
-        return `
-          <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
-            <iframe 
-              src="https://www.youtube.com/embed/${obj.id}" 
-              style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
-              frameborder="0" 
-              allowfullscreen
-              title="${obj.title}">
-            </iframe>
+
+        <div class="card">
+          <h2 class="font-bold text-gray-800 mb-4">⚡ Quick Path Reference</h2>
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="bg-gray-50">
+                <th class="text-left p-3 rounded-tl-lg font-semibold text-gray-700">File Type</th>
+                <th class="text-left p-3 font-semibold text-gray-700">Put File In</th>
+                <th class="text-left p-3 rounded-tr-lg font-semibold text-gray-700">Use Path</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100">
+              <tr><td class="p-3">Project thumbnail</td><td class="p-3 font-mono text-xs">assets/projects/</td><td class="p-3 font-mono text-xs">/R-D/assets/projects/name.jpg</td></tr>
+              <tr><td class="p-3">Demo video</td><td class="p-3 font-mono text-xs">assets/videos/</td><td class="p-3 font-mono text-xs">/R-D/assets/videos/name.mp4</td></tr>
+              <tr><td class="p-3">Gallery image</td><td class="p-3 font-mono text-xs">assets/images/</td><td class="p-3 font-mono text-xs">/R-D/assets/images/name.png</td></tr>
+              <tr><td class="p-3">Document/PDF</td><td class="p-3 font-mono text-xs">assets/videos/</td><td class="p-3 font-mono text-xs">/R-D/assets/videos/name.pdf</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="card">
+          <h2 class="font-bold text-gray-800 mb-3">🚀 Deploy to Live Site</h2>
+          <p class="text-gray-600 text-sm mb-4">After adding files and generating HTML, run these commands in your terminal:</p>
+          <div class="bg-gray-900 text-green-400 rounded-lg p-4 font-mono text-sm space-y-1">
+            <div>git add .</div>
+            <div>git commit -m "Add new project: [project name]"</div>
+            <div>git push origin main</div>
           </div>
-        `;
-      }
+          <p class="text-xs text-gray-400 mt-3">GitHub Pages will auto-deploy in ~1-2 minutes.</p>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script>
+// ===== AUTH =====
+const USERS = { 'admin': 'aura2024', 'pavan': 'pavan123', 'team': 'team2024' };
+
+function doLogin() {
+  const u = document.getElementById('loginUser').value.trim();
+  const p = document.getElementById('loginPass').value;
+  if (USERS[u] && USERS[u] === p) {
+    document.getElementById('loginSection').classList.add('hidden');
+    document.getElementById('adminSection').classList.remove('hidden');
+    renderProjectsList();
+    updateDashboardStats();
+    addVideoField(); addStatField();
+  } else {
+    document.getElementById('loginError').classList.remove('hidden');
+  }
+}
+document.getElementById('loginPass').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
+
+function doLogout() {
+  document.getElementById('adminSection').classList.add('hidden');
+  document.getElementById('loginSection').classList.remove('hidden');
+  document.getElementById('loginUser').value = '';
+  document.getElementById('loginPass').value = '';
+}
+
+// ===== NAVIGATION =====
+function showSection(name) {
+  ['dashboard','add-project','projects','media'].forEach(s => {
+    document.getElementById('section-'+s).classList.add('hidden');
+    document.getElementById('nav-'+s).classList.remove('active');
+  });
+  document.getElementById('section-'+name).classList.remove('hidden');
+  document.getElementById('nav-'+name).classList.add('active');
+  if (name === 'projects') renderProjectsList();
+}
+
+// ===== DYNAMIC FIELDS =====
+let videoCount = 0, galleryCount = 0, statCount = 0;
+
+function addVideoField() {
+  videoCount++;
+  const c = document.getElementById('videosContainer');
+  const div = document.createElement('div');
+  div.className = 'video-entry';
+  div.id = 'video-'+videoCount;
+  div.innerHTML = `
+    <div class="flex gap-3 items-start">
+      <div class="flex-1 space-y-2">
+        <input class="field-input" type="text" placeholder="Video title (e.g. Clock Demonstration)" id="vTitle${videoCount}" />
+        <input class="field-input" type="text" placeholder="Video path (e.g. /R-D/assets/videos/demo.mp4)" id="vPath${videoCount}" />
+        <input class="field-input" type="text" placeholder="Caption (optional)" id="vCaption${videoCount}" />
+      </div>
+      <button class="btn-danger mt-1" onclick="document.getElementById('video-${videoCount}').remove()">✕</button>
+    </div>`;
+  c.appendChild(div);
+}
+
+function addGalleryField() {
+  galleryCount++;
+  const c = document.getElementById('galleryContainer');
+  const div = document.createElement('div');
+  div.className = 'img-entry';
+  div.id = 'gallery-'+galleryCount;
+  div.innerHTML = `
+    <div class="flex gap-3 items-center">
+      <input class="field-input flex-1" type="text" placeholder="Image path (e.g. /R-D/assets/images/photo.jpg)" id="gPath${galleryCount}" />
+      <input class="field-input flex-1" type="text" placeholder="Alt text / caption" id="gAlt${galleryCount}" />
+      <button class="btn-danger" onclick="document.getElementById('gallery-${galleryCount}').remove()">✕</button>
+    </div>`;
+  c.appendChild(div);
+}
+
+function addStatField() {
+  statCount++;
+  const c = document.getElementById('statsContainer');
+  const div = document.createElement('div');
+  div.className = 'flex gap-3 items-center mb-3';
+  div.id = 'stat-'+statCount;
+  div.innerHTML = `
+    <input class="field-input w-32" type="text" placeholder="Value (e.g. 92%)" id="sVal${statCount}" />
+    <input class="field-input flex-1" type="text" placeholder="Label (e.g. Detection Accuracy)" id="sLbl${statCount}" />
+    <button class="btn-danger" onclick="document.getElementById('stat-${statCount}').remove()">✕</button>`;
+  c.appendChild(div);
+}
+
+// ===== TECH TAGS =====
+let techList = [];
+function addTech() {
+  const inp = document.getElementById('techInput');
+  const val = inp.value.trim();
+  if (!val || techList.includes(val)) { inp.value=''; return; }
+  techList.push(val);
+  renderTechTags();
+  inp.value = '';
+}
+function removeTech(t) { techList = techList.filter(x=>x!==t); renderTechTags(); }
+function renderTechTags() {
+  document.getElementById('techTags').innerHTML = techList.map(t =>
+    `<span class="tag-chip">${t}<button onclick="removeTech('${t}')">×</button></span>`).join('');
+}
+
+// Slug auto-generate
+document.addEventListener('input', function(e) {
+  if(e.target.id === 'pTitle') {
+    const slug = e.target.value.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+    document.getElementById('pSlug').value = slug;
+    document.getElementById('slugPreview').textContent = slug || 'slug';
+  }
+  if(e.target.id === 'pSlug') {
+    document.getElementById('slugPreview').textContent = e.target.value || 'slug';
+  }
+});
+
+// ===== COLLECT FORM DATA =====
+function collectFormData() {
+  // Videos
+  const videos = [];
+  document.querySelectorAll('[id^="vTitle"]').forEach(el => {
+    const n = el.id.replace('vTitle','');
+    const path = document.getElementById('vPath'+n)?.value.trim();
+    if (path) videos.push({
+      title: el.value.trim() || 'Demo Video',
+      path: path,
+      caption: document.getElementById('vCaption'+n)?.value.trim() || ''
     });
-    
-    // Initialize custom dashboard
-    CMS.init({
-      config: {
-        load_config_file: true
-      }
-    });
-    
-    // Add custom dashboard functionality
-    document.addEventListener('DOMContentLoaded', function() {
-      // Add welcome message
-      setTimeout(() => {
-        const appHeader = document.querySelector('.nc-app-header');
-        if (appHeader) {
-          const welcomeDiv = document.createElement('div');
-          welcomeDiv.innerHTML = `
-            <div class="dashboard-welcome">
-              <h1>Welcome to Your Portfolio Admin Panel</h1>
-              <p>Manage your projects, update content, and publish changes instantly!</p>
+  });
+
+  // Gallery
+  const gallery = [];
+  document.querySelectorAll('[id^="gPath"]').forEach(el => {
+    const n = el.id.replace('gPath','');
+    const path = el.value.trim();
+    if (path) gallery.push({ path, alt: document.getElementById('gAlt'+n)?.value.trim() || '' });
+  });
+
+  // Stats
+  const stats = [];
+  document.querySelectorAll('[id^="sVal"]').forEach(el => {
+    const n = el.id.replace('sVal','');
+    const val = el.value.trim();
+    if (val) stats.push({ value: val, label: document.getElementById('sLbl'+n)?.value.trim() || '' });
+  });
+
+  const components = document.getElementById('pComponents').value.trim().split('\n').filter(x=>x.trim());
+  const learnings = document.getElementById('pLearnings').value.trim().split('\n').filter(x=>x.trim());
+
+  return {
+    title: document.getElementById('pTitle').value.trim(),
+    slug: document.getElementById('pSlug').value.trim(),
+    desc: document.getElementById('pDesc').value.trim(),
+    category: document.getElementById('pCategory').value,
+    status: document.getElementById('pStatus').value,
+    thumbnail: document.getElementById('pThumbnail').value.trim(),
+    overview: document.getElementById('pOverview').value.trim(),
+    mentor: document.getElementById('pMentor').value.trim(),
+    components, learnings,
+    results: document.getElementById('pResults').value.trim(),
+    github: document.getElementById('pGithub').value.trim(),
+    technologies: [...techList],
+    videos, gallery, stats
+  };
+}
+
+// ===== GENERATE HTML =====
+function generateHTML() {
+  const d = collectFormData();
+  if (!d.title || !d.slug || !d.desc) {
+    alert('Please fill in at least: Title, Slug, and Description.'); return;
+  }
+
+  // Generate tech tags HTML
+  const techTagsHTML = d.technologies.map(t => `                    <span class="tech-tag">${t}</span>`).join('\n');
+
+  // Generate video sections
+  const videosHTML = d.videos.map(v => `
+                <!-- Video: ${v.title} -->
+                <div class="glass-card p-8">
+                    <h2 class="text-2xl font-bold mb-6 text-primary-500 text-center">${v.title}</h2>
+                    <div class="relative aspect-video rounded-xl overflow-hidden border-2 border-gray-700 dark:border-gray-600 bg-black mb-4">
+                        <video controls class="w-full h-full object-cover">
+                            <source src="${v.path}" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                    ${v.caption ? `<p class="text-center text-gray-500 dark:text-gray-400 text-sm italic">${v.caption}</p>` : ''}
+                </div>`).join('\n');
+
+  // Generate gallery
+  const galleryHTML = d.gallery.length > 0 ? `
+                <!-- Gallery -->
+                <div class="glass-card p-8">
+                    <h2 class="text-2xl font-bold mb-6 text-primary-500">Project Gallery</h2>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        ${d.gallery.map(img => `<img src="${img.path}" alt="${img.alt}" class="rounded-xl w-full object-cover border border-gray-200 dark:border-gray-700">`).join('\n                        ')}
+                    </div>
+                </div>` : '';
+
+  // Components
+  const componentsHTML = d.components.length > 0 ? `
+                        <div>
+                            <h3 class="text-lg font-semibold mb-2">Components Required</h3>
+                            <ul class="list-disc list-inside text-gray-700 dark:text-gray-300 space-y-1">
+                                ${d.components.map(c => `<li>${c}</li>`).join('\n                                ')}
+                            </ul>
+                        </div>` : '';
+
+  // Learnings
+  const learningsHTML = d.learnings.length > 0 ? `
+                <div class="glass-card p-8">
+                    <h2 class="text-2xl font-bold mb-4 text-primary-500">Learning Outcomes</h2>
+                    <div class="space-y-3">
+                        ${d.learnings.map(l => `
+                        <div class="flex items-start space-x-3">
+                            <div class="w-6 h-6 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mt-0.5">
+                                <span class="w-2 h-2 bg-blue-600 rounded-full"></span>
+                            </div>
+                            <p class="text-gray-700 dark:text-gray-300">${l}</p>
+                        </div>`).join('')}
+                    </div>
+                </div>` : '';
+
+  // Stats
+  const statsHTML = d.stats.length > 0 ? `
+                <div class="glass-card p-8">
+                    <h2 class="text-2xl font-bold mb-6 text-primary-500">Project Impact</h2>
+                    <div class="grid md:grid-cols-${Math.min(d.stats.length, 3)} gap-6">
+                        ${d.stats.map(s => `
+                        <div class="text-center">
+                            <div class="text-3xl font-bold text-accent-500 mb-2">${s.value}</div>
+                            <div class="text-gray-600 dark:text-gray-300">${s.label}</div>
+                        </div>`).join('')}
+                    </div>
+                    ${d.results ? `<p class="text-gray-700 dark:text-gray-300 leading-relaxed mt-6">${d.results}</p>` : ''}
+                </div>` : '';
+
+  // Mentor block
+  const mentorHTML = d.mentor ? `
+                    <div class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border border-blue-200 dark:border-blue-700 rounded-lg p-6 mt-4">
+                        <h3 class="text-lg font-semibold text-blue-800 dark:text-blue-200 mb-2">Project Guidance</h3>
+                        <p class="text-blue-700 dark:text-blue-300">${d.mentor}</p>
+                    </div>` : '';
+
+  // GitHub link
+  const githubHTML = d.github ? `
+                <div class="glass-card p-6 text-center">
+                    <a href="${d.github}" target="_blank" rel="noopener" class="btn-primary inline-flex items-center gap-2 px-6 py-3">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+                        View on GitHub
+                    </a>
+                </div>` : '';
+
+  // Full project page HTML
+  const projectPage = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${d.title} - AuraAlliance</title>
+    <meta name="description" content="${d.desc}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"><\/script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: { extend: { fontFamily: { 'inter': ['Inter','sans-serif'] }, colors: { primary: { 500: '#1e3a8a' }, accent: { 500: '#10b981' } } } }
+        }
+    <\/script>
+    <link rel="stylesheet" href="/R-D/assets/css/style.css">
+</head>
+<body class="font-inter bg-white dark:bg-gray-900 text-gray-900 dark:text-white transition-colors duration-300">
+    <nav class="fixed top-0 w-full z-50 glass-nav backdrop-blur-md bg-white/80 dark:bg-gray-900/80 border-b border-gray-200/20 dark:border-gray-700/20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <a href="/R-D/" class="text-xl font-bold text-primary-500">AuraAlliance</a>
+                <div class="hidden md:flex items-baseline space-x-4">
+                    <a href="/R-D/#home" class="nav-link">Home</a>
+                    <a href="/R-D/#about" class="nav-link">About</a>
+                    <a href="/R-D/#projects" class="nav-link">Projects</a>
+                    <a href="/R-D/#contact" class="nav-link">Contact</a>
+                </div>
+                <button id="theme-toggle" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+                    <svg class="w-5 h-5 hidden dark:block" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"></path></svg>
+                    <svg class="w-5 h-5 block dark:hidden" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+                </button>
             </div>
-          `;
-          appHeader.appendChild(welcomeDiv);
-        }
-      }, 1000);
-    });
-    
-    // Auto-save functionality
-    let autoSaveTimer;
-    function enableAutoSave() {
-      clearTimeout(autoSaveTimer);
-      autoSaveTimer = setTimeout(() => {
-        const saveButton = document.querySelector('[data-testid="save-button"]');
-        if (saveButton && !saveButton.disabled) {
-          console.log('Auto-saving...');
-          // Auto-save logic would go here
-        }
-      }, 30000); // Auto-save every 30 seconds
-    }
-    
-    // Enable auto-save on input changes
-    document.addEventListener('input', enableAutoSave);
-    document.addEventListener('change', enableAutoSave);
-  </script>
+        </div>
+    </nav>
+
+    <section class="pt-24 pb-12 px-4">
+        <div class="max-w-6xl mx-auto text-center mb-8">
+            <h1 class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary-500 to-accent-500 bg-clip-text text-transparent">
+                ${d.title}
+            </h1>
+            <p class="text-xl text-gray-600 dark:text-gray-300 mb-6">${d.desc}</p>
+            <div class="flex flex-wrap justify-center gap-3 mb-4">
+${techTagsHTML}
+            </div>
+            <span class="badge badge-green">${d.status}</span>
+            <span class="badge badge-blue ml-2">${d.category}</span>
+        </div>
+    </section>
+
+    <section class="py-12 px-4">
+        <div class="max-w-4xl mx-auto">
+            <div class="space-y-8">
+
+                <!-- Overview -->
+                <div class="glass-card p-8">
+                    <h2 class="text-2xl font-bold mb-4 text-primary-500">Project Overview</h2>
+                    <p class="text-gray-700 dark:text-gray-300 leading-relaxed">${d.overview}</p>
+                    ${mentorHTML}
+                </div>
+${videosHTML}
+${galleryHTML}
+                ${componentsHTML ? `<div class="glass-card p-8"><h2 class="text-2xl font-bold mb-4 text-primary-500">Hardware &amp; Components</h2>${componentsHTML}</div>` : ''}
+${learningsHTML}
+${statsHTML}
+${githubHTML}
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-gray-900 dark:bg-gray-950 text-white py-8">
+        <div class="max-w-6xl mx-auto px-4 text-center">
+            <p>&copy; 2024 AuraAlliance - KSRM College of Engineering. All rights reserved.</p>
+            <div class="mt-4"><a href="/R-D/" class="text-gray-300 hover:text-white transition-colors">&larr; Back to Portfolio</a></div>
+        </div>
+    </footer>
+
+    <script src="/R-D/assets/js/main.js"><\/script>
+</body>
+</html>`;
+
+  // Card snippet for index.html
+  const cardSnippet = `<!-- Project Card: ${d.title} -->
+<div class="project-card">
+    <div class="project-image">
+        <img src="${d.thumbnail || '/R-D/assets/projects/placeholder.svg'}" alt="${d.title}" class="w-full h-48 object-cover">
+        <div class="project-overlay">
+            <a href="/R-D/projects/${d.slug}.html" class="btn-primary">View Project</a>
+        </div>
+    </div>
+    <div class="p-6">
+        <h3 class="text-lg font-semibold mb-2">${d.title}</h3>
+        <p class="text-gray-600 dark:text-gray-300 mb-4">${d.desc}</p>
+        <div class="flex flex-wrap gap-2">
+            ${d.technologies.slice(0,3).map(t => `<span class="tech-tag">${t}</span>`).join('\n            ')}
+        </div>
+    </div>
+</div>`;
+
+  // Show output
+  document.getElementById('projectHTML').textContent = projectPage;
+  document.getElementById('cardHTML').textContent = cardSnippet;
+  document.getElementById('outputFilename').textContent = `projects/${d.slug}.html`;
+  document.getElementById('outputSection').classList.remove('hidden');
+  document.getElementById('outputSection').scrollIntoView({ behavior: 'smooth' });
+
+  // Save to localStorage
+  saveProject(d);
+}
+
+// ===== COPY =====
+function copyCode(id) {
+  const text = document.getElementById(id).textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const t = document.getElementById('toast');
+    t.style.display = 'block';
+    setTimeout(() => t.style.display = 'none', 2500);
+  });
+}
+
+// ===== SAVE & LIST PROJECTS =====
+function saveProject(data) {
+  let projects = JSON.parse(localStorage.getItem('aura_projects') || '[]');
+  const existing = projects.findIndex(p => p.slug === data.slug);
+  const entry = { ...data, savedAt: new Date().toISOString() };
+  if (existing >= 0) projects[existing] = entry;
+  else projects.unshift(entry);
+  localStorage.setItem('aura_projects', JSON.stringify(projects));
+  updateDashboardStats();
+}
+
+function updateDashboardStats() {
+  const projects = JSON.parse(localStorage.getItem('aura_projects') || '[]');
+  document.getElementById('statProjects').textContent = projects.length;
+}
+
+function renderProjectsList() {
+  const projects = JSON.parse(localStorage.getItem('aura_projects') || '[]');
+  const container = document.getElementById('projectsList');
+  if (!projects.length) {
+    container.innerHTML = `<div class="card text-center text-gray-400 py-12">
+      <p>No projects saved yet.</p>
+      <button class="btn-primary mt-4" onclick="showSection('add-project')">+ Add New Project</button>
+    </div>`;
+    return;
+  }
+  container.innerHTML = projects.map(p => `
+    <div class="card flex items-center gap-4">
+      <img src="${p.thumbnail || '/R-D/assets/projects/placeholder.svg'}" alt="${p.title}" class="w-20 h-16 object-cover rounded-lg border border-gray-200" onerror="this.src='/R-D/assets/projects/placeholder.svg'">
+      <div class="flex-1">
+        <h3 class="font-bold text-gray-800">${p.title}</h3>
+        <p class="text-sm text-gray-500 mt-1">${p.desc}</p>
+        <div class="flex gap-2 mt-2">
+          <span class="badge badge-blue">${p.category}</span>
+          <span class="badge badge-green">${p.status}</span>
+          ${p.technologies.slice(0,3).map(t=>`<span class="badge" style="background:#f1f5f9;color:#374151">${t}</span>`).join('')}
+        </div>
+      </div>
+      <div class="flex flex-col gap-2 text-xs text-gray-400">
+        <span>projects/${p.slug}.html</span>
+        <span>${new Date(p.savedAt).toLocaleDateString()}</span>
+        <button class="btn-danger" onclick="deleteProject('${p.slug}')">Delete</button>
+      </div>
+    </div>`).join('');
+}
+
+function deleteProject(slug) {
+  if (!confirm('Delete this project from saved list?')) return;
+  let projects = JSON.parse(localStorage.getItem('aura_projects') || '[]');
+  projects = projects.filter(p => p.slug !== slug);
+  localStorage.setItem('aura_projects', JSON.stringify(projects));
+  renderProjectsList();
+  updateDashboardStats();
+}
+</script>
 </body>
 </html>
