@@ -86,8 +86,8 @@
             <span class="text-white font-bold text-sm">A</span>
           </div>
           <div>
-            <div class="font-bold text-gray-800 text-sm">AuraAlliance</div>
-            <div class="text-xs text-gray-500">Admin Panel</div>
+            <div class="font-bold text-gray-800 text-sm" id="sidebarUserName">AuraAlliance</div>
+            <div class="text-xs text-gray-500" id="sidebarUserRole">Admin Panel</div>
           </div>
         </div>
       </div>
@@ -109,6 +109,11 @@
         <div class="sidebar-link" id="nav-media" onclick="showSection('media')">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
           Media Guide
+        </div>
+        <!-- PAVAN ONLY -->
+        <div class="sidebar-link hidden" id="nav-manage" onclick="showSection('manage')" style="background:#fef9c3;color:#b45309;margin-top:8px">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          Manage &amp; Delete 👑
         </div>
       </nav>
 
@@ -349,6 +354,24 @@
             </div>
             <div id="cardHTML" class="code-output"></div>
           </div>
+
+          <!-- AUTO DEPLOY -->
+          <div class="card" style="background:linear-gradient(135deg,#0f172a,#1e3a8a);color:white">
+            <div class="flex items-center justify-between">
+              <div>
+                <h2 class="font-bold text-white text-lg">🚀 Auto-Deploy to Live Website</h2>
+                <p class="text-blue-200 text-sm mt-1">Downloads a <strong>.bat script</strong> — just double-click it to save files &amp; push live!</p>
+                <ul class="text-blue-300 text-xs mt-2 space-y-1">
+                  <li>✅ Saves project HTML file automatically</li>
+                  <li>✅ Adds project card to index.html</li>
+                  <li>✅ Commits &amp; pushes to GitHub (live in ~1 min)</li>
+                </ul>
+              </div>
+              <button class="px-6 py-3 rounded-xl font-bold text-base cursor-pointer" style="background:linear-gradient(135deg,#10b981,#059669);color:white;border:none" onclick="downloadDeployScript()">
+                ⬇️ Download Deploy Script
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -446,6 +469,18 @@
         </div>
       </div>
 
+      <!-- ===== MANAGE & DELETE (PAVAN ONLY) ===== -->
+      <div id="section-manage" class="hidden">
+        <div class="mb-6 flex items-center gap-3">
+          <div>
+            <h1 class="text-2xl font-bold text-gray-800">Manage &amp; Delete Projects 👑</h1>
+            <p class="text-gray-500 text-sm mt-1">Only visible to <strong>pavan</strong>. Delete projects from the saved list and generate removal scripts.</p>
+          </div>
+          <span class="badge badge-yellow ml-auto">Super Admin</span>
+        </div>
+        <div id="manageList"></div>
+      </div>
+
     </main>
   </div>
 </div>
@@ -453,13 +488,22 @@
 <script>
 // ===== AUTH =====
 const USERS = { 'admin': 'aura2024', 'pavan': 'pavan123', 'team': 'team2024' };
+let currentUser = '';
 
 function doLogin() {
   const u = document.getElementById('loginUser').value.trim();
   const p = document.getElementById('loginPass').value;
   if (USERS[u] && USERS[u] === p) {
+    currentUser = u;
     document.getElementById('loginSection').classList.add('hidden');
     document.getElementById('adminSection').classList.remove('hidden');
+    // Show user info in sidebar
+    document.getElementById('sidebarUserName').textContent = u.charAt(0).toUpperCase() + u.slice(1);
+    document.getElementById('sidebarUserRole').textContent = u === 'pavan' ? 'Super Admin 👑' : 'Team Member';
+    // Show manage projects only for pavan
+    if (u === 'pavan') {
+      document.getElementById('nav-manage').classList.remove('hidden');
+    }
     renderProjectsList();
     updateDashboardStats();
     addVideoField(); addStatField();
@@ -470,21 +514,26 @@ function doLogin() {
 document.getElementById('loginPass').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
 
 function doLogout() {
+  currentUser = '';
   document.getElementById('adminSection').classList.add('hidden');
   document.getElementById('loginSection').classList.remove('hidden');
   document.getElementById('loginUser').value = '';
   document.getElementById('loginPass').value = '';
+  document.getElementById('nav-manage').classList.add('hidden');
 }
 
 // ===== NAVIGATION =====
 function showSection(name) {
-  ['dashboard','add-project','projects','media'].forEach(s => {
-    document.getElementById('section-'+s).classList.add('hidden');
-    document.getElementById('nav-'+s).classList.remove('active');
+  ['dashboard','add-project','projects','media','manage'].forEach(s => {
+    const el = document.getElementById('section-'+s);
+    const nav = document.getElementById('nav-'+s);
+    if (el) el.classList.add('hidden');
+    if (nav) nav.classList.remove('active');
   });
   document.getElementById('section-'+name).classList.remove('hidden');
   document.getElementById('nav-'+name).classList.add('active');
   if (name === 'projects') renderProjectsList();
+  if (name === 'manage') renderManageList();
 }
 
 // ===== DYNAMIC FIELDS =====
@@ -818,11 +867,7 @@ ${githubHTML}
 // ===== COPY =====
 function copyCode(id) {
   const text = document.getElementById(id).textContent;
-  navigator.clipboard.writeText(text).then(() => {
-    const t = document.getElementById('toast');
-    t.style.display = 'block';
-    setTimeout(() => t.style.display = 'none', 2500);
-  });
+  navigator.clipboard.writeText(text).then(() => showToast('✓ Copied to clipboard!'));
 }
 
 // ===== SAVE & LIST PROJECTS =====
@@ -879,6 +924,177 @@ function deleteProject(slug) {
   renderProjectsList();
   updateDashboardStats();
 }
+
+// ===== AUTO-DEPLOY SCRIPT DOWNLOAD =====
+function downloadDeployScript() {
+  const slug = document.getElementById('pSlug').value.trim();
+  const title = document.getElementById('pTitle').value.trim();
+  const projectHTML = document.getElementById('projectHTML').textContent;
+  const cardHTML = document.getElementById('cardHTML').textContent;
+
+  if (!slug || !projectHTML) {
+    alert('Please generate the project HTML first.');
+    return;
+  }
+
+  // Escape for batch file - write content to a temp PS1 that handles it
+  const ps1Script = `# AuraAlliance Auto-Deploy Script
+# Generated by Admin Panel for: ${title}
+# Run this script in PowerShell from the project root
+
+$ErrorActionPreference = "Stop"
+$root = Split-Path -Parent $MyInvocation.MyCommand.Path
+
+Write-Host "Step 1: Saving project HTML file..." -ForegroundColor Cyan
+$projectContent = @'
+${projectHTML.replace(/'/g, "''")}
+'@
+$projectContent | Out-File -FilePath "$root\\projects\\${slug}.html" -Encoding UTF8
+Write-Host "  Saved: projects/${slug}.html" -ForegroundColor Green
+
+Write-Host "Step 2: Adding project card to index.html..." -ForegroundColor Cyan
+$indexPath = "$root\\index.html"
+$indexContent = Get-Content $indexPath -Raw -Encoding UTF8
+$marker = '<div id="projects-grid"'
+$cardToInsert = @'
+${cardHTML.replace(/'/g, "''")}
+'@
+# Insert card after the opening of projects-grid div
+$insertAfter = '<div id="projects-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">'
+if ($indexContent -match [regex]::Escape($insertAfter)) {
+  $indexContent = $indexContent.Replace($insertAfter, $insertAfter + "\`n" + $cardToInsert)
+  $indexContent | Out-File -FilePath $indexPath -Encoding UTF8
+  Write-Host "  Added card to index.html" -ForegroundColor Green
+} else {
+  Write-Host "  Could not find projects-grid in index.html. Please paste the card manually." -ForegroundColor Yellow
+}
+
+Write-Host "Step 3: Git add, commit and push..." -ForegroundColor Cyan
+Set-Location $root
+git add .
+git commit -m "Add project: ${title}"
+git push origin main
+
+Write-Host ""
+Write-Host "SUCCESS! Project '${title}' is live!" -ForegroundColor Green
+Write-Host "Your site will update in ~1-2 minutes at:" -ForegroundColor White
+Write-Host "https://auraallilance-mvn.github.io/R-D/projects/${slug}.html" -ForegroundColor Cyan
+Read-Host "Press Enter to close"
+`;
+
+  const batContent = `@echo off
+echo ================================================
+echo  AuraAlliance Auto-Deploy: ${title}
+echo ================================================
+echo.
+powershell -ExecutionPolicy Bypass -File "%~dp0deploy_${slug}.ps1"
+pause`;
+
+  // Download PS1
+  const ps1Blob = new Blob([ps1Script], { type: 'text/plain' });
+  const ps1Link = document.createElement('a');
+  ps1Link.href = URL.createObjectURL(ps1Blob);
+  ps1Link.download = `deploy_${slug}.ps1`;
+  ps1Link.click();
+
+  // Download BAT
+  setTimeout(() => {
+    const batBlob = new Blob([batContent], { type: 'text/plain' });
+    const batLink = document.createElement('a');
+    batLink.href = URL.createObjectURL(batBlob);
+    batLink.download = `deploy_${slug}.bat`;
+    batLink.click();
+  }, 500);
+
+  showToast('✅ Deploy scripts downloaded! Move them to your project root and double-click the .bat file.');
+}
+
+// ===== PAVAN-ONLY MANAGE LIST =====
+function renderManageList() {
+  if (currentUser !== 'pavan') {
+    document.getElementById('manageList').innerHTML = '<div class="card text-center text-red-500 py-8">⛔ Access denied. Only Pavan can manage and delete projects.</div>';
+    return;
+  }
+  const projects = JSON.parse(localStorage.getItem('aura_projects') || '[]');
+  const container = document.getElementById('manageList');
+  if (!projects.length) {
+    container.innerHTML = '<div class="card text-center text-gray-400 py-12"><p>No saved projects to manage.</p><button class="btn-primary mt-4" onclick="showSection(\'add-project\')">+ Add New Project</button></div>';
+    return;
+  }
+  container.innerHTML = projects.map(p => `
+    <div class="card border-2 border-red-100">
+      <div class="flex items-center gap-4">
+        <img src="${p.thumbnail || '/R-D/assets/projects/placeholder.svg'}" alt="${p.title}"
+          class="w-24 h-16 object-cover rounded-xl border border-gray-200"
+          onerror="this.src='/R-D/assets/projects/placeholder.svg'">
+        <div class="flex-1">
+          <h3 class="font-bold text-gray-800 text-lg">${p.title}</h3>
+          <p class="text-sm text-gray-500">${p.desc}</p>
+          <div class="flex gap-2 mt-2 flex-wrap">
+            <span class="badge badge-blue">${p.category}</span>
+            <span class="badge badge-green">${p.status}</span>
+            ${p.technologies.slice(0,3).map(t=>`<span class="badge" style="background:#f1f5f9;color:#374151">${t}</span>`).join('')}
+          </div>
+          <p class="text-xs text-gray-400 mt-1">File: projects/${p.slug}.html &nbsp;|&nbsp; Saved: ${new Date(p.savedAt).toLocaleString()}</p>
+        </div>
+        <div class="flex flex-col gap-2">
+          <button class="btn-primary text-sm px-4 py-2" onclick="redownloadDeploy('${p.slug}')">🚀 Re-Deploy</button>
+          <button class="btn-danger px-4 py-2 text-sm font-bold" onclick="pavanDelete('${p.slug}', '${p.title.replace(/'/g,"\\'")}')">🗑️ Delete Project</button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function pavanDelete(slug, title) {
+  if (currentUser !== 'pavan') { alert('Only Pavan can delete projects.'); return; }
+  if (!confirm(`Delete "${title}" from saved list?\n\nNote: You'll also need to manually delete projects/${slug}.html from the repo and remove the card from index.html, then push.`)) return;
+
+  // Generate removal script
+  const removeScript = `@echo off
+echo ================================================
+echo  AuraAlliance - Remove Project: ${title}
+echo ================================================
+echo.
+echo Deleting project file...
+del /f /q "projects\\${slug}.html"
+echo.
+echo Committing removal...
+git add .
+git commit -m "Remove project: ${title}"
+git push origin main
+echo.
+echo Done! Project removed from live site.
+pause`;
+
+  const blob = new Blob([removeScript], { type: 'text/plain' });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = `remove_${slug}.bat`;
+  link.click();
+
+  // Remove from localStorage
+  let projects = JSON.parse(localStorage.getItem('aura_projects') || '[]');
+  projects = projects.filter(p => p.slug !== slug);
+  localStorage.setItem('aura_projects', JSON.stringify(projects));
+  renderManageList();
+  updateDashboardStats();
+  showToast('🗑️ Deleted! Run the downloaded .bat to remove from live site.');
+}
+
+function redownloadDeploy(slug) {
+  const projects = JSON.parse(localStorage.getItem('aura_projects') || '[]');
+  const p = projects.find(x => x.slug === slug);
+  if (!p) { alert('Project data not found in browser storage.'); return; }
+  showToast('Re-deploy: regenerate the project first using Add New Project form.');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.display = 'block';
+  setTimeout(() => t.style.display = 'none', 4000);
+}
+
 </script>
 </body>
 </html>
