@@ -115,8 +115,12 @@
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
         GitHub Settings
       </button>
+      <button class="sidebar-link" id="nav-manage" onclick="showSection('manage')">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
+        Manage Projects
+      </button>
       <!-- PAVAN ONLY -->
-      <button class="sidebar-link hidden" id="nav-manage" onclick="showSection('manage')" style="background:#fef3c7;color:#92400e;margin-top:8px">
+      <button class="sidebar-link hidden" id="nav-pavan-delete" onclick="showSection('pavan-delete')" style="background:#fef3c7;color:#92400e">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
         Delete Projects 👑
       </button>
@@ -398,13 +402,66 @@
       <div id="projectsList"></div>
     </div>
 
-    <!-- DELETE (PAVAN ONLY) -->
+    <!-- MANAGE PROJECTS (ALL USERS) -->
     <div id="section-manage" class="hidden">
-      <div class="mb-6">
-        <h1 class="text-2xl font-bold text-gray-800">Delete Projects 👑</h1>
-        <p class="text-gray-500 text-sm mt-1">Only visible to Pavan. Deletes the project file from GitHub directly.</p>
+      <div class="mb-6 flex items-center justify-between flex-wrap gap-3">
+        <div>
+          <h1 class="text-2xl font-bold text-gray-800">Manage Projects</h1>
+          <p class="text-gray-500 text-sm mt-1">View and edit all projects. Only <strong>pavan</strong> can delete.</p>
+        </div>
+        <button class="btn-primary" onclick="loadLiveProjects()">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+          Refresh from GitHub
+        </button>
       </div>
       <div id="manageList"></div>
+    </div>
+
+    <!-- PAVAN DELETE -->
+    <div id="section-pavan-delete" class="hidden">
+      <h1 class="text-2xl font-bold text-gray-800 mb-2">Delete Projects 👑</h1>
+      <p class="text-gray-500 text-sm mb-6">Permanently delete projects from GitHub.</p>
+      <div id="pavanDeleteList"></div>
+    </div>
+
+    <!-- EDIT MODAL -->
+    <div id="editModal" class="hidden fixed inset-0 z-50 flex items-center justify-center" style="background:rgba(0,0,0,0.6)">
+      <div class="bg-white rounded-2xl shadow-2xl w-full max-w-3xl mx-4" style="max-height:90vh;overflow-y:auto">
+        <div class="p-6 border-b border-gray-100 flex items-center justify-between sticky top-0 bg-white z-10 rounded-t-2xl">
+          <h2 class="text-xl font-bold text-gray-800">✏️ Edit Project</h2>
+          <button onclick="closeEditModal()" class="text-gray-400 hover:text-gray-600 text-3xl font-bold leading-none">×</button>
+        </div>
+        <div class="p-6 space-y-4">
+          <input type="hidden" id="editSlug" />
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div><label class="field-label">Project Title</label><input id="editTitle" class="field-input" type="text" /></div>
+            <div><label class="field-label">Category</label>
+              <select id="editCategory" class="field-input"><option>IoT</option><option>Robotics</option><option>Computer Vision</option><option>Electronics</option><option>Embedded Systems</option><option>Drone</option><option>Machine Learning</option><option>Other</option></select>
+            </div>
+            <div class="md:col-span-2"><label class="field-label">Short Description</label><input id="editDesc" class="field-input" type="text" /></div>
+            <div><label class="field-label">Thumbnail Path</label><input id="editThumbnail" class="field-input" type="text" /></div>
+            <div><label class="field-label">GitHub URL</label><input id="editGithub" class="field-input" type="text" /></div>
+          </div>
+          <div><label class="field-label">Project Overview</label><textarea id="editOverview" class="field-input" style="min-height:100px"></textarea></div>
+          <div><label class="field-label">Mentor / Supervisor</label><input id="editMentor" class="field-input" type="text" /></div>
+          <div><label class="field-label">Technologies <span class="text-gray-400 font-normal">(comma separated)</span></label><input id="editTech" class="field-input" type="text" /></div>
+          <div><label class="field-label">Components <span class="text-gray-400 font-normal">(one per line)</span></label><textarea id="editComponents" class="field-input"></textarea></div>
+          <div><label class="field-label">Learning Outcomes <span class="text-gray-400 font-normal">(one per line)</span></label><textarea id="editLearnings" class="field-input"></textarea></div>
+          <div><label class="field-label">Results &amp; Impact</label><textarea id="editResults" class="field-input"></textarea></div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div><label class="field-label">Main Demo Video Path</label><input id="editVideoPath" class="field-input" type="text" placeholder="/R-D/assets/videos/demo.mp4" /></div>
+            <div><label class="field-label">Video Title</label><input id="editVideoTitle" class="field-input" type="text" placeholder="Demo Video" /></div>
+          </div>
+          <div id="editDeployLog" class="deploy-log hidden" style="min-height:80px;font-size:0.8rem"></div>
+        </div>
+        <div class="p-6 border-t border-gray-100 flex gap-3 sticky bottom-0 bg-white rounded-b-2xl">
+          <button class="btn-deploy" id="editDeployBtn" onclick="saveAndDeployEdit()">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
+            Save &amp; Deploy
+          </button>
+          <button class="btn-secondary" onclick="closeEditModal()">Cancel</button>
+        </div>
+      </div>
     </div>
 
   </main>
@@ -430,7 +487,9 @@ function doLogin() {
     document.getElementById('sidebarUser').textContent = u.charAt(0).toUpperCase() + u.slice(1);
     document.getElementById('sidebarRole').textContent = u === 'pavan' ? 'Super Admin 👑' : 'Team Member';
     document.getElementById('dashUser').textContent = u.charAt(0).toUpperCase() + u.slice(1);
-    if (u === 'pavan') document.getElementById('nav-manage').classList.remove('hidden');
+    if (u === 'pavan') {
+      document.getElementById('nav-pavan-delete').classList.remove('hidden');
+    }
     addVideoField(); addStatField();
     updateDashboardStats();
     checkTokenStatus();
@@ -446,19 +505,21 @@ function doLogout() {
   document.getElementById('loginSection').classList.remove('hidden');
   document.getElementById('loginUser').value = '';
   document.getElementById('loginPass').value = '';
-  document.getElementById('nav-manage').classList.add('hidden');
+  document.getElementById('nav-manage')?.classList.add('hidden');
+  document.getElementById('nav-pavan-delete')?.classList.add('hidden');
 }
 
 // ===== NAVIGATION =====
 function showSection(name) {
-  ['dashboard','add-project','projects','settings','manage'].forEach(s => {
+  ['dashboard','add-project','projects','settings','manage','pavan-delete'].forEach(s => {
     document.getElementById('section-' + s)?.classList.add('hidden');
     document.getElementById('nav-' + s)?.classList.remove('active');
   });
   document.getElementById('section-' + name)?.classList.remove('hidden');
   document.getElementById('nav-' + name)?.classList.add('active');
   if (name === 'projects') renderProjectsList();
-  if (name === 'manage') renderManageList();
+  if (name === 'manage') loadLiveProjects();
+  if (name === 'pavan-delete') loadDeleteList();
   if (name === 'settings') loadSettingsForm();
 }
 
@@ -947,83 +1008,198 @@ function renderProjectsList() {
     </div>`).join('');
 }
 
-// ===== PAVAN DELETE =====
-function renderManageList() {
-  if (currentUser !== 'pavan') {
-    document.getElementById('manageList').innerHTML = '<div class="card text-center text-red-500 py-8">⛔ Only Pavan can delete projects.</div>';
-    return;
-  }
-  const projects = JSON.parse(localStorage.getItem('aura_projects') || '[]');
+// ===== MANAGE PROJECTS =====
+async function loadLiveProjects() {
   const c = document.getElementById('manageList');
-  if (!projects.length) {
-    c.innerHTML = '<div class="card text-center text-gray-400 py-12">No saved projects.</div>';
-    return;
-  }
-  c.innerHTML = projects.map(p => `
-    <div class="card border-2 border-red-100">
-      <div class="flex items-center gap-4">
-        <img src="${p.thumbnail || '/R-D/assets/projects/placeholder.svg'}" class="w-20 h-16 object-cover rounded-lg" onerror="this.src='/R-D/assets/projects/placeholder.svg'">
-        <div class="flex-1">
-          <h3 class="font-bold text-gray-800">${p.title}</h3>
-          <p class="text-sm text-gray-500">projects/${p.slug}.html</p>
-          ${p.liveUrl ? `<a href="${p.liveUrl}" target="_blank" class="text-xs text-blue-600 underline">${p.liveUrl}</a>` : ''}
+  const { token, owner, repo, branch } = getGHSettings();
+  if (!token) { c.innerHTML = '<div class="card text-center text-yellow-600 py-8">⚠️ Set your GitHub token in GitHub Settings first.</div>'; return; }
+  c.innerHTML = '<div class="card text-center text-gray-400 py-8"><div style="width:32px;height:32px;border:4px solid #e2e8f0;border-top-color:#1e3a8a;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 12px"></div>Loading from GitHub...</div>';
+  const headers = { Authorization: `token ${token}`, Accept: 'application/vnd.github+json' };
+  try {
+    const res = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/projects?ref=${branch}`, { headers });
+    if (!res.ok) throw new Error(`GitHub error: ${res.status}`);
+    const files = await res.json();
+    const htmlFiles = files.filter(f => f.name.endsWith('.html'));
+    if (!htmlFiles.length) { c.innerHTML = '<div class="card text-center text-gray-400 py-8">No projects found.</div>'; return; }
+    const indexRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/index.html?ref=${branch}`, { headers });
+    const indexData = await indexRes.json();
+    const indexContent = atob(indexData.content.replace(/\n/g,''));
+    c.innerHTML = `<div class="card mb-4" style="background:#f0fdf4;border:1px solid #86efac"><p class="text-green-800 font-medium text-sm">✅ <strong>${htmlFiles.length} projects</strong> found on GitHub. ${currentUser === 'pavan' ? 'You can edit and delete.' : 'You can edit. Only pavan can delete.'}</p></div>
+    <div class="space-y-4">${htmlFiles.map(f => {
+      const slug = f.name.replace('.html','');
+      const imgM = indexContent.match(new RegExp(`href="/R-D/projects/${slug}\\.html"[\\s\\S]{0,400}?<img[^>]*src="([^"]*)"`, 'i'));
+      const thumb = imgM ? imgM[1] : '/R-D/assets/projects/placeholder.svg';
+      const titleM = indexContent.match(new RegExp(`/R-D/projects/${slug}\\.html"[\\s\\S]{0,500}?<h3[^>]*>([^<]+)<`, 'i'));
+      const title = titleM ? titleM[1].trim() : slug.replace(/-/g,' ').replace(/\b\w/g,l=>l.toUpperCase());
+      const descM = indexContent.match(new RegExp(`/R-D/projects/${slug}\\.html"[\\s\\S]{0,600}?<p[^>]*text-gray[^"]*"[^>]*>([^<]+)<`, 'i'));
+      const desc = descM ? descM[1].trim() : '';
+      return `<div class="card flex items-center gap-4 border border-gray-100 hover:shadow-md transition-shadow" id="card-${slug}">
+        <img src="${thumb}" class="w-24 h-16 object-cover rounded-xl flex-shrink-0" onerror="this.src='/R-D/assets/projects/placeholder.svg'">
+        <div class="flex-1 min-w-0">
+          <h3 class="font-bold text-gray-800">${title}</h3>
+          <p class="text-sm text-gray-500 truncate">${desc}</p>
+          <div class="flex items-center gap-2 mt-1">
+            <span class="badge badge-blue text-xs">${slug}.html</span>
+            <a href="https://${owner}.github.io/${repo}/projects/${slug}.html" target="_blank" class="text-xs text-blue-600 underline">View Live →</a>
+          </div>
         </div>
-        <button class="btn-danger font-bold px-5 py-2" onclick="pavanDelete('${p.slug}', '${p.title.replace(/'/g,"\\'")}')">🗑️ Delete from GitHub</button>
-      </div>
-    </div>`).join('');
+        <div class="flex gap-2 flex-shrink-0">
+          <button class="btn-primary text-sm px-4 py-2" onclick='openEditModal("${slug}","${title.replace(/"/g,'&quot;')}","${desc.replace(/"/g,'&quot;')}","${thumb}")'>✏️ Edit</button>
+          ${currentUser === 'pavan' ? `<button class="btn-danger font-bold px-4 py-2 text-sm" onclick="deleteProjectFromGH('${slug}','${title.replace(/'/g,"\\'")}')">🗑️</button>` : ''}
+        </div>
+      </div>`;
+    }).join('')}</div>`;
+  } catch(err) { c.innerHTML = `<div class="card text-center text-red-500 py-8">❌ ${err.message}</div>`; }
 }
 
-async function pavanDelete(slug, title) {
-  if (currentUser !== 'pavan') { alert('Only Pavan can delete.'); return; }
-  if (!confirm(`Delete "${title}" from GitHub?\n\nThis will:\n1. Delete projects/${slug}.html from GitHub\n2. Remove its card from index.html\n3. Deploy the changes live`)) return;
+async function loadDeleteList() {
+  if (currentUser !== 'pavan') {
+    document.getElementById('pavanDeleteList').innerHTML = '<div class="card text-center text-red-500 py-8">⛔ Only Pavan can access this section.</div>';
+    return;
+  }
+  await loadLiveProjects();
+  document.getElementById('pavanDeleteList').innerHTML = document.getElementById('manageList').innerHTML;
+}
 
+// ===== EDIT MODAL =====
+async function openEditModal(slug, title, desc, thumbnail) {
   const { token, owner, repo, branch } = getGHSettings();
-  if (!token) { showToast('Set GitHub token first', 'error'); showSection('settings'); return; }
-
-  const api = `https://api.github.com/repos/${owner}/${repo}`;
-  const headers = { Authorization: `token ${token}`, 'Content-Type': 'application/json', Accept: 'application/vnd.github+json' };
-
-  showToast('⏳ Deleting from GitHub...', 'info');
-
+  document.getElementById('editModal').classList.remove('hidden');
+  document.getElementById('editSlug').value = slug;
+  document.getElementById('editTitle').value = title;
+  document.getElementById('editDesc').value = desc;
+  document.getElementById('editThumbnail').value = thumbnail;
+  document.getElementById('editDeployLog').classList.add('hidden');
+  document.getElementById('editDeployLog').textContent = '';
+  const btn = document.getElementById('editDeployBtn');
+  btn.disabled = false; btn.style.background = '';
+  btn.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg> Save & Deploy';
+  // Clear fields
+  ['editOverview','editMentor','editTech','editComponents','editLearnings','editResults','editVideoPath','editVideoTitle','editGithub','editCategory'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.value = '';
+  });
+  // Load file from GitHub
   try {
-    // Get file SHA to delete it
-    const fileRes = await fetch(`${api}/contents/projects/${slug}.html?ref=${branch}`, { headers });
-    if (!fileRes.ok) throw new Error('File not found on GitHub');
-    const fileData = await fileRes.json();
+    const headers = { Authorization: `token ${token}`, Accept: 'application/vnd.github+json' };
+    const res = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/projects/${slug}.html?ref=${branch}`, { headers });
+    if (!res.ok) throw new Error('Could not load file');
+    const data = await res.json();
+    const html = atob(data.content.replace(/\n/g,''));
+    const g = (re) => { const m = html.match(re); return m ? m[1].replace(/<[^>]+>/g,'').trim() : ''; };
+    document.getElementById('editOverview').value = g(/Project Overview<\/h2>[\s\S]*?<p[^>]*>([\s\S]*?)<\/p>/i);
+    document.getElementById('editMentor').value = g(/Project Guidance<\/h3>[\s\S]*?<p[^>]*>([\s\S]*?)<\/p>/i);
+    document.getElementById('editTech').value = [...html.matchAll(/class="tech-tag">([^<]+)</g)].map(m=>m[1]).join(', ');
+    document.getElementById('editComponents').value = [...html.matchAll(/<li>([^<]+)<\/li>/g)].map(m=>m[1].trim()).join('\n');
+    document.getElementById('editLearnings').value = [...html.matchAll(/<p class="text-gray-700[^"]*">([^<]+)<\/p>/g)].map(m=>m[1].trim()).filter(x=>x&&!x.includes('©')).join('\n');
+    document.getElementById('editResults').value = g(/leading-relaxed[^"]*"[^>]*>([\s\S]*?)<\/p>/i);
+    const vm = html.match(/<source src="([^"]+\.mp4)"/i); if(vm) document.getElementById('editVideoPath').value = vm[1];
+    const vtm = html.match(/<h2[^>]*text-center[^>]*>([^<]+Demo[^<]*)<\/h2>/i); if(vtm) document.getElementById('editVideoTitle').value = vtm[1].trim();
+    const ghm = html.match(/href="(https:\/\/github\.com[^"]+)"/i); if(ghm) document.getElementById('editGithub').value = ghm[1];
+  } catch(e) { showToast('Could not load file details: ' + e.message, 'error'); }
+}
 
-    // Get index.html and remove card
+function closeEditModal() { document.getElementById('editModal').classList.add('hidden'); }
+
+async function saveAndDeployEdit() {
+  const slug = document.getElementById('editSlug').value;
+  const d = {
+    title: document.getElementById('editTitle').value.trim(),
+    slug,
+    desc: document.getElementById('editDesc').value.trim(),
+    thumbnail: document.getElementById('editThumbnail').value.trim(),
+    overview: document.getElementById('editOverview').value.trim(),
+    mentor: document.getElementById('editMentor').value.trim(),
+    technologies: document.getElementById('editTech').value.split(',').map(t=>t.trim()).filter(Boolean),
+    components: document.getElementById('editComponents').value.trim().split('\n').filter(x=>x.trim()),
+    learnings: document.getElementById('editLearnings').value.trim().split('\n').filter(x=>x.trim()),
+    results: document.getElementById('editResults').value.trim(),
+    github: document.getElementById('editGithub').value.trim(),
+    videos: document.getElementById('editVideoPath').value.trim() ? [{ title: document.getElementById('editVideoTitle').value.trim() || 'Demo Video', path: document.getElementById('editVideoPath').value.trim(), caption: '' }] : [],
+    gallery: [], stats: [], status: 'Completed', category: document.getElementById('editCategory').value
+  };
+  const { token, owner, repo, branch } = getGHSettings();
+  if (!token) { showToast('Set GitHub token first', 'error'); return; }
+  const headers = { Authorization: `token ${token}`, 'Content-Type': 'application/json', Accept: 'application/vnd.github+json' };
+  const api = `https://api.github.com/repos/${owner}/${repo}`;
+  const log = document.getElementById('editDeployLog');
+  const btn = document.getElementById('editDeployBtn');
+  log.classList.remove('hidden'); log.textContent = '🚀 Updating project...\n';
+  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Saving...';
+  const addLog = (msg, t='') => { log.textContent += (t==='ok'?'✅ ':t==='err'?'❌ ':t==='info'?'⏳ ':'')+msg+'\n'; log.scrollTop=log.scrollHeight; };
+  try {
+    const newHTML = buildProjectPage(d);
+    const newCard = buildCardSnippet(d);
+    addLog('Fetching current file...', 'info');
+    const fileRes = await fetch(`${api}/contents/projects/${slug}.html?ref=${branch}`, { headers });
+    const fileData = await fileRes.json();
+    addLog('Updating project page...', 'info');
+    const updateRes = await fetch(`${api}/contents/projects/${slug}.html`, {
+      method: 'PUT', headers,
+      body: JSON.stringify({ message: `Update project: ${d.title}`, content: btoa(unescape(encodeURIComponent(newHTML))), sha: fileData.sha, branch })
+    });
+    if (!updateRes.ok) throw new Error(`Update failed: ${updateRes.status}`);
+    addLog('Project page updated!', 'ok');
+    addLog('Updating index.html...', 'info');
     const indexRes = await fetch(`${api}/contents/index.html?ref=${branch}`, { headers });
     const indexData = await indexRes.json();
-    let indexContent = atob(indexData.content.replace(/\n/g, ''));
+    let indexContent = atob(indexData.content.replace(/\n/g,''));
+    if (indexContent.includes(`/R-D/projects/${slug}.html`)) {
+      const re = new RegExp(`<!-- Project Card:[^\\n]*\\n[\\s\\S]*?href="/R-D/projects/${slug}\\.html"[\\s\\S]*?<\\/div>\\s*<\\/div>\\s*<\\/div>`, 'i');
+      const m = indexContent.match(re);
+      if (m) indexContent = indexContent.replace(m[0], newCard);
+      else addLog('Old card not found, adding new one', 'info');
+    } else {
+      const marker = '<div id="projects-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">';
+      if (indexContent.includes(marker)) indexContent = indexContent.replace(marker, marker + '\n' + newCard);
+    }
+    const idxRes = await fetch(`${api}/contents/index.html`, {
+      method: 'PUT', headers,
+      body: JSON.stringify({ message: `Update card: ${d.title}`, content: btoa(unescape(encodeURIComponent(indexContent))), sha: indexData.sha, branch })
+    });
+    if (!idxRes.ok) throw new Error(`Index update failed: ${idxRes.status}`);
+    addLog('index.html updated!', 'ok');
+    addLog(''); addLog(`🎉 "${d.title}" is live in ~1 minute!`);
+    btn.innerHTML = '✅ Saved!'; btn.style.background = '#16a34a';
+    showToast(`✅ "${d.title}" updated successfully!`, 'success');
+  } catch(err) {
+    addLog('FAILED: ' + err.message, 'err');
+    btn.disabled = false; btn.innerHTML = '🔁 Retry';
+    showToast('Failed: ' + err.message, 'error');
+  }
+}
 
-    // Remove card from index.html
-    const cardPattern = new RegExp(`<!-- Project Card: ${title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')} -->.*?</div>\\s*</div>\\s*</div>`, 'gs');
-    const cleaned = indexContent.replace(cardPattern, '');
-    if (cleaned !== indexContent) indexContent = cleaned;
-
-    // Use GitHub API to delete project file
+// ===== DELETE (PAVAN ONLY) =====
+async function deleteProjectFromGH(slug, title) {
+  if (currentUser !== 'pavan') { showToast('Only Pavan can delete', 'error'); return; }
+  if (!confirm(`Permanently delete "${title}"?\n\n• Removes projects/${slug}.html from GitHub\n• Removes card from index.html\n• Cannot be undone`)) return;
+  const { token, owner, repo, branch } = getGHSettings();
+  const headers = { Authorization: `token ${token}`, 'Content-Type': 'application/json', Accept: 'application/vnd.github+json' };
+  const api = `https://api.github.com/repos/${owner}/${repo}`;
+  showToast('⏳ Deleting...', 'info');
+  try {
+    const fileRes = await fetch(`${api}/contents/projects/${slug}.html?ref=${branch}`, { headers });
+    if (!fileRes.ok) throw new Error('File not found');
+    const fileData = await fileRes.json();
     await fetch(`${api}/contents/projects/${slug}.html`, {
       method: 'DELETE', headers,
       body: JSON.stringify({ message: `Remove project: ${title}`, sha: fileData.sha, branch })
     });
-
-    // Update index.html via contents API
+    const indexRes = await fetch(`${api}/contents/index.html?ref=${branch}`, { headers });
+    const indexData = await indexRes.json();
+    let indexContent = atob(indexData.content.replace(/\n/g,''));
+    const re = new RegExp(`<!-- Project Card:[^\\n]*\\n[\\s\\S]*?href="/R-D/projects/${slug}\\.html"[\\s\\S]*?<\\/div>\\s*<\\/div>\\s*<\\/div>\\s*`, 'i');
+    indexContent = indexContent.replace(re, '');
     await fetch(`${api}/contents/index.html`, {
       method: 'PUT', headers,
-      body: JSON.stringify({ message: `Remove project card: ${title}`, content: btoa(unescape(encodeURIComponent(indexContent))), sha: indexData.sha, branch })
+      body: JSON.stringify({ message: `Remove card: ${title}`, content: btoa(unescape(encodeURIComponent(indexContent))), sha: indexData.sha, branch })
     });
-
-    // Remove from localStorage
     let projects = JSON.parse(localStorage.getItem('aura_projects') || '[]');
     projects = projects.filter(p => p.slug !== slug);
     localStorage.setItem('aura_projects', JSON.stringify(projects));
-    renderManageList();
     updateDashboardStats();
-    showToast(`✅ "${title}" deleted from live site!`, 'success');
-
-  } catch (err) {
-    showToast('Delete failed: ' + err.message, 'error');
-  }
+    document.getElementById('card-' + slug)?.remove();
+    showToast(`✅ "${title}" deleted!`, 'success');
+  } catch(err) { showToast('Delete failed: ' + err.message, 'error'); }
 }
 
 // ===== COPY =====
