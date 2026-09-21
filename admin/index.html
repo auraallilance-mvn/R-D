@@ -9,49 +9,57 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     body { font-family: 'Inter', sans-serif; }
-    .tab-active { background: linear-gradient(135deg, #1e3a8a, #10b981); color: white; }
-    .tab-inactive { background: #f1f5f9; color: #64748b; }
     .field-label { font-weight: 600; font-size: 0.875rem; color: #374151; margin-bottom: 4px; display: block; }
-    .field-input { width: 100%; border: 1px solid #d1d5db; border-radius: 8px; padding: 10px 14px; font-size: 0.9rem; outline: none; transition: border 0.2s; }
+    .field-input { width: 100%; border: 1px solid #d1d5db; border-radius: 8px; padding: 10px 14px; font-size: 0.9rem; outline: none; transition: border 0.2s; background: white; }
     .field-input:focus { border-color: #1e3a8a; box-shadow: 0 0 0 3px rgba(30,58,138,0.1); }
     textarea.field-input { resize: vertical; min-height: 90px; }
-    .btn-primary { background: linear-gradient(135deg, #1e3a8a, #10b981); color: white; border: none; padding: 10px 24px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: opacity 0.2s; }
+    select.field-input { cursor: pointer; }
+    .btn-primary { background: linear-gradient(135deg, #1e3a8a, #10b981); color: white; border: none; padding: 10px 24px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: opacity 0.2s; display: inline-flex; align-items: center; gap: 6px; }
     .btn-primary:hover { opacity: 0.9; }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
     .btn-secondary { background: #f1f5f9; color: #374151; border: 1px solid #d1d5db; padding: 10px 24px; border-radius: 8px; font-weight: 600; cursor: pointer; }
     .btn-danger { background: #fee2e2; color: #dc2626; border: none; padding: 6px 14px; border-radius: 6px; font-weight: 500; cursor: pointer; font-size: 0.8rem; }
+    .btn-deploy { background: linear-gradient(135deg, #059669, #10b981); color: white; border: none; padding: 14px 32px; border-radius: 10px; font-weight: 700; cursor: pointer; font-size: 1rem; transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px; }
+    .btn-deploy:hover { transform: translateY(-1px); box-shadow: 0 4px 20px rgba(16,185,129,0.4); }
+    .btn-deploy:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
     .card { background: white; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); padding: 24px; margin-bottom: 20px; }
     .section-divider { border: none; border-top: 2px dashed #e5e7eb; margin: 24px 0; }
     .tag-chip { background: #dbeafe; color: #1e40af; padding: 4px 10px; border-radius: 16px; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 6px; margin: 3px; }
     .tag-chip button { background: none; border: none; cursor: pointer; color: #1e40af; font-size: 1rem; line-height: 1; padding: 0; }
-    .code-output { background: #0f172a; color: #e2e8f0; border-radius: 10px; padding: 20px; font-family: 'Courier New', monospace; font-size: 0.8rem; max-height: 400px; overflow-y: auto; white-space: pre-wrap; word-break: break-all; }
+    .code-output { background: #0f172a; color: #e2e8f0; border-radius: 10px; padding: 20px; font-family: 'Courier New', monospace; font-size: 0.8rem; max-height: 300px; overflow-y: auto; white-space: pre-wrap; word-break: break-all; }
     .login-card { max-width: 420px; margin: 80px auto; }
     .stat-box { background: linear-gradient(135deg, #1e3a8a10, #10b98110); border: 1px solid #1e3a8a20; border-radius: 10px; padding: 20px; text-align: center; }
-    .sidebar-link { display: flex; align-items: center; gap: 10px; padding: 10px 16px; border-radius: 8px; cursor: pointer; font-weight: 500; color: #374151; transition: all 0.15s; }
+    .sidebar-link { display: flex; align-items: center; gap: 10px; padding: 10px 16px; border-radius: 8px; cursor: pointer; font-weight: 500; color: #374151; transition: all 0.15s; width: 100%; background: none; border: none; text-align: left; }
     .sidebar-link:hover { background: #f1f5f9; }
     .sidebar-link.active { background: linear-gradient(135deg, #1e3a8a, #10b981); color: white; }
-    .video-entry { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px; margin-bottom: 10px; }
-    .img-entry { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px; margin-bottom: 10px; }
-    select.field-input { cursor: pointer; }
-    #loginSection, #adminSection { transition: all 0.3s; }
+    .video-entry, .img-entry { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px; margin-bottom: 10px; }
     .copy-btn { background: #10b981; color: white; border: none; padding: 8px 18px; border-radius: 6px; font-size: 0.85rem; cursor: pointer; font-weight: 600; }
-    .copy-btn:hover { background: #059669; }
     .badge { padding: 3px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; }
     .badge-green { background: #dcfce7; color: #16a34a; }
     .badge-blue { background: #dbeafe; color: #1d4ed8; }
     .badge-yellow { background: #fef9c3; color: #b45309; }
-    .toast { position: fixed; bottom: 24px; right: 24px; background: #10b981; color: white; padding: 12px 24px; border-radius: 10px; font-weight: 600; z-index: 9999; box-shadow: 0 4px 12px rgba(0,0,0,0.15); display: none; }
+    .badge-red { background: #fee2e2; color: #dc2626; }
+    .toast { position: fixed; bottom: 24px; right: 24px; color: white; padding: 14px 24px; border-radius: 10px; font-weight: 600; z-index: 9999; box-shadow: 0 4px 12px rgba(0,0,0,0.2); display: none; max-width: 400px; font-size: 0.9rem; }
+    .toast.success { background: #10b981; }
+    .toast.error { background: #ef4444; }
+    .toast.info { background: #3b82f6; }
+    .deploy-log { background: #0f172a; color: #86efac; border-radius: 10px; padding: 20px; font-family: 'Courier New', monospace; font-size: 0.85rem; min-height: 120px; max-height: 250px; overflow-y: auto; white-space: pre-wrap; }
+    .spinner { display: inline-block; width: 18px; height: 18px; border: 3px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .token-warning { background: #fef9c3; border: 1px solid #fde68a; border-radius: 8px; padding: 12px 16px; font-size: 0.85rem; color: #92400e; }
+    .token-ok { background: #dcfce7; border: 1px solid #86efac; border-radius: 8px; padding: 12px 16px; font-size: 0.85rem; color: #166534; }
   </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
 
 <!-- Toast -->
-<div id="toast" class="toast">✓ Copied to clipboard!</div>
+<div id="toast" class="toast success"></div>
 
-<!-- ===== LOGIN SECTION ===== -->
+<!-- ===== LOGIN ===== -->
 <div id="loginSection">
   <div class="login-card card">
     <div class="text-center mb-8">
-      <div class="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4" style="background: linear-gradient(135deg,#1e3a8a,#10b981)">
+      <div class="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4" style="background:linear-gradient(135deg,#1e3a8a,#10b981)">
         <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
         </svg>
@@ -59,7 +67,6 @@
       <h1 class="text-2xl font-bold text-gray-800">AuraAlliance Admin</h1>
       <p class="text-gray-500 text-sm mt-1">Sign in to manage your portfolio</p>
     </div>
-
     <div class="mb-5">
       <label class="field-label">Username</label>
       <input id="loginUser" class="field-input" type="text" placeholder="admin" autocomplete="username" />
@@ -69,427 +76,350 @@
       <input id="loginPass" class="field-input" type="password" placeholder="••••••••" autocomplete="current-password" />
     </div>
     <div id="loginError" class="text-red-600 text-sm mb-4 hidden">❌ Invalid username or password.</div>
-    <button class="btn-primary w-full text-center" onclick="doLogin()">Sign In</button>
+    <button class="btn-primary w-full justify-center text-base" onclick="doLogin()">Sign In</button>
     <p class="text-center text-xs text-gray-400 mt-4">AuraAlliance R&D Team — Admin Portal</p>
   </div>
 </div>
 
-<!-- ===== ADMIN SECTION ===== -->
-<div id="adminSection" class="hidden">
-  <div class="flex min-h-screen">
+<!-- ===== ADMIN ===== -->
+<div id="adminSection" class="hidden flex min-h-screen">
 
-    <!-- Sidebar -->
-    <aside class="w-64 bg-white shadow-sm border-r border-gray-100 flex flex-col" style="min-height:100vh">
-      <div class="p-6 border-b border-gray-100">
-        <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:linear-gradient(135deg,#1e3a8a,#10b981)">
-            <span class="text-white font-bold text-sm">A</span>
+  <!-- Sidebar -->
+  <aside class="w-64 bg-white shadow-sm border-r border-gray-100 flex flex-col" style="min-height:100vh;position:sticky;top:0">
+    <div class="p-6 border-b border-gray-100">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:linear-gradient(135deg,#1e3a8a,#10b981)">
+          <span class="text-white font-bold">A</span>
+        </div>
+        <div>
+          <div class="font-bold text-gray-800 text-sm" id="sidebarUser">Admin</div>
+          <div class="text-xs" id="sidebarRole" style="color:#10b981">Team Member</div>
+        </div>
+      </div>
+    </div>
+    <nav class="p-4 flex-1 space-y-1">
+      <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3 px-2">Menu</p>
+      <button class="sidebar-link active" id="nav-dashboard" onclick="showSection('dashboard')">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+        Dashboard
+      </button>
+      <button class="sidebar-link" id="nav-add-project" onclick="showSection('add-project')">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+        Add New Project
+      </button>
+      <button class="sidebar-link" id="nav-projects" onclick="showSection('projects')">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+        Saved Projects
+      </button>
+      <button class="sidebar-link" id="nav-settings" onclick="showSection('settings')">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        GitHub Settings
+      </button>
+      <!-- PAVAN ONLY -->
+      <button class="sidebar-link hidden" id="nav-manage" onclick="showSection('manage')" style="background:#fef3c7;color:#92400e;margin-top:8px">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+        Delete Projects 👑
+      </button>
+    </nav>
+    <div class="p-4 border-t border-gray-100">
+      <button onclick="doLogout()" class="sidebar-link text-red-500">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+        Logout
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="flex-1 p-8 overflow-y-auto">
+
+    <!-- DASHBOARD -->
+    <div id="section-dashboard">
+      <div class="mb-8">
+        <h1 class="text-2xl font-bold text-gray-800">Welcome back, <span id="dashUser">Admin</span> 👋</h1>
+        <p class="text-gray-500 mt-1">Manage your AuraAlliance portfolio — deploy directly from this page.</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div class="stat-box"><div class="text-3xl font-bold text-blue-700" id="statProjects">0</div><div class="text-gray-600 text-sm mt-1 font-medium">Saved Projects</div></div>
+        <div class="stat-box"><div class="text-3xl font-bold text-green-600" id="statToken">❌</div><div class="text-gray-600 text-sm mt-1 font-medium">GitHub Token</div></div>
+        <div class="stat-box"><div class="text-3xl font-bold text-purple-600">~1min</div><div class="text-gray-600 text-sm mt-1 font-medium">Deploy Time</div></div>
+      </div>
+      <div class="card">
+        <h2 class="text-lg font-bold text-gray-800 mb-4">🚀 How It Works Now</h2>
+        <ol class="space-y-3 text-gray-600 text-sm">
+          <li class="flex gap-3"><span class="w-7 h-7 rounded-full flex items-center justify-center text-xs text-white font-bold flex-shrink-0" style="background:#1e3a8a">1</span><span>Go to <strong>GitHub Settings</strong> and paste your GitHub Personal Access Token once. It's saved in your browser.</span></li>
+          <li class="flex gap-3"><span class="w-7 h-7 rounded-full flex items-center justify-center text-xs text-white font-bold flex-shrink-0" style="background:#1e3a8a">2</span><span>Click <strong>Add New Project</strong>, fill in all details — title, description, videos, images, tech stack.</span></li>
+          <li class="flex gap-3"><span class="w-7 h-7 rounded-full flex items-center justify-center text-xs text-white font-bold flex-shrink-0" style="background:#1e3a8a">3</span><span>Click <strong>⚡ Generate HTML</strong> to preview the page.</span></li>
+          <li class="flex gap-3"><span class="w-7 h-7 rounded-full flex items-center justify-center text-xs text-white font-bold flex-shrink-0" style="background:#10b981">4</span><span>Click <strong>🚀 Deploy to Live Site</strong> — the browser pushes directly to GitHub. No terminal, no downloads.</span></li>
+          <li class="flex gap-3"><span class="w-7 h-7 rounded-full flex items-center justify-center text-xs text-white font-bold flex-shrink-0" style="background:#10b981">5</span><span>Wait ~1 minute. Your project is live on the website!</span></li>
+        </ol>
+      </div>
+      <div id="dashTokenWarn" class="hidden token-warning mb-4">
+        ⚠️ <strong>GitHub Token not set.</strong> Go to <button onclick="showSection('settings')" class="underline font-semibold">GitHub Settings</button> and add your token to enable one-click deploy.
+      </div>
+    </div>
+
+    <!-- GITHUB SETTINGS -->
+    <div id="section-settings" class="hidden">
+      <div class="mb-6">
+        <h1 class="text-2xl font-bold text-gray-800">GitHub Settings</h1>
+        <p class="text-gray-500 text-sm mt-1">Set your GitHub token once — the admin panel uses it to deploy directly to your repo.</p>
+      </div>
+      <div class="card">
+        <h2 class="font-bold text-gray-800 mb-4">🔑 GitHub Personal Access Token</h2>
+        <div id="tokenStatus" class="mb-4"></div>
+        <div class="mb-4">
+          <label class="field-label">Personal Access Token</label>
+          <input id="ghToken" class="field-input" type="password" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" />
+          <p class="text-xs text-gray-400 mt-1">Stored only in your browser's localStorage. Never sent anywhere except GitHub's own API.</p>
+        </div>
+        <button class="btn-primary" onclick="saveToken()">💾 Save Token</button>
+        <button class="btn-secondary ml-2" onclick="clearToken()">Clear Token</button>
+
+        <hr class="section-divider">
+
+        <h3 class="font-bold text-gray-700 mb-3">📋 How to get a GitHub Token</h3>
+        <ol class="text-sm text-gray-600 space-y-2">
+          <li>1. Go to <strong>github.com → Settings → Developer settings → Personal access tokens → Tokens (classic)</strong></li>
+          <li>2. Click <strong>Generate new token (classic)</strong></li>
+          <li>3. Give it a name like "AuraAlliance Admin"</li>
+          <li>4. Select scopes: ✅ <strong>repo</strong> (full control of private/public repositories)</li>
+          <li>5. Click <strong>Generate token</strong> and copy it here</li>
+        </ol>
+
+        <hr class="section-divider">
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="field-label">GitHub Owner</label>
+            <input id="ghOwner" class="field-input" type="text" value="auraallilance-mvn" />
           </div>
           <div>
-            <div class="font-bold text-gray-800 text-sm" id="sidebarUserName">AuraAlliance</div>
-            <div class="text-xs text-gray-500" id="sidebarUserRole">Admin Panel</div>
+            <label class="field-label">Repository Name</label>
+            <input id="ghRepo" class="field-input" type="text" value="R-D" />
           </div>
-        </div>
-      </div>
-
-      <nav class="p-4 flex-1">
-        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3 px-2">Menu</p>
-        <div class="sidebar-link active" id="nav-dashboard" onclick="showSection('dashboard')">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
-          Dashboard
-        </div>
-        <div class="sidebar-link" id="nav-add-project" onclick="showSection('add-project')">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-          Add New Project
-        </div>
-        <div class="sidebar-link" id="nav-projects" onclick="showSection('projects')">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
-          Projects
-        </div>
-        <div class="sidebar-link" id="nav-media" onclick="showSection('media')">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-          Media Guide
-        </div>
-        <!-- PAVAN ONLY -->
-        <div class="sidebar-link hidden" id="nav-manage" onclick="showSection('manage')" style="background:#fef9c3;color:#b45309;margin-top:8px">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-          Manage &amp; Delete 👑
-        </div>
-      </nav>
-
-      <div class="p-4 border-t border-gray-100">
-        <button onclick="doLogout()" class="sidebar-link w-full text-red-500 hover:bg-red-50">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
-          Logout
-        </button>
-      </div>
-    </aside>
-
-    <!-- Main Content -->
-    <main class="flex-1 p-8 overflow-y-auto">
-
-      <!-- ===== DASHBOARD ===== -->
-      <div id="section-dashboard">
-        <div class="mb-8">
-          <h1 class="text-2xl font-bold text-gray-800">Welcome back, Admin 👋</h1>
-          <p class="text-gray-500 mt-1">Manage your AuraAlliance portfolio projects and media.</p>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div class="stat-box">
-            <div class="text-3xl font-bold text-blue-700" id="statProjects">0</div>
-            <div class="text-gray-600 text-sm mt-1 font-medium">Saved Projects</div>
-          </div>
-          <div class="stat-box">
-            <div class="text-3xl font-bold text-green-600">10</div>
-            <div class="text-gray-600 text-sm mt-1 font-medium">Live on Website</div>
-          </div>
-          <div class="stat-box">
-            <div class="text-3xl font-bold text-purple-600">∞</div>
-            <div class="text-gray-600 text-sm mt-1 font-medium">Team Members</div>
-          </div>
-        </div>
-
-        <div class="card">
-          <h2 class="text-lg font-bold text-gray-800 mb-4">🚀 How to Add a New Project</h2>
-          <ol class="space-y-3 text-gray-600 text-sm">
-            <li class="flex gap-3"><span class="font-bold text-blue-700 w-6 text-center">1</span><span>Click <strong>"Add New Project"</strong> in the sidebar and fill out all the project details.</span></li>
-            <li class="flex gap-3"><span class="font-bold text-blue-700 w-6 text-center">2</span><span>Add thumbnail path, demo videos, gallery images, and all relevant info.</span></li>
-            <li class="flex gap-3"><span class="font-bold text-blue-700 w-6 text-center">3</span><span>Click <strong>"Generate Project HTML"</strong> — the complete project page code is generated for you.</span></li>
-            <li class="flex gap-3"><span class="font-bold text-blue-700 w-6 text-center">4</span><span>Copy the code and save it as <code class="bg-gray-100 px-1 rounded">projects/your-project-name.html</code> in the repo.</span></li>
-            <li class="flex gap-3"><span class="font-bold text-blue-700 w-6 text-center">5</span><span>Copy the <strong>Project Card snippet</strong> and paste it into <code class="bg-gray-100 px-1 rounded">index.html</code> in the Projects section.</span></li>
-            <li class="flex gap-3"><span class="font-bold text-blue-700 w-6 text-center">6</span><span>Commit and push to GitHub — site goes live automatically!</span></li>
-          </ol>
-        </div>
-
-        <div class="card">
-          <h2 class="text-lg font-bold text-gray-800 mb-3">📂 Folder Structure for Media</h2>
-          <div class="bg-gray-900 text-green-400 rounded-lg p-4 font-mono text-sm">
-            <div>assets/</div>
-            <div class="ml-4">├── videos/        ← .mp4 demo videos</div>
-            <div class="ml-4">├── projects/      ← thumbnail images (.jpg/.webp)</div>
-            <div class="ml-4">└── images/        ← general images</div>
-            <div>projects/            ← HTML project pages go here</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- ===== ADD PROJECT ===== -->
-      <div id="section-add-project" class="hidden">
-        <div class="mb-6 flex items-center justify-between">
           <div>
-            <h1 class="text-2xl font-bold text-gray-800">Add New Project</h1>
-            <p class="text-gray-500 text-sm mt-1">Fill in all details — then generate the HTML file.</p>
-          </div>
-          <button class="btn-primary" onclick="generateHTML()">⚡ Generate Project HTML</button>
-        </div>
-
-        <!-- Basic Info -->
-        <div class="card">
-          <h2 class="font-bold text-gray-700 mb-4 flex items-center gap-2">
-            <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs text-white font-bold" style="background:#1e3a8a">1</span>
-            Basic Information
-          </h2>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label class="field-label">Project Title *</label>
-              <input id="pTitle" class="field-input" type="text" placeholder="e.g. Seven Segment Display Clock" />
-            </div>
-            <div>
-              <label class="field-label">File Slug (for filename) *</label>
-              <input id="pSlug" class="field-input" type="text" placeholder="e.g. seven-segment-display" />
-              <p class="text-xs text-gray-400 mt-1">Used as: projects/<span id="slugPreview">slug</span>.html</p>
-            </div>
-            <div class="md:col-span-2">
-              <label class="field-label">Short Description * <span class="text-gray-400 font-normal">(shown on project cards)</span></label>
-              <input id="pDesc" class="field-input" type="text" placeholder="e.g. Digital clock using seven segment displays - First electronics learning experience" />
-            </div>
-            <div>
-              <label class="field-label">Category *</label>
-              <select id="pCategory" class="field-input">
-                <option value="IoT">IoT</option>
-                <option value="Robotics">Robotics</option>
-                <option value="Computer Vision">Computer Vision</option>
-                <option value="Electronics">Electronics</option>
-                <option value="Embedded Systems">Embedded Systems</option>
-                <option value="Drone">Drone / Aerial</option>
-                <option value="Machine Learning">Machine Learning</option>
-                <option value="Other">Other</option>
-              </select>
-            </div>
-            <div>
-              <label class="field-label">Project Status</label>
-              <select id="pStatus" class="field-input">
-                <option value="Completed">Completed</option>
-                <option value="In Progress">In Progress</option>
-                <option value="Planning">Planning</option>
-              </select>
-            </div>
+            <label class="field-label">Branch</label>
+            <input id="ghBranch" class="field-input" type="text" value="main" />
           </div>
         </div>
+        <button class="btn-primary mt-4" onclick="saveGitHubSettings()">💾 Save Settings</button>
+      </div>
+    </div>
 
-        <!-- Thumbnail & Media -->
+    <!-- ADD PROJECT -->
+    <div id="section-add-project" class="hidden">
+      <div class="mb-6 flex items-center justify-between flex-wrap gap-3">
+        <div>
+          <h1 class="text-2xl font-bold text-gray-800">Add New Project</h1>
+          <p class="text-gray-500 text-sm mt-1">Fill in details, generate HTML, then deploy with one click.</p>
+        </div>
+        <button class="btn-primary" onclick="generateHTML()">⚡ Generate HTML</button>
+      </div>
+
+      <!-- Basic Info -->
+      <div class="card">
+        <h2 class="font-bold text-gray-700 mb-4 flex items-center gap-2">
+          <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs text-white font-bold" style="background:#1e3a8a">1</span>
+          Basic Information
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="field-label">Project Title *</label>
+            <input id="pTitle" class="field-input" type="text" placeholder="e.g. Seven Segment Display Clock" />
+          </div>
+          <div>
+            <label class="field-label">File Slug *</label>
+            <input id="pSlug" class="field-input" type="text" placeholder="e.g. seven-segment-display" />
+            <p class="text-xs text-gray-400 mt-1">File: projects/<span id="slugPreview">slug</span>.html</p>
+          </div>
+          <div class="md:col-span-2">
+            <label class="field-label">Short Description *</label>
+            <input id="pDesc" class="field-input" type="text" placeholder="Shown on project cards — keep it concise" />
+          </div>
+          <div>
+            <label class="field-label">Category *</label>
+            <select id="pCategory" class="field-input">
+              <option>IoT</option><option>Robotics</option><option>Computer Vision</option>
+              <option>Electronics</option><option>Embedded Systems</option>
+              <option>Drone</option><option>Machine Learning</option><option>Other</option>
+            </select>
+          </div>
+          <div>
+            <label class="field-label">Status</label>
+            <select id="pStatus" class="field-input">
+              <option>Completed</option><option>In Progress</option><option>Planning</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Media -->
+      <div class="card">
+        <h2 class="font-bold text-gray-700 mb-4 flex items-center gap-2">
+          <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs text-white font-bold" style="background:#1e3a8a">2</span>
+          Thumbnail &amp; Media
+        </h2>
+        <div class="mb-4">
+          <label class="field-label">Thumbnail Image Path *</label>
+          <input id="pThumbnail" class="field-input" type="text" placeholder="/R-D/assets/projects/your-image.jpg" />
+          <p class="text-xs text-gray-400 mt-1">Upload image to <code>assets/projects/</code> via GitHub first.</p>
+        </div>
+        <hr class="section-divider">
+        <label class="field-label">Demo Videos</label>
+        <p class="text-xs text-gray-400 mb-3">Upload to <code>assets/videos/</code> first, then enter path.</p>
+        <div id="videosContainer"></div>
+        <button type="button" class="btn-secondary text-sm" onclick="addVideoField()">+ Add Video</button>
+        <hr class="section-divider">
+        <label class="field-label">Gallery Images</label>
+        <div id="galleryContainer"></div>
+        <button type="button" class="btn-secondary text-sm" onclick="addGalleryField()">+ Add Image</button>
+      </div>
+
+      <!-- Technologies -->
+      <div class="card">
+        <h2 class="font-bold text-gray-700 mb-4 flex items-center gap-2">
+          <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs text-white font-bold" style="background:#1e3a8a">3</span>
+          Technologies Used
+        </h2>
+        <div class="flex gap-2 mb-3">
+          <input id="techInput" class="field-input flex-1" type="text" placeholder="Arduino, ESP32, Python..." onkeydown="if(event.key==='Enter'){event.preventDefault();addTech()}" />
+          <button type="button" class="btn-primary" onclick="addTech()">Add</button>
+        </div>
+        <div id="techTags"></div>
+      </div>
+
+      <!-- Details -->
+      <div class="card">
+        <h2 class="font-bold text-gray-700 mb-4 flex items-center gap-2">
+          <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs text-white font-bold" style="background:#1e3a8a">4</span>
+          Project Details
+        </h2>
+        <div class="space-y-4">
+          <div>
+            <label class="field-label">Project Overview *</label>
+            <textarea id="pOverview" class="field-input" style="min-height:120px" placeholder="What it does, how it works, why you built it..."></textarea>
+          </div>
+          <div>
+            <label class="field-label">Mentor / Supervisor</label>
+            <input id="pMentor" class="field-input" type="text" placeholder="e.g. Prof. M.V. Narayana Sir, HOD ECE" />
+          </div>
+          <div>
+            <label class="field-label">Hardware / Components <span class="text-gray-400 font-normal">(one per line)</span></label>
+            <textarea id="pComponents" class="field-input" placeholder="Arduino Uno&#10;4× Seven Segment Displays&#10;5V Power supply"></textarea>
+          </div>
+          <div>
+            <label class="field-label">Learning Outcomes <span class="text-gray-400 font-normal">(one per line)</span></label>
+            <textarea id="pLearnings" class="field-input" placeholder="Seven segment display fundamentals&#10;Multiplexing techniques"></textarea>
+          </div>
+          <div>
+            <label class="field-label">Results &amp; Impact</label>
+            <textarea id="pResults" class="field-input" placeholder="e.g. 92% accuracy, reduced latency by 30%..."></textarea>
+          </div>
+          <div>
+            <label class="field-label">GitHub Repository URL</label>
+            <input id="pGithub" class="field-input" type="text" placeholder="https://github.com/username/repo" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="card">
+        <h2 class="font-bold text-gray-700 mb-4 flex items-center gap-2">
+          <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs text-white font-bold" style="background:#1e3a8a">5</span>
+          Project Stats <span class="text-gray-400 font-normal text-sm">(shown as big numbers)</span>
+        </h2>
+        <div id="statsContainer"></div>
+        <button type="button" class="btn-secondary text-sm" onclick="addStatField()">+ Add Stat</button>
+      </div>
+
+      <!-- Generate -->
+      <div class="card" style="background:linear-gradient(135deg,#eff6ff,#ecfdf5);border:1px solid #bfdbfe">
+        <div class="flex items-center justify-between flex-wrap gap-3">
+          <div>
+            <h3 class="font-bold text-gray-800">Step 1: Generate HTML</h3>
+            <p class="text-sm text-gray-500">Preview the project page before deploying.</p>
+          </div>
+          <button class="btn-primary text-base px-8 py-3" onclick="generateHTML()">⚡ Generate HTML</button>
+        </div>
+      </div>
+
+      <!-- Output -->
+      <div id="outputSection" class="hidden">
         <div class="card">
-          <h2 class="font-bold text-gray-700 mb-4 flex items-center gap-2">
-            <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs text-white font-bold" style="background:#1e3a8a">2</span>
-            Thumbnail &amp; Media
-          </h2>
+          <div class="flex items-center justify-between mb-3">
+            <div>
+              <h2 class="font-bold text-gray-800">📄 Project Page HTML</h2>
+              <p class="text-xs text-gray-500">Will be saved as <code id="outputFilename" class="bg-gray-100 px-1 rounded">projects/slug.html</code></p>
+            </div>
+            <button class="copy-btn" onclick="copyCode('projectHTML')">📋 Copy</button>
+          </div>
+          <div id="projectHTML" class="code-output"></div>
+        </div>
+
+        <!-- DEPLOY CARD -->
+        <div class="card" style="background:#0f172a;border:2px solid #10b981">
+          <div class="mb-4">
+            <h2 class="text-xl font-bold text-white mb-1">🚀 Deploy to Live Website</h2>
+            <p class="text-green-300 text-sm">Pushes directly to GitHub — no terminal, no downloads needed.</p>
+          </div>
+
+          <div id="deployTokenWarn" class="hidden mb-4 p-3 rounded-lg text-sm font-medium" style="background:#451a03;color:#fcd34d">
+            ⚠️ GitHub token not set. <button onclick="showSection('settings')" class="underline ml-1">Set it in GitHub Settings →</button>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4 text-sm text-green-200">
+            <div class="flex items-center gap-2">✅ Creates <code class="text-green-300">projects/<span class="outSlug"></span>.html</code></div>
+            <div class="flex items-center gap-2">✅ Adds card to <code class="text-green-300">index.html</code></div>
+            <div class="flex items-center gap-2">✅ Commits to GitHub</div>
+            <div class="flex items-center gap-2">✅ Site goes live in ~1 minute</div>
+          </div>
 
           <div class="mb-4">
-            <label class="field-label">Thumbnail Image Path *</label>
-            <input id="pThumbnail" class="field-input" type="text" placeholder="e.g. /R-D/assets/projects/seven-segment.jpg" />
-            <p class="text-xs text-gray-400 mt-1">Upload the image to <code>assets/projects/</code> folder first, then enter path here.</p>
+            <div class="deploy-log" id="deployLog">Ready to deploy. Click the button below.</div>
           </div>
 
-          <hr class="section-divider">
-
-          <div class="mb-3">
-            <label class="field-label">Demo Videos</label>
-            <p class="text-xs text-gray-400 mb-3">Add one or more video files. Upload to <code>assets/videos/</code> first.</p>
-            <div id="videosContainer"></div>
-            <button type="button" class="btn-secondary text-sm mt-2" onclick="addVideoField()">+ Add Video</button>
-          </div>
-
-          <hr class="section-divider">
-
-          <div>
-            <label class="field-label">Gallery Images</label>
-            <p class="text-xs text-gray-400 mb-3">Add extra screenshots or photos. Upload to <code>assets/images/</code> or <code>assets/projects/</code> first.</p>
-            <div id="galleryContainer"></div>
-            <button type="button" class="btn-secondary text-sm mt-2" onclick="addGalleryField()">+ Add Image</button>
-          </div>
-        </div>
-
-        <!-- Technologies -->
-        <div class="card">
-          <h2 class="font-bold text-gray-700 mb-4 flex items-center gap-2">
-            <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs text-white font-bold" style="background:#1e3a8a">3</span>
-            Technologies Used
-          </h2>
-          <div class="flex gap-2 mb-3">
-            <input id="techInput" class="field-input flex-1" type="text" placeholder="e.g. Arduino, ESP32, Raspberry Pi..." onkeydown="if(event.key==='Enter'){event.preventDefault();addTech()}" />
-            <button type="button" class="btn-primary px-4" onclick="addTech()">Add</button>
-          </div>
-          <div id="techTags"></div>
-          <p class="text-xs text-gray-400 mt-2">Press Enter or click Add after each technology.</p>
-        </div>
-
-        <!-- Project Details -->
-        <div class="card">
-          <h2 class="font-bold text-gray-700 mb-4 flex items-center gap-2">
-            <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs text-white font-bold" style="background:#1e3a8a">4</span>
-            Project Details
-          </h2>
-          <div class="space-y-4">
-            <div>
-              <label class="field-label">Project Overview *</label>
-              <textarea id="pOverview" class="field-input" placeholder="Describe the project in detail — what it does, why you built it, how it works..." style="min-height:120px"></textarea>
-            </div>
-            <div>
-              <label class="field-label">Mentor / Supervisor <span class="text-gray-400 font-normal">(optional)</span></label>
-              <input id="pMentor" class="field-input" type="text" placeholder="e.g. Prof. M.V. Narayana Sir, Head of Department ECE" />
-            </div>
-            <div>
-              <label class="field-label">Hardware / Components Used <span class="text-gray-400 font-normal">(one per line)</span></label>
-              <textarea id="pComponents" class="field-input" placeholder="Arduino Uno&#10;4× Seven Segment Displays&#10;Breadboard and jumper wires&#10;5V Power supply"></textarea>
-            </div>
-            <div>
-              <label class="field-label">Key Learning Outcomes <span class="text-gray-400 font-normal">(one per line)</span></label>
-              <textarea id="pLearnings" class="field-input" placeholder="Understanding seven segment displays&#10;Multiplexing techniques&#10;Arduino programming basics"></textarea>
-            </div>
-            <div>
-              <label class="field-label">Results &amp; Impact <span class="text-gray-400 font-normal">(optional)</span></label>
-              <textarea id="pResults" class="field-input" placeholder="e.g. Achieved 92% accuracy, reduced latency by 30%, won first place..."></textarea>
-            </div>
-            <div>
-              <label class="field-label">GitHub Repository URL <span class="text-gray-400 font-normal">(optional)</span></label>
-              <input id="pGithub" class="field-input" type="text" placeholder="https://github.com/username/repo" />
-            </div>
-          </div>
-        </div>
-
-        <!-- Stats / Highlights -->
-        <div class="card">
-          <h2 class="font-bold text-gray-700 mb-4 flex items-center gap-2">
-            <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs text-white font-bold" style="background:#1e3a8a">5</span>
-            Project Stats / Highlights <span class="text-gray-400 font-normal text-sm ml-2">(shown as big numbers)</span>
-          </h2>
-          <div id="statsContainer"></div>
-          <button type="button" class="btn-secondary text-sm" onclick="addStatField()">+ Add Stat</button>
-        </div>
-
-        <!-- Generate Button -->
-        <div class="card bg-gradient-to-r from-blue-50 to-green-50 border border-blue-100">
-          <div class="flex items-center justify-between">
-            <div>
-              <h3 class="font-bold text-gray-800">Ready to Generate?</h3>
-              <p class="text-sm text-gray-500 mt-1">This will create the full project HTML page + a card snippet for index.html</p>
-            </div>
-            <button class="btn-primary text-lg px-8 py-3" onclick="generateHTML()">⚡ Generate HTML</button>
-          </div>
-        </div>
-
-        <!-- Output Section -->
-        <div id="outputSection" class="hidden">
-          <!-- Project Page HTML -->
-          <div class="card">
-            <div class="flex items-center justify-between mb-4">
-              <div>
-                <h2 class="font-bold text-gray-800">📄 Project Page HTML</h2>
-                <p class="text-xs text-gray-500 mt-1">Save as <code id="outputFilename" class="bg-gray-100 px-1 rounded">projects/slug.html</code></p>
-              </div>
-              <button class="copy-btn" onclick="copyCode('projectHTML')">📋 Copy Code</button>
-            </div>
-            <div id="projectHTML" class="code-output"></div>
-          </div>
-
-          <!-- Index Card Snippet -->
-          <div class="card">
-            <div class="flex items-center justify-between mb-4">
-              <div>
-                <h2 class="font-bold text-gray-800">🃏 Project Card for index.html</h2>
-                <p class="text-xs text-gray-500 mt-1">Paste this inside the Projects section of <code class="bg-gray-100 px-1 rounded">index.html</code></p>
-              </div>
-              <button class="copy-btn" onclick="copyCode('cardHTML')">📋 Copy Card</button>
-            </div>
-            <div id="cardHTML" class="code-output"></div>
-          </div>
-
-          <!-- AUTO DEPLOY -->
-          <div class="card" style="background:linear-gradient(135deg,#0f172a,#1e3a8a);color:white">
-            <div class="flex items-center justify-between">
-              <div>
-                <h2 class="font-bold text-white text-lg">🚀 Auto-Deploy to Live Website</h2>
-                <p class="text-blue-200 text-sm mt-1">Downloads a <strong>.bat script</strong> — just double-click it to save files &amp; push live!</p>
-                <ul class="text-blue-300 text-xs mt-2 space-y-1">
-                  <li>✅ Saves project HTML file automatically</li>
-                  <li>✅ Adds project card to index.html</li>
-                  <li>✅ Commits &amp; pushes to GitHub (live in ~1 min)</li>
-                </ul>
-              </div>
-              <button class="px-6 py-3 rounded-xl font-bold text-base cursor-pointer" style="background:linear-gradient(135deg,#10b981,#059669);color:white;border:none" onclick="downloadDeployScript()">
-                ⬇️ Download Deploy Script
-              </button>
-            </div>
+          <div class="flex items-center gap-3 flex-wrap">
+            <button class="btn-deploy" id="deployBtn" onclick="deployToGitHub()">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
+              Deploy to Live Site
+            </button>
+            <span id="deployStatus" class="text-sm text-green-300 hidden"></span>
           </div>
         </div>
       </div>
+    </div>
 
-      <!-- ===== PROJECTS LIST ===== -->
-      <div id="section-projects" class="hidden">
-        <div class="mb-6">
-          <h1 class="text-2xl font-bold text-gray-800">Saved Projects</h1>
-          <p class="text-gray-500 text-sm mt-1">Projects you've created in this session (stored locally in browser).</p>
-        </div>
-        <div id="projectsList">
-          <div class="card text-center text-gray-400 py-12">
-            <svg class="w-12 h-12 mx-auto mb-3 opacity-30" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-            <p>No projects saved yet. Add your first project!</p>
-            <button class="btn-primary mt-4" onclick="showSection('add-project')">+ Add New Project</button>
-          </div>
-        </div>
+    <!-- PROJECTS LIST -->
+    <div id="section-projects" class="hidden">
+      <div class="mb-6">
+        <h1 class="text-2xl font-bold text-gray-800">Saved Projects</h1>
+        <p class="text-gray-500 text-sm mt-1">Projects saved in this browser. You can re-deploy any of them.</p>
       </div>
+      <div id="projectsList"></div>
+    </div>
 
-      <!-- ===== MEDIA GUIDE ===== -->
-      <div id="section-media" class="hidden">
-        <div class="mb-6">
-          <h1 class="text-2xl font-bold text-gray-800">Media Guide</h1>
-          <p class="text-gray-500 text-sm mt-1">How to add and reference images, videos, and documents.</p>
-        </div>
-
-        <div class="card">
-          <h2 class="font-bold text-gray-800 mb-4">📁 Where to Put Files</h2>
-          <div class="space-y-3">
-            <div class="flex gap-4 p-3 bg-blue-50 rounded-lg">
-              <span class="text-2xl">🖼️</span>
-              <div>
-                <div class="font-semibold text-blue-800">Thumbnail Images</div>
-                <div class="text-sm text-blue-700">Folder: <code>assets/projects/</code></div>
-                <div class="text-xs text-blue-600 mt-1">Recommended: .jpg or .webp, 400×300px</div>
-                <div class="text-xs font-mono bg-white rounded px-2 py-1 mt-1 border border-blue-200">/R-D/assets/projects/your-image.jpg</div>
-              </div>
-            </div>
-            <div class="flex gap-4 p-3 bg-green-50 rounded-lg">
-              <span class="text-2xl">🎥</span>
-              <div>
-                <div class="font-semibold text-green-800">Demo Videos</div>
-                <div class="text-sm text-green-700">Folder: <code>assets/videos/</code></div>
-                <div class="text-xs text-green-600 mt-1">Recommended: .mp4, keep under 50MB for GitHub</div>
-                <div class="text-xs font-mono bg-white rounded px-2 py-1 mt-1 border border-green-200">/R-D/assets/videos/your-video.mp4</div>
-              </div>
-            </div>
-            <div class="flex gap-4 p-3 bg-purple-50 rounded-lg">
-              <span class="text-2xl">📄</span>
-              <div>
-                <div class="font-semibold text-purple-800">Documents / PDFs</div>
-                <div class="text-sm text-purple-700">Folder: <code>assets/videos/</code> or <code>assets/images/</code></div>
-                <div class="text-xs text-purple-600 mt-1">Any document type supported</div>
-                <div class="text-xs font-mono bg-white rounded px-2 py-1 mt-1 border border-purple-200">/R-D/assets/videos/your-document.pdf</div>
-              </div>
-            </div>
-            <div class="flex gap-4 p-3 bg-yellow-50 rounded-lg">
-              <span class="text-2xl">🖼️</span>
-              <div>
-                <div class="font-semibold text-yellow-800">General Images</div>
-                <div class="text-sm text-yellow-700">Folder: <code>assets/images/</code></div>
-                <div class="text-xs font-mono bg-white rounded px-2 py-1 mt-1 border border-yellow-200">/R-D/assets/images/your-image.png</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="card">
-          <h2 class="font-bold text-gray-800 mb-4">⚡ Quick Path Reference</h2>
-          <table class="w-full text-sm">
-            <thead>
-              <tr class="bg-gray-50">
-                <th class="text-left p-3 rounded-tl-lg font-semibold text-gray-700">File Type</th>
-                <th class="text-left p-3 font-semibold text-gray-700">Put File In</th>
-                <th class="text-left p-3 rounded-tr-lg font-semibold text-gray-700">Use Path</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-gray-100">
-              <tr><td class="p-3">Project thumbnail</td><td class="p-3 font-mono text-xs">assets/projects/</td><td class="p-3 font-mono text-xs">/R-D/assets/projects/name.jpg</td></tr>
-              <tr><td class="p-3">Demo video</td><td class="p-3 font-mono text-xs">assets/videos/</td><td class="p-3 font-mono text-xs">/R-D/assets/videos/name.mp4</td></tr>
-              <tr><td class="p-3">Gallery image</td><td class="p-3 font-mono text-xs">assets/images/</td><td class="p-3 font-mono text-xs">/R-D/assets/images/name.png</td></tr>
-              <tr><td class="p-3">Document/PDF</td><td class="p-3 font-mono text-xs">assets/videos/</td><td class="p-3 font-mono text-xs">/R-D/assets/videos/name.pdf</td></tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div class="card">
-          <h2 class="font-bold text-gray-800 mb-3">🚀 Deploy to Live Site</h2>
-          <p class="text-gray-600 text-sm mb-4">After adding files and generating HTML, run these commands in your terminal:</p>
-          <div class="bg-gray-900 text-green-400 rounded-lg p-4 font-mono text-sm space-y-1">
-            <div>git add .</div>
-            <div>git commit -m "Add new project: [project name]"</div>
-            <div>git push origin main</div>
-          </div>
-          <p class="text-xs text-gray-400 mt-3">GitHub Pages will auto-deploy in ~1-2 minutes.</p>
-        </div>
+    <!-- DELETE (PAVAN ONLY) -->
+    <div id="section-manage" class="hidden">
+      <div class="mb-6">
+        <h1 class="text-2xl font-bold text-gray-800">Delete Projects 👑</h1>
+        <p class="text-gray-500 text-sm mt-1">Only visible to Pavan. Deletes the project file from GitHub directly.</p>
       </div>
+      <div id="manageList"></div>
+    </div>
 
-      <!-- ===== MANAGE & DELETE (PAVAN ONLY) ===== -->
-      <div id="section-manage" class="hidden">
-        <div class="mb-6 flex items-center gap-3">
-          <div>
-            <h1 class="text-2xl font-bold text-gray-800">Manage &amp; Delete Projects 👑</h1>
-            <p class="text-gray-500 text-sm mt-1">Only visible to <strong>pavan</strong>. Delete projects from the saved list and generate removal scripts.</p>
-          </div>
-          <span class="badge badge-yellow ml-auto">Super Admin</span>
-        </div>
-        <div id="manageList"></div>
-      </div>
-
-    </main>
-  </div>
+  </main>
 </div>
 
 <script>
-// ===== AUTH =====
-const USERS = { 'admin': 'aura2024', 'pavan': 'pavan123', 'team': 'team2024' };
+// ===== CONFIG =====
+const USERS = { admin: 'aura2024', pavan: 'pavan123', team: 'team2024' };
+const GH_DEFAULTS = { owner: 'auraallilance-mvn', repo: 'R-D', branch: 'main' };
 let currentUser = '';
+let videoCount = 0, galleryCount = 0, statCount = 0;
+let techList = [];
+let lastGenData = null; // stores last generated project data
 
+// ===== AUTH =====
 function doLogin() {
   const u = document.getElementById('loginUser').value.trim();
   const p = document.getElementById('loginPass').value;
@@ -497,21 +427,18 @@ function doLogin() {
     currentUser = u;
     document.getElementById('loginSection').classList.add('hidden');
     document.getElementById('adminSection').classList.remove('hidden');
-    // Show user info in sidebar
-    document.getElementById('sidebarUserName').textContent = u.charAt(0).toUpperCase() + u.slice(1);
-    document.getElementById('sidebarUserRole').textContent = u === 'pavan' ? 'Super Admin 👑' : 'Team Member';
-    // Show manage projects only for pavan
-    if (u === 'pavan') {
-      document.getElementById('nav-manage').classList.remove('hidden');
-    }
-    renderProjectsList();
-    updateDashboardStats();
+    document.getElementById('sidebarUser').textContent = u.charAt(0).toUpperCase() + u.slice(1);
+    document.getElementById('sidebarRole').textContent = u === 'pavan' ? 'Super Admin 👑' : 'Team Member';
+    document.getElementById('dashUser').textContent = u.charAt(0).toUpperCase() + u.slice(1);
+    if (u === 'pavan') document.getElementById('nav-manage').classList.remove('hidden');
     addVideoField(); addStatField();
+    updateDashboardStats();
+    checkTokenStatus();
   } else {
     document.getElementById('loginError').classList.remove('hidden');
   }
 }
-document.getElementById('loginPass').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
+document.getElementById('loginPass').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
 
 function doLogout() {
   currentUser = '';
@@ -524,128 +451,150 @@ function doLogout() {
 
 // ===== NAVIGATION =====
 function showSection(name) {
-  ['dashboard','add-project','projects','media','manage'].forEach(s => {
-    const el = document.getElementById('section-'+s);
-    const nav = document.getElementById('nav-'+s);
-    if (el) el.classList.add('hidden');
-    if (nav) nav.classList.remove('active');
+  ['dashboard','add-project','projects','settings','manage'].forEach(s => {
+    document.getElementById('section-' + s)?.classList.add('hidden');
+    document.getElementById('nav-' + s)?.classList.remove('active');
   });
-  document.getElementById('section-'+name).classList.remove('hidden');
-  document.getElementById('nav-'+name).classList.add('active');
+  document.getElementById('section-' + name)?.classList.remove('hidden');
+  document.getElementById('nav-' + name)?.classList.add('active');
   if (name === 'projects') renderProjectsList();
   if (name === 'manage') renderManageList();
+  if (name === 'settings') loadSettingsForm();
+}
+
+// ===== GITHUB SETTINGS =====
+function getGHSettings() {
+  return {
+    token: localStorage.getItem('gh_token') || '',
+    owner: localStorage.getItem('gh_owner') || GH_DEFAULTS.owner,
+    repo: localStorage.getItem('gh_repo') || GH_DEFAULTS.repo,
+    branch: localStorage.getItem('gh_branch') || GH_DEFAULTS.branch,
+  };
+}
+function saveToken() {
+  const t = document.getElementById('ghToken').value.trim();
+  if (!t) { showToast('Enter a token first', 'error'); return; }
+  localStorage.setItem('gh_token', t);
+  checkTokenStatus();
+  showToast('✅ Token saved!', 'success');
+}
+function clearToken() {
+  localStorage.removeItem('gh_token');
+  document.getElementById('ghToken').value = '';
+  checkTokenStatus();
+  showToast('Token cleared', 'info');
+}
+function saveGitHubSettings() {
+  localStorage.setItem('gh_owner', document.getElementById('ghOwner').value.trim());
+  localStorage.setItem('gh_repo', document.getElementById('ghRepo').value.trim());
+  localStorage.setItem('gh_branch', document.getElementById('ghBranch').value.trim());
+  showToast('✅ Settings saved!', 'success');
+}
+function loadSettingsForm() {
+  const s = getGHSettings();
+  document.getElementById('ghOwner').value = s.owner;
+  document.getElementById('ghRepo').value = s.repo;
+  document.getElementById('ghBranch').value = s.branch;
+  if (s.token) document.getElementById('ghToken').value = s.token;
+  checkTokenStatus();
+}
+function checkTokenStatus() {
+  const { token } = getGHSettings();
+  const statusEl = document.getElementById('tokenStatus');
+  const dashWarn = document.getElementById('dashTokenWarn');
+  const deployWarn = document.getElementById('deployTokenWarn');
+  const statTokenEl = document.getElementById('statToken');
+  if (token) {
+    if (statusEl) statusEl.innerHTML = '<div class="token-ok">✅ GitHub token is set and ready.</div>';
+    if (dashWarn) dashWarn.classList.add('hidden');
+    if (deployWarn) deployWarn.classList.add('hidden');
+    if (statTokenEl) { statTokenEl.textContent = '✅'; statTokenEl.style.color = '#16a34a'; }
+  } else {
+    if (statusEl) statusEl.innerHTML = '<div class="token-warning">⚠️ No token set. You need to add your GitHub Personal Access Token to enable one-click deploy.</div>';
+    if (dashWarn) dashWarn.classList.remove('hidden');
+    if (deployWarn) deployWarn.classList.remove('hidden');
+    if (statTokenEl) { statTokenEl.textContent = '❌'; statTokenEl.style.color = '#dc2626'; }
+  }
 }
 
 // ===== DYNAMIC FIELDS =====
-let videoCount = 0, galleryCount = 0, statCount = 0;
-
 function addVideoField() {
   videoCount++;
   const c = document.getElementById('videosContainer');
   const div = document.createElement('div');
-  div.className = 'video-entry';
-  div.id = 'video-'+videoCount;
-  div.innerHTML = `
-    <div class="flex gap-3 items-start">
-      <div class="flex-1 space-y-2">
-        <input class="field-input" type="text" placeholder="Video title (e.g. Clock Demonstration)" id="vTitle${videoCount}" />
-        <input class="field-input" type="text" placeholder="Video path (e.g. /R-D/assets/videos/demo.mp4)" id="vPath${videoCount}" />
-        <input class="field-input" type="text" placeholder="Caption (optional)" id="vCaption${videoCount}" />
-      </div>
-      <button class="btn-danger mt-1" onclick="document.getElementById('video-${videoCount}').remove()">✕</button>
-    </div>`;
+  div.className = 'video-entry'; div.id = 'video-' + videoCount;
+  div.innerHTML = `<div class="flex gap-3 items-start">
+    <div class="flex-1 space-y-2">
+      <input class="field-input" type="text" placeholder="Title (e.g. Clock Demonstration)" id="vTitle${videoCount}" />
+      <input class="field-input" type="text" placeholder="Path (e.g. /R-D/assets/videos/demo.mp4)" id="vPath${videoCount}" />
+      <input class="field-input" type="text" placeholder="Caption (optional)" id="vCaption${videoCount}" />
+    </div>
+    <button class="btn-danger mt-1" onclick="document.getElementById('video-${videoCount}').remove()">✕</button>
+  </div>`;
   c.appendChild(div);
 }
-
 function addGalleryField() {
   galleryCount++;
   const c = document.getElementById('galleryContainer');
   const div = document.createElement('div');
-  div.className = 'img-entry';
-  div.id = 'gallery-'+galleryCount;
-  div.innerHTML = `
-    <div class="flex gap-3 items-center">
-      <input class="field-input flex-1" type="text" placeholder="Image path (e.g. /R-D/assets/images/photo.jpg)" id="gPath${galleryCount}" />
-      <input class="field-input flex-1" type="text" placeholder="Alt text / caption" id="gAlt${galleryCount}" />
-      <button class="btn-danger" onclick="document.getElementById('gallery-${galleryCount}').remove()">✕</button>
-    </div>`;
+  div.className = 'img-entry'; div.id = 'gallery-' + galleryCount;
+  div.innerHTML = `<div class="flex gap-3 items-center">
+    <input class="field-input flex-1" type="text" placeholder="Path (e.g. /R-D/assets/images/photo.jpg)" id="gPath${galleryCount}" />
+    <input class="field-input flex-1" type="text" placeholder="Alt text" id="gAlt${galleryCount}" />
+    <button class="btn-danger" onclick="document.getElementById('gallery-${galleryCount}').remove()">✕</button>
+  </div>`;
   c.appendChild(div);
 }
-
 function addStatField() {
   statCount++;
   const c = document.getElementById('statsContainer');
   const div = document.createElement('div');
-  div.className = 'flex gap-3 items-center mb-3';
-  div.id = 'stat-'+statCount;
-  div.innerHTML = `
-    <input class="field-input w-32" type="text" placeholder="Value (e.g. 92%)" id="sVal${statCount}" />
-    <input class="field-input flex-1" type="text" placeholder="Label (e.g. Detection Accuracy)" id="sLbl${statCount}" />
+  div.className = 'flex gap-3 items-center mb-3'; div.id = 'stat-' + statCount;
+  div.innerHTML = `<input class="field-input w-28" type="text" placeholder="92%" id="sVal${statCount}" />
+    <input class="field-input flex-1" type="text" placeholder="Detection Accuracy" id="sLbl${statCount}" />
     <button class="btn-danger" onclick="document.getElementById('stat-${statCount}').remove()">✕</button>`;
   c.appendChild(div);
 }
 
 // ===== TECH TAGS =====
-let techList = [];
 function addTech() {
   const inp = document.getElementById('techInput');
   const val = inp.value.trim();
-  if (!val || techList.includes(val)) { inp.value=''; return; }
-  techList.push(val);
-  renderTechTags();
-  inp.value = '';
+  if (!val || techList.includes(val)) { inp.value = ''; return; }
+  techList.push(val); renderTechTags(); inp.value = '';
 }
-function removeTech(t) { techList = techList.filter(x=>x!==t); renderTechTags(); }
+function removeTech(t) { techList = techList.filter(x => x !== t); renderTechTags(); }
 function renderTechTags() {
   document.getElementById('techTags').innerHTML = techList.map(t =>
-    `<span class="tag-chip">${t}<button onclick="removeTech('${t}')">×</button></span>`).join('');
+    `<span class="tag-chip">${t}<button onclick="removeTech('${t.replace(/'/g,"\\'")}')">×</button></span>`).join('');
 }
-
-// Slug auto-generate
-document.addEventListener('input', function(e) {
-  if(e.target.id === 'pTitle') {
-    const slug = e.target.value.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+document.addEventListener('input', e => {
+  if (e.target.id === 'pTitle') {
+    const slug = e.target.value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
     document.getElementById('pSlug').value = slug;
     document.getElementById('slugPreview').textContent = slug || 'slug';
   }
-  if(e.target.id === 'pSlug') {
-    document.getElementById('slugPreview').textContent = e.target.value || 'slug';
-  }
+  if (e.target.id === 'pSlug') document.getElementById('slugPreview').textContent = e.target.value || 'slug';
 });
 
-// ===== COLLECT FORM DATA =====
+// ===== COLLECT DATA =====
 function collectFormData() {
-  // Videos
-  const videos = [];
+  const videos = [], gallery = [], stats = [];
   document.querySelectorAll('[id^="vTitle"]').forEach(el => {
-    const n = el.id.replace('vTitle','');
-    const path = document.getElementById('vPath'+n)?.value.trim();
-    if (path) videos.push({
-      title: el.value.trim() || 'Demo Video',
-      path: path,
-      caption: document.getElementById('vCaption'+n)?.value.trim() || ''
-    });
+    const n = el.id.replace('vTitle', '');
+    const path = document.getElementById('vPath' + n)?.value.trim();
+    if (path) videos.push({ title: el.value.trim() || 'Demo Video', path, caption: document.getElementById('vCaption' + n)?.value.trim() || '' });
   });
-
-  // Gallery
-  const gallery = [];
   document.querySelectorAll('[id^="gPath"]').forEach(el => {
-    const n = el.id.replace('gPath','');
+    const n = el.id.replace('gPath', '');
     const path = el.value.trim();
-    if (path) gallery.push({ path, alt: document.getElementById('gAlt'+n)?.value.trim() || '' });
+    if (path) gallery.push({ path, alt: document.getElementById('gAlt' + n)?.value.trim() || '' });
   });
-
-  // Stats
-  const stats = [];
   document.querySelectorAll('[id^="sVal"]').forEach(el => {
-    const n = el.id.replace('sVal','');
+    const n = el.id.replace('sVal', '');
     const val = el.value.trim();
-    if (val) stats.push({ value: val, label: document.getElementById('sLbl'+n)?.value.trim() || '' });
+    if (val) stats.push({ value: val, label: document.getElementById('sLbl' + n)?.value.trim() || '' });
   });
-
-  const components = document.getElementById('pComponents').value.trim().split('\n').filter(x=>x.trim());
-  const learnings = document.getElementById('pLearnings').value.trim().split('\n').filter(x=>x.trim());
-
   return {
     title: document.getElementById('pTitle').value.trim(),
     slug: document.getElementById('pSlug').value.trim(),
@@ -655,7 +604,8 @@ function collectFormData() {
     thumbnail: document.getElementById('pThumbnail').value.trim(),
     overview: document.getElementById('pOverview').value.trim(),
     mentor: document.getElementById('pMentor').value.trim(),
-    components, learnings,
+    components: document.getElementById('pComponents').value.trim().split('\n').filter(x => x.trim()),
+    learnings: document.getElementById('pLearnings').value.trim().split('\n').filter(x => x.trim()),
     results: document.getElementById('pResults').value.trim(),
     github: document.getElementById('pGithub').value.trim(),
     technologies: [...techList],
@@ -663,19 +613,10 @@ function collectFormData() {
   };
 }
 
-// ===== GENERATE HTML =====
-function generateHTML() {
-  const d = collectFormData();
-  if (!d.title || !d.slug || !d.desc) {
-    alert('Please fill in at least: Title, Slug, and Description.'); return;
-  }
-
-  // Generate tech tags HTML
+// ===== BUILD HTML STRINGS =====
+function buildProjectPage(d) {
   const techTagsHTML = d.technologies.map(t => `                    <span class="tech-tag">${t}</span>`).join('\n');
-
-  // Generate video sections
   const videosHTML = d.videos.map(v => `
-                <!-- Video: ${v.title} -->
                 <div class="glass-card p-8">
                     <h2 class="text-2xl font-bold mb-6 text-primary-500 text-center">${v.title}</h2>
                     <div class="relative aspect-video rounded-xl overflow-hidden border-2 border-gray-700 dark:border-gray-600 bg-black mb-4">
@@ -686,73 +627,36 @@ function generateHTML() {
                     </div>
                     ${v.caption ? `<p class="text-center text-gray-500 dark:text-gray-400 text-sm italic">${v.caption}</p>` : ''}
                 </div>`).join('\n');
-
-  // Generate gallery
   const galleryHTML = d.gallery.length > 0 ? `
-                <!-- Gallery -->
                 <div class="glass-card p-8">
                     <h2 class="text-2xl font-bold mb-6 text-primary-500">Project Gallery</h2>
                     <div class="grid md:grid-cols-2 gap-4">
-                        ${d.gallery.map(img => `<img src="${img.path}" alt="${img.alt}" class="rounded-xl w-full object-cover border border-gray-200 dark:border-gray-700">`).join('\n                        ')}
+                        ${d.gallery.map(img => `<img src="${img.path}" alt="${img.alt}" class="rounded-xl w-full object-cover">`).join('\n                        ')}
                     </div>
                 </div>` : '';
-
-  // Components
-  const componentsHTML = d.components.length > 0 ? `
-                        <div>
-                            <h3 class="text-lg font-semibold mb-2">Components Required</h3>
-                            <ul class="list-disc list-inside text-gray-700 dark:text-gray-300 space-y-1">
-                                ${d.components.map(c => `<li>${c}</li>`).join('\n                                ')}
-                            </ul>
-                        </div>` : '';
-
-  // Learnings
+  const componentsHTML = d.components.length > 0 ? `<ul class="list-disc list-inside text-gray-700 dark:text-gray-300 space-y-1">${d.components.map(c => `<li>${c}</li>`).join('')}</ul>` : '';
   const learningsHTML = d.learnings.length > 0 ? `
                 <div class="glass-card p-8">
                     <h2 class="text-2xl font-bold mb-4 text-primary-500">Learning Outcomes</h2>
-                    <div class="space-y-3">
-                        ${d.learnings.map(l => `
+                    <div class="space-y-3">${d.learnings.map(l => `
                         <div class="flex items-start space-x-3">
-                            <div class="w-6 h-6 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mt-0.5">
-                                <span class="w-2 h-2 bg-blue-600 rounded-full"></span>
-                            </div>
+                            <div class="w-6 h-6 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mt-0.5"><span class="w-2 h-2 bg-blue-600 rounded-full"></span></div>
                             <p class="text-gray-700 dark:text-gray-300">${l}</p>
                         </div>`).join('')}
                     </div>
                 </div>` : '';
-
-  // Stats
   const statsHTML = d.stats.length > 0 ? `
                 <div class="glass-card p-8">
                     <h2 class="text-2xl font-bold mb-6 text-primary-500">Project Impact</h2>
                     <div class="grid md:grid-cols-${Math.min(d.stats.length, 3)} gap-6">
-                        ${d.stats.map(s => `
-                        <div class="text-center">
-                            <div class="text-3xl font-bold text-accent-500 mb-2">${s.value}</div>
-                            <div class="text-gray-600 dark:text-gray-300">${s.label}</div>
-                        </div>`).join('')}
+                        ${d.stats.map(s => `<div class="text-center"><div class="text-3xl font-bold text-accent-500 mb-2">${s.value}</div><div class="text-gray-600 dark:text-gray-300">${s.label}</div></div>`).join('')}
                     </div>
-                    ${d.results ? `<p class="text-gray-700 dark:text-gray-300 leading-relaxed mt-6">${d.results}</p>` : ''}
+                    ${d.results ? `<p class="text-gray-700 dark:text-gray-300 mt-6">${d.results}</p>` : ''}
                 </div>` : '';
+  const mentorHTML = d.mentor ? `<div class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border border-blue-200 dark:border-blue-700 rounded-lg p-6 mt-4"><h3 class="text-lg font-semibold text-blue-800 dark:text-blue-200 mb-2">Project Guidance</h3><p class="text-blue-700 dark:text-blue-300">${d.mentor}</p></div>` : '';
+  const githubHTML = d.github ? `<div class="glass-card p-6 text-center"><a href="${d.github}" target="_blank" rel="noopener" class="btn-primary inline-flex items-center gap-2 px-6 py-3"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>View on GitHub</a></div>` : '';
 
-  // Mentor block
-  const mentorHTML = d.mentor ? `
-                    <div class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border border-blue-200 dark:border-blue-700 rounded-lg p-6 mt-4">
-                        <h3 class="text-lg font-semibold text-blue-800 dark:text-blue-200 mb-2">Project Guidance</h3>
-                        <p class="text-blue-700 dark:text-blue-300">${d.mentor}</p>
-                    </div>` : '';
-
-  // GitHub link
-  const githubHTML = d.github ? `
-                <div class="glass-card p-6 text-center">
-                    <a href="${d.github}" target="_blank" rel="noopener" class="btn-primary inline-flex items-center gap-2 px-6 py-3">
-                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-                        View on GitHub
-                    </a>
-                </div>` : '';
-
-  // Full project page HTML
-  const projectPage = `<!DOCTYPE html>
+  return `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -763,12 +667,7 @@ function generateHTML() {
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"><\/script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: { extend: { fontFamily: { 'inter': ['Inter','sans-serif'] }, colors: { primary: { 500: '#1e3a8a' }, accent: { 500: '#10b981' } } } }
-        }
-    <\/script>
+    <script>tailwind.config={darkMode:'class',theme:{extend:{fontFamily:{'inter':['Inter','sans-serif']},colors:{primary:{500:'#1e3a8a'},accent:{500:'#10b981'}}}}}<\/script>
     <link rel="stylesheet" href="/R-D/assets/css/style.css">
 </head>
 <body class="font-inter bg-white dark:bg-gray-900 text-gray-900 dark:text-white transition-colors duration-300">
@@ -782,33 +681,25 @@ function generateHTML() {
                     <a href="/R-D/#projects" class="nav-link">Projects</a>
                     <a href="/R-D/#contact" class="nav-link">Contact</a>
                 </div>
-                <button id="theme-toggle" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+                <button id="theme-toggle" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-800">
                     <svg class="w-5 h-5 hidden dark:block" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"></path></svg>
                     <svg class="w-5 h-5 block dark:hidden" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
                 </button>
             </div>
         </div>
     </nav>
-
     <section class="pt-24 pb-12 px-4">
         <div class="max-w-6xl mx-auto text-center mb-8">
-            <h1 class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary-500 to-accent-500 bg-clip-text text-transparent">
-                ${d.title}
-            </h1>
+            <h1 class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary-500 to-accent-500 bg-clip-text text-transparent">${d.title}</h1>
             <p class="text-xl text-gray-600 dark:text-gray-300 mb-6">${d.desc}</p>
             <div class="flex flex-wrap justify-center gap-3 mb-4">
 ${techTagsHTML}
             </div>
-            <span class="badge badge-green">${d.status}</span>
-            <span class="badge badge-blue ml-2">${d.category}</span>
         </div>
     </section>
-
     <section class="py-12 px-4">
         <div class="max-w-4xl mx-auto">
             <div class="space-y-8">
-
-                <!-- Overview -->
                 <div class="glass-card p-8">
                     <h2 class="text-2xl font-bold mb-4 text-primary-500">Project Overview</h2>
                     <p class="text-gray-700 dark:text-gray-300 leading-relaxed">${d.overview}</p>
@@ -823,21 +714,20 @@ ${githubHTML}
             </div>
         </div>
     </section>
-
     <footer class="bg-gray-900 dark:bg-gray-950 text-white py-8">
         <div class="max-w-6xl mx-auto px-4 text-center">
             <p>&copy; 2024 AuraAlliance - KSRM College of Engineering. All rights reserved.</p>
-            <div class="mt-4"><a href="/R-D/" class="text-gray-300 hover:text-white transition-colors">&larr; Back to Portfolio</a></div>
+            <div class="mt-4"><a href="/R-D/" class="text-gray-300 hover:text-white">&larr; Back to Portfolio</a></div>
         </div>
     </footer>
-
     <script src="/R-D/assets/js/main.js"><\/script>
 </body>
 </html>`;
+}
 
-  // Card snippet for index.html
-  const cardSnippet = `<!-- Project Card: ${d.title} -->
-<div class="project-card">
+function buildCardSnippet(d) {
+  return `<!-- Project Card: ${d.title} -->
+<div class="project-card" data-category="${d.category.toLowerCase().replace(/\s+/g,'-')}">
     <div class="project-image">
         <img src="${d.thumbnail || '/R-D/assets/projects/placeholder.svg'}" alt="${d.title}" class="w-full h-48 object-cover">
         <div class="project-overlay">
@@ -848,253 +738,309 @@ ${githubHTML}
         <h3 class="text-lg font-semibold mb-2">${d.title}</h3>
         <p class="text-gray-600 dark:text-gray-300 mb-4">${d.desc}</p>
         <div class="flex flex-wrap gap-2">
-            ${d.technologies.slice(0,3).map(t => `<span class="tech-tag">${t}</span>`).join('\n            ')}
+            ${d.technologies.slice(0, 3).map(t => `<span class="tech-tag">${t}</span>`).join('\n            ')}
         </div>
+        <a href="/R-D/projects/${d.slug}.html" class="text-sm text-primary-500 hover:text-primary-600 font-medium mt-3 inline-block">📄 View Full Details →</a>
     </div>
 </div>`;
+}
 
-  // Show output
+// ===== GENERATE HTML =====
+function generateHTML() {
+  const d = collectFormData();
+  if (!d.title || !d.slug || !d.desc) { alert('Fill in Title, Slug, and Description first.'); return; }
+  lastGenData = d;
+
+  const projectPage = buildProjectPage(d);
+  const cardSnippet = buildCardSnippet(d);
+
   document.getElementById('projectHTML').textContent = projectPage;
-  document.getElementById('cardHTML').textContent = cardSnippet;
   document.getElementById('outputFilename').textContent = `projects/${d.slug}.html`;
+  document.querySelectorAll('.outSlug').forEach(el => el.textContent = d.slug);
   document.getElementById('outputSection').classList.remove('hidden');
+  document.getElementById('deployLog').textContent = `Ready to deploy "${d.title}"\nFile: projects/${d.slug}.html\n\nClick "Deploy to Live Site" to push directly to GitHub.`;
   document.getElementById('outputSection').scrollIntoView({ behavior: 'smooth' });
-
-  // Save to localStorage
+  checkTokenStatus();
   saveProject(d);
+}
+
+// ===== GITHUB API DEPLOY =====
+async function deployToGitHub() {
+  const { token, owner, repo, branch } = getGHSettings();
+  if (!token) { showToast('Set your GitHub token in GitHub Settings first!', 'error'); showSection('settings'); return; }
+  if (!lastGenData) { showToast('Generate HTML first', 'error'); return; }
+
+  const d = lastGenData;
+  const btn = document.getElementById('deployBtn');
+  const log = document.getElementById('deployLog');
+  const api = `https://api.github.com/repos/${owner}/${repo}`;
+  const headers = { Authorization: `token ${token}`, 'Content-Type': 'application/json', Accept: 'application/vnd.github+json' };
+
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Deploying...';
+
+  const logLine = (msg, type = '') => {
+    const prefix = type === 'ok' ? '✅ ' : type === 'err' ? '❌ ' : type === 'info' ? '⏳ ' : '';
+    log.textContent += '\n' + prefix + msg;
+    log.scrollTop = log.scrollHeight;
+  };
+
+  log.textContent = '🚀 Starting deployment...\n';
+
+  try {
+    // STEP 1: Get latest commit SHA
+    logLine('Getting latest commit SHA...', 'info');
+    const refRes = await fetch(`${api}/git/ref/heads/${branch}`, { headers });
+    if (!refRes.ok) throw new Error(`Failed to get branch ref: ${refRes.status} ${refRes.statusText}`);
+    const refData = await refRes.json();
+    const latestSHA = refData.object.sha;
+    logLine(`Got commit SHA: ${latestSHA.slice(0, 7)}`, 'ok');
+
+    // STEP 2: Get base tree
+    logLine('Getting base tree...', 'info');
+    const commitRes = await fetch(`${api}/git/commits/${latestSHA}`, { headers });
+    if (!commitRes.ok) throw new Error(`Failed to get commit: ${commitRes.status}`);
+    const commitData = await commitRes.json();
+    const baseTreeSHA = commitData.tree.sha;
+
+    // STEP 3: Build project page content
+    logLine('Building project HTML...', 'info');
+    const projectPageContent = buildProjectPage(d);
+    const cardSnippet = buildCardSnippet(d);
+
+    // STEP 4: Get current index.html
+    logLine('Fetching current index.html...', 'info');
+    const indexRes = await fetch(`${api}/contents/index.html?ref=${branch}`, { headers });
+    if (!indexRes.ok) throw new Error(`Failed to fetch index.html: ${indexRes.status}`);
+    const indexData = await indexRes.json();
+    let indexContent = atob(indexData.content.replace(/\n/g, ''));
+    logLine('Got index.html', 'ok');
+
+    // STEP 5: Inject card into index.html
+    const insertMarker = '<div id="projects-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">';
+    if (indexContent.includes(insertMarker)) {
+      if (!indexContent.includes(`/R-D/projects/${d.slug}.html`)) {
+        indexContent = indexContent.replace(insertMarker, insertMarker + '\n' + cardSnippet);
+        logLine('Card injected into index.html', 'ok');
+      } else {
+        logLine('Card already exists in index.html — skipping', 'ok');
+      }
+    } else {
+      logLine('Could not find projects-grid marker — card not added to index.html', 'err');
+    }
+
+    // STEP 6: Create blobs
+    logLine('Creating file blobs...', 'info');
+    const projectBlob = await fetch(`${api}/git/blobs`, {
+      method: 'POST', headers,
+      body: JSON.stringify({ content: projectPageContent, encoding: 'utf-8' })
+    });
+    if (!projectBlob.ok) throw new Error(`Blob creation failed: ${projectBlob.status}`);
+    const projectBlobData = await projectBlob.json();
+
+    const indexBlob = await fetch(`${api}/git/blobs`, {
+      method: 'POST', headers,
+      body: JSON.stringify({ content: indexContent, encoding: 'utf-8' })
+    });
+    if (!indexBlob.ok) throw new Error(`Index blob failed: ${indexBlob.status}`);
+    const indexBlobData = await indexBlob.json();
+    logLine('Blobs created', 'ok');
+
+    // STEP 7: Create new tree
+    logLine('Creating new tree...', 'info');
+    const treeRes = await fetch(`${api}/git/trees`, {
+      method: 'POST', headers,
+      body: JSON.stringify({
+        base_tree: baseTreeSHA,
+        tree: [
+          { path: `projects/${d.slug}.html`, mode: '100644', type: 'blob', sha: projectBlobData.sha },
+          { path: 'index.html', mode: '100644', type: 'blob', sha: indexBlobData.sha }
+        ]
+      })
+    });
+    if (!treeRes.ok) throw new Error(`Tree creation failed: ${treeRes.status}`);
+    const treeData = await treeRes.json();
+    logLine('New tree created', 'ok');
+
+    // STEP 8: Create commit
+    logLine('Creating commit...', 'info');
+    const newCommitRes = await fetch(`${api}/git/commits`, {
+      method: 'POST', headers,
+      body: JSON.stringify({
+        message: `Add project: ${d.title}`,
+        tree: treeData.sha,
+        parents: [latestSHA]
+      })
+    });
+    if (!newCommitRes.ok) throw new Error(`Commit failed: ${newCommitRes.status}`);
+    const newCommitData = await newCommitRes.json();
+    logLine(`Commit created: ${newCommitData.sha.slice(0, 7)}`, 'ok');
+
+    // STEP 9: Update branch ref
+    logLine('Pushing to GitHub...', 'info');
+    const pushRes = await fetch(`${api}/git/refs/heads/${branch}`, {
+      method: 'PATCH', headers,
+      body: JSON.stringify({ sha: newCommitData.sha, force: false })
+    });
+    if (!pushRes.ok) throw new Error(`Push failed: ${pushRes.status}`);
+    logLine('Pushed to GitHub!', 'ok');
+
+    // SUCCESS
+    logLine('');
+    logLine('🎉 DEPLOYED SUCCESSFULLY!');
+    logLine(`Live at: https://${owner}.github.io/${repo}/projects/${d.slug}.html`);
+    logLine('Site will update in ~1-2 minutes.');
+
+    btn.innerHTML = '✅ Deployed!';
+    btn.style.background = '#16a34a';
+    showToast(`✅ "${d.title}" is live! Updates in ~1 min.`, 'success');
+
+    // Save project
+    saveProject({ ...d, deployedAt: new Date().toISOString(), liveUrl: `https://${owner}.github.io/${repo}/projects/${d.slug}.html` });
+
+  } catch (err) {
+    logLine(`FAILED: ${err.message}`, 'err');
+    logLine('Check your GitHub token and repo settings.');
+    btn.disabled = false;
+    btn.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg> Retry Deploy';
+    showToast('Deploy failed: ' + err.message, 'error');
+  }
+}
+
+// ===== SAVE / LIST PROJECTS =====
+function saveProject(data) {
+  let projects = JSON.parse(localStorage.getItem('aura_projects') || '[]');
+  const idx = projects.findIndex(p => p.slug === data.slug);
+  const entry = { ...data, savedAt: new Date().toISOString() };
+  if (idx >= 0) projects[idx] = entry; else projects.unshift(entry);
+  localStorage.setItem('aura_projects', JSON.stringify(projects));
+  updateDashboardStats();
+}
+function updateDashboardStats() {
+  const projects = JSON.parse(localStorage.getItem('aura_projects') || '[]');
+  document.getElementById('statProjects').textContent = projects.length;
+}
+function renderProjectsList() {
+  const projects = JSON.parse(localStorage.getItem('aura_projects') || '[]');
+  const c = document.getElementById('projectsList');
+  if (!projects.length) {
+    c.innerHTML = '<div class="card text-center text-gray-400 py-12"><p>No projects saved yet.</p><button class="btn-primary mt-4" onclick="showSection(\'add-project\')">+ Add New Project</button></div>';
+    return;
+  }
+  c.innerHTML = projects.map(p => `
+    <div class="card flex items-center gap-4">
+      <img src="${p.thumbnail || '/R-D/assets/projects/placeholder.svg'}" class="w-20 h-16 object-cover rounded-lg border border-gray-200" onerror="this.src='/R-D/assets/projects/placeholder.svg'">
+      <div class="flex-1">
+        <h3 class="font-bold text-gray-800">${p.title}</h3>
+        <p class="text-sm text-gray-500">${p.desc}</p>
+        <div class="flex gap-2 mt-2 flex-wrap">
+          <span class="badge badge-blue">${p.category}</span>
+          <span class="badge badge-green">${p.status}</span>
+          ${p.deployedAt ? '<span class="badge badge-green">✅ Deployed</span>' : '<span class="badge badge-yellow">Not Deployed</span>'}
+        </div>
+        ${p.liveUrl ? `<a href="${p.liveUrl}" target="_blank" class="text-xs text-blue-600 underline mt-1 inline-block">${p.liveUrl}</a>` : ''}
+      </div>
+      <div class="text-xs text-gray-400 text-right">
+        <div>projects/${p.slug}.html</div>
+        <div>${new Date(p.savedAt).toLocaleDateString()}</div>
+      </div>
+    </div>`).join('');
+}
+
+// ===== PAVAN DELETE =====
+function renderManageList() {
+  if (currentUser !== 'pavan') {
+    document.getElementById('manageList').innerHTML = '<div class="card text-center text-red-500 py-8">⛔ Only Pavan can delete projects.</div>';
+    return;
+  }
+  const projects = JSON.parse(localStorage.getItem('aura_projects') || '[]');
+  const c = document.getElementById('manageList');
+  if (!projects.length) {
+    c.innerHTML = '<div class="card text-center text-gray-400 py-12">No saved projects.</div>';
+    return;
+  }
+  c.innerHTML = projects.map(p => `
+    <div class="card border-2 border-red-100">
+      <div class="flex items-center gap-4">
+        <img src="${p.thumbnail || '/R-D/assets/projects/placeholder.svg'}" class="w-20 h-16 object-cover rounded-lg" onerror="this.src='/R-D/assets/projects/placeholder.svg'">
+        <div class="flex-1">
+          <h3 class="font-bold text-gray-800">${p.title}</h3>
+          <p class="text-sm text-gray-500">projects/${p.slug}.html</p>
+          ${p.liveUrl ? `<a href="${p.liveUrl}" target="_blank" class="text-xs text-blue-600 underline">${p.liveUrl}</a>` : ''}
+        </div>
+        <button class="btn-danger font-bold px-5 py-2" onclick="pavanDelete('${p.slug}', '${p.title.replace(/'/g,"\\'")}')">🗑️ Delete from GitHub</button>
+      </div>
+    </div>`).join('');
+}
+
+async function pavanDelete(slug, title) {
+  if (currentUser !== 'pavan') { alert('Only Pavan can delete.'); return; }
+  if (!confirm(`Delete "${title}" from GitHub?\n\nThis will:\n1. Delete projects/${slug}.html from GitHub\n2. Remove its card from index.html\n3. Deploy the changes live`)) return;
+
+  const { token, owner, repo, branch } = getGHSettings();
+  if (!token) { showToast('Set GitHub token first', 'error'); showSection('settings'); return; }
+
+  const api = `https://api.github.com/repos/${owner}/${repo}`;
+  const headers = { Authorization: `token ${token}`, 'Content-Type': 'application/json', Accept: 'application/vnd.github+json' };
+
+  showToast('⏳ Deleting from GitHub...', 'info');
+
+  try {
+    // Get file SHA to delete it
+    const fileRes = await fetch(`${api}/contents/projects/${slug}.html?ref=${branch}`, { headers });
+    if (!fileRes.ok) throw new Error('File not found on GitHub');
+    const fileData = await fileRes.json();
+
+    // Get index.html and remove card
+    const indexRes = await fetch(`${api}/contents/index.html?ref=${branch}`, { headers });
+    const indexData = await indexRes.json();
+    let indexContent = atob(indexData.content.replace(/\n/g, ''));
+
+    // Remove card from index.html
+    const cardPattern = new RegExp(`<!-- Project Card: ${title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')} -->.*?</div>\\s*</div>\\s*</div>`, 'gs');
+    const cleaned = indexContent.replace(cardPattern, '');
+    if (cleaned !== indexContent) indexContent = cleaned;
+
+    // Use GitHub API to delete project file
+    await fetch(`${api}/contents/projects/${slug}.html`, {
+      method: 'DELETE', headers,
+      body: JSON.stringify({ message: `Remove project: ${title}`, sha: fileData.sha, branch })
+    });
+
+    // Update index.html via contents API
+    await fetch(`${api}/contents/index.html`, {
+      method: 'PUT', headers,
+      body: JSON.stringify({ message: `Remove project card: ${title}`, content: btoa(unescape(encodeURIComponent(indexContent))), sha: indexData.sha, branch })
+    });
+
+    // Remove from localStorage
+    let projects = JSON.parse(localStorage.getItem('aura_projects') || '[]');
+    projects = projects.filter(p => p.slug !== slug);
+    localStorage.setItem('aura_projects', JSON.stringify(projects));
+    renderManageList();
+    updateDashboardStats();
+    showToast(`✅ "${title}" deleted from live site!`, 'success');
+
+  } catch (err) {
+    showToast('Delete failed: ' + err.message, 'error');
+  }
 }
 
 // ===== COPY =====
 function copyCode(id) {
   const text = document.getElementById(id).textContent;
-  navigator.clipboard.writeText(text).then(() => showToast('✓ Copied to clipboard!'));
+  navigator.clipboard.writeText(text).then(() => showToast('✓ Copied!', 'success'));
 }
 
-// ===== SAVE & LIST PROJECTS =====
-function saveProject(data) {
-  let projects = JSON.parse(localStorage.getItem('aura_projects') || '[]');
-  const existing = projects.findIndex(p => p.slug === data.slug);
-  const entry = { ...data, savedAt: new Date().toISOString() };
-  if (existing >= 0) projects[existing] = entry;
-  else projects.unshift(entry);
-  localStorage.setItem('aura_projects', JSON.stringify(projects));
-  updateDashboardStats();
-}
-
-function updateDashboardStats() {
-  const projects = JSON.parse(localStorage.getItem('aura_projects') || '[]');
-  document.getElementById('statProjects').textContent = projects.length;
-}
-
-function renderProjectsList() {
-  const projects = JSON.parse(localStorage.getItem('aura_projects') || '[]');
-  const container = document.getElementById('projectsList');
-  if (!projects.length) {
-    container.innerHTML = `<div class="card text-center text-gray-400 py-12">
-      <p>No projects saved yet.</p>
-      <button class="btn-primary mt-4" onclick="showSection('add-project')">+ Add New Project</button>
-    </div>`;
-    return;
-  }
-  container.innerHTML = projects.map(p => `
-    <div class="card flex items-center gap-4">
-      <img src="${p.thumbnail || '/R-D/assets/projects/placeholder.svg'}" alt="${p.title}" class="w-20 h-16 object-cover rounded-lg border border-gray-200" onerror="this.src='/R-D/assets/projects/placeholder.svg'">
-      <div class="flex-1">
-        <h3 class="font-bold text-gray-800">${p.title}</h3>
-        <p class="text-sm text-gray-500 mt-1">${p.desc}</p>
-        <div class="flex gap-2 mt-2">
-          <span class="badge badge-blue">${p.category}</span>
-          <span class="badge badge-green">${p.status}</span>
-          ${p.technologies.slice(0,3).map(t=>`<span class="badge" style="background:#f1f5f9;color:#374151">${t}</span>`).join('')}
-        </div>
-      </div>
-      <div class="flex flex-col gap-2 text-xs text-gray-400">
-        <span>projects/${p.slug}.html</span>
-        <span>${new Date(p.savedAt).toLocaleDateString()}</span>
-        <button class="btn-danger" onclick="deleteProject('${p.slug}')">Delete</button>
-      </div>
-    </div>`).join('');
-}
-
-function deleteProject(slug) {
-  if (!confirm('Delete this project from saved list?')) return;
-  let projects = JSON.parse(localStorage.getItem('aura_projects') || '[]');
-  projects = projects.filter(p => p.slug !== slug);
-  localStorage.setItem('aura_projects', JSON.stringify(projects));
-  renderProjectsList();
-  updateDashboardStats();
-}
-
-// ===== AUTO-DEPLOY SCRIPT DOWNLOAD =====
-function downloadDeployScript() {
-  const slug = document.getElementById('pSlug').value.trim();
-  const title = document.getElementById('pTitle').value.trim();
-  const projectHTML = document.getElementById('projectHTML').textContent;
-  const cardHTML = document.getElementById('cardHTML').textContent;
-
-  if (!slug || !projectHTML) {
-    alert('Please generate the project HTML first.');
-    return;
-  }
-
-  // Escape for batch file - write content to a temp PS1 that handles it
-  const ps1Script = `# AuraAlliance Auto-Deploy Script
-# Generated by Admin Panel for: ${title}
-# Run this script in PowerShell from the project root
-
-$ErrorActionPreference = "Stop"
-$root = Split-Path -Parent $MyInvocation.MyCommand.Path
-
-Write-Host "Step 1: Saving project HTML file..." -ForegroundColor Cyan
-$projectContent = @'
-${projectHTML.replace(/'/g, "''")}
-'@
-$projectContent | Out-File -FilePath "$root\\projects\\${slug}.html" -Encoding UTF8
-Write-Host "  Saved: projects/${slug}.html" -ForegroundColor Green
-
-Write-Host "Step 2: Adding project card to index.html..." -ForegroundColor Cyan
-$indexPath = "$root\\index.html"
-$indexContent = Get-Content $indexPath -Raw -Encoding UTF8
-$marker = '<div id="projects-grid"'
-$cardToInsert = @'
-${cardHTML.replace(/'/g, "''")}
-'@
-# Insert card after the opening of projects-grid div
-$insertAfter = '<div id="projects-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">'
-if ($indexContent -match [regex]::Escape($insertAfter)) {
-  $indexContent = $indexContent.Replace($insertAfter, $insertAfter + "\`n" + $cardToInsert)
-  $indexContent | Out-File -FilePath $indexPath -Encoding UTF8
-  Write-Host "  Added card to index.html" -ForegroundColor Green
-} else {
-  Write-Host "  Could not find projects-grid in index.html. Please paste the card manually." -ForegroundColor Yellow
-}
-
-Write-Host "Step 3: Git add, commit and push..." -ForegroundColor Cyan
-Set-Location $root
-git add .
-git commit -m "Add project: ${title}"
-git push origin main
-
-Write-Host ""
-Write-Host "SUCCESS! Project '${title}' is live!" -ForegroundColor Green
-Write-Host "Your site will update in ~1-2 minutes at:" -ForegroundColor White
-Write-Host "https://auraallilance-mvn.github.io/R-D/projects/${slug}.html" -ForegroundColor Cyan
-Read-Host "Press Enter to close"
-`;
-
-  const batContent = `@echo off
-echo ================================================
-echo  AuraAlliance Auto-Deploy: ${title}
-echo ================================================
-echo.
-powershell -ExecutionPolicy Bypass -File "%~dp0deploy_${slug}.ps1"
-pause`;
-
-  // Download PS1
-  const ps1Blob = new Blob([ps1Script], { type: 'text/plain' });
-  const ps1Link = document.createElement('a');
-  ps1Link.href = URL.createObjectURL(ps1Blob);
-  ps1Link.download = `deploy_${slug}.ps1`;
-  ps1Link.click();
-
-  // Download BAT
-  setTimeout(() => {
-    const batBlob = new Blob([batContent], { type: 'text/plain' });
-    const batLink = document.createElement('a');
-    batLink.href = URL.createObjectURL(batBlob);
-    batLink.download = `deploy_${slug}.bat`;
-    batLink.click();
-  }, 500);
-
-  showToast('✅ Deploy scripts downloaded! Move them to your project root and double-click the .bat file.');
-}
-
-// ===== PAVAN-ONLY MANAGE LIST =====
-function renderManageList() {
-  if (currentUser !== 'pavan') {
-    document.getElementById('manageList').innerHTML = '<div class="card text-center text-red-500 py-8">⛔ Access denied. Only Pavan can manage and delete projects.</div>';
-    return;
-  }
-  const projects = JSON.parse(localStorage.getItem('aura_projects') || '[]');
-  const container = document.getElementById('manageList');
-  if (!projects.length) {
-    container.innerHTML = '<div class="card text-center text-gray-400 py-12"><p>No saved projects to manage.</p><button class="btn-primary mt-4" onclick="showSection(\'add-project\')">+ Add New Project</button></div>';
-    return;
-  }
-  container.innerHTML = projects.map(p => `
-    <div class="card border-2 border-red-100">
-      <div class="flex items-center gap-4">
-        <img src="${p.thumbnail || '/R-D/assets/projects/placeholder.svg'}" alt="${p.title}"
-          class="w-24 h-16 object-cover rounded-xl border border-gray-200"
-          onerror="this.src='/R-D/assets/projects/placeholder.svg'">
-        <div class="flex-1">
-          <h3 class="font-bold text-gray-800 text-lg">${p.title}</h3>
-          <p class="text-sm text-gray-500">${p.desc}</p>
-          <div class="flex gap-2 mt-2 flex-wrap">
-            <span class="badge badge-blue">${p.category}</span>
-            <span class="badge badge-green">${p.status}</span>
-            ${p.technologies.slice(0,3).map(t=>`<span class="badge" style="background:#f1f5f9;color:#374151">${t}</span>`).join('')}
-          </div>
-          <p class="text-xs text-gray-400 mt-1">File: projects/${p.slug}.html &nbsp;|&nbsp; Saved: ${new Date(p.savedAt).toLocaleString()}</p>
-        </div>
-        <div class="flex flex-col gap-2">
-          <button class="btn-primary text-sm px-4 py-2" onclick="redownloadDeploy('${p.slug}')">🚀 Re-Deploy</button>
-          <button class="btn-danger px-4 py-2 text-sm font-bold" onclick="pavanDelete('${p.slug}', '${p.title.replace(/'/g,"\\'")}')">🗑️ Delete Project</button>
-        </div>
-      </div>
-    </div>`).join('');
-}
-
-function pavanDelete(slug, title) {
-  if (currentUser !== 'pavan') { alert('Only Pavan can delete projects.'); return; }
-  if (!confirm(`Delete "${title}" from saved list?\n\nNote: You'll also need to manually delete projects/${slug}.html from the repo and remove the card from index.html, then push.`)) return;
-
-  // Generate removal script
-  const removeScript = `@echo off
-echo ================================================
-echo  AuraAlliance - Remove Project: ${title}
-echo ================================================
-echo.
-echo Deleting project file...
-del /f /q "projects\\${slug}.html"
-echo.
-echo Committing removal...
-git add .
-git commit -m "Remove project: ${title}"
-git push origin main
-echo.
-echo Done! Project removed from live site.
-pause`;
-
-  const blob = new Blob([removeScript], { type: 'text/plain' });
-  const link = document.createElement('a');
-  link.href = URL.createObjectURL(blob);
-  link.download = `remove_${slug}.bat`;
-  link.click();
-
-  // Remove from localStorage
-  let projects = JSON.parse(localStorage.getItem('aura_projects') || '[]');
-  projects = projects.filter(p => p.slug !== slug);
-  localStorage.setItem('aura_projects', JSON.stringify(projects));
-  renderManageList();
-  updateDashboardStats();
-  showToast('🗑️ Deleted! Run the downloaded .bat to remove from live site.');
-}
-
-function redownloadDeploy(slug) {
-  const projects = JSON.parse(localStorage.getItem('aura_projects') || '[]');
-  const p = projects.find(x => x.slug === slug);
-  if (!p) { alert('Project data not found in browser storage.'); return; }
-  showToast('Re-deploy: regenerate the project first using Add New Project form.');
-}
-
-function showToast(msg) {
+// ===== TOAST =====
+function showToast(msg, type = 'success') {
   const t = document.getElementById('toast');
   t.textContent = msg;
+  t.className = `toast ${type}`;
   t.style.display = 'block';
-  setTimeout(() => t.style.display = 'none', 4000);
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.style.display = 'none', 4500);
 }
-
 </script>
 </body>
 </html>
