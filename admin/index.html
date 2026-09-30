@@ -169,15 +169,26 @@
         <p class="text-gray-500 text-sm mt-1">Set your GitHub token once — the admin panel uses it to deploy directly to your repo.</p>
       </div>
       <div class="card">
-        <h2 class="font-bold text-gray-800 mb-4">🔑 GitHub Personal Access Token</h2>
+        <h2 class="font-bold text-gray-800 mb-4">🔑 GitHub Token Settings</h2>
         <div id="tokenStatus" class="mb-4"></div>
+
         <div class="mb-4">
-          <label class="field-label">Personal Access Token</label>
+          <label class="field-label">Your Personal Access Token (Pavan only)</label>
           <input id="ghToken" class="field-input" type="password" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" />
-          <p class="text-xs text-gray-400 mt-1">Stored only in your browser's localStorage. Never sent anywhere except GitHub's own API.</p>
+          <p class="text-xs text-gray-400 mt-1">Saved in your browser only. Used for your deploys.</p>
         </div>
-        <button class="btn-primary" onclick="saveToken()">💾 Save Token</button>
-        <button class="btn-secondary ml-2" onclick="clearToken()">Clear Token</button>
+        <button class="btn-primary" onclick="saveToken()">💾 Save My Token</button>
+        <button class="btn-secondary ml-2" onclick="clearToken()">Clear</button>
+
+        <hr class="section-divider">
+
+        <div class="mb-4">
+          <label class="field-label">🤝 Shared Team Token <span class="text-green-600">(used by admin &amp; team users automatically)</span></label>
+          <input id="ghSharedToken" class="field-input" type="password" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" />
+          <p class="text-xs text-gray-400 mt-1">Set this once — all team members will use it without any setup on their end.</p>
+        </div>
+        <button class="btn-primary" onclick="saveSharedToken()">💾 Save Shared Token</button>
+        <button class="btn-secondary ml-2" onclick="clearSharedToken()">Clear</button>
 
         <hr class="section-divider">
 
@@ -217,7 +228,11 @@
           <h1 class="text-2xl font-bold text-gray-800">Add New Project</h1>
           <p class="text-gray-500 text-sm mt-1">Fill in details, generate HTML, then deploy with one click.</p>
         </div>
-        <button class="btn-primary" onclick="generateHTML()">⚡ Generate HTML</button>
+        <!-- 🆕 BUG FIX 3: Save + Generate buttons -->
+        <div class="flex gap-2 flex-wrap">
+          <button class="btn-secondary" onclick="saveProjectDraft()">💾 Save Project</button>
+          <button class="btn-primary" onclick="generateHTML()">⚡ Generate HTML</button>
+        </div>
       </div>
 
       <!-- Basic Info -->
@@ -264,17 +279,25 @@
           Thumbnail &amp; Media
         </h2>
         <div class="mb-4">
-          <label class="field-label">Thumbnail Image Path *</label>
-          <input id="pThumbnail" class="field-input" type="text" placeholder="/R-D/assets/projects/your-image.jpg" />
-          <p class="text-xs text-gray-400 mt-1">Upload image to <code>assets/projects/</code> via GitHub first.</p>
+          <!-- 🆕 BUG FIX 2: Real thumbnail upload button -->
+          <label class="field-label">Thumbnail Image *</label>
+          <div class="flex gap-2">
+            <input id="pThumbnail" class="field-input flex-1" type="text" placeholder="Path (auto-filled after upload)" readonly />
+            <label class="btn-primary cursor-pointer text-sm px-3" style="white-space:nowrap">
+              📤 Upload
+              <input type="file" accept="image/*" onchange="handleThumbnailUpload(this)" style="display:none" />
+            </label>
+          </div>
+          <p class="text-xs text-gray-400 mt-1">Select an image file — it will be uploaded directly to GitHub.</p>
         </div>
         <hr class="section-divider">
         <label class="field-label">Demo Videos</label>
-        <p class="text-xs text-gray-400 mb-3">Upload to <code>assets/videos/</code> first, then enter path.</p>
+        <p class="text-xs text-gray-400 mb-3">Click "📤 Upload" to upload a video file directly to GitHub.</p>
         <div id="videosContainer"></div>
         <button type="button" class="btn-secondary text-sm" onclick="addVideoField()">+ Add Video</button>
         <hr class="section-divider">
         <label class="field-label">Gallery Images</label>
+        <p class="text-xs text-gray-400 mb-3">Click "📤 Upload" to upload image files directly to GitHub.</p>
         <div id="galleryContainer"></div>
         <button type="button" class="btn-secondary text-sm" onclick="addGalleryField()">+ Add Image</button>
       </div>
@@ -336,14 +359,18 @@
         <button type="button" class="btn-secondary text-sm" onclick="addStatField()">+ Add Stat</button>
       </div>
 
-      <!-- Generate -->
+      <!-- Generate / Save -->
       <div class="card" style="background:linear-gradient(135deg,#eff6ff,#ecfdf5);border:1px solid #bfdbfe">
         <div class="flex items-center justify-between flex-wrap gap-3">
           <div>
-            <h3 class="font-bold text-gray-800">Step 1: Generate HTML</h3>
-            <p class="text-sm text-gray-500">Preview the project page before deploying.</p>
+            <h3 class="font-bold text-gray-800">Step 1: Save &amp; Generate HTML</h3>
+            <p class="text-sm text-gray-500">Save your project first, then generate the page preview.</p>
           </div>
-          <button class="btn-primary text-base px-8 py-3" onclick="generateHTML()">⚡ Generate HTML</button>
+          <!-- 🆕 BUG FIX 3: Save Project button -->
+          <div class="flex gap-2 flex-wrap">
+            <button class="btn-secondary" onclick="saveProjectDraft()">💾 Save Project</button>
+            <button class="btn-primary text-base px-8 py-3" onclick="generateHTML()">⚡ Generate HTML</button>
+          </div>
         </div>
       </div>
 
@@ -471,6 +498,9 @@
 // ===== CONFIG =====
 const USERS = { admin: 'aura2024', pavan: 'pavan123', team: 'team2024' };
 const GH_DEFAULTS = { owner: 'auraallilance-mvn', repo: 'R-D', branch: 'main' };
+// 🆕 BUG FIX 5: Pre-configured shared team token
+const SHARED_TEAM_TOKEN = ''; // Set via GitHub Settings (Pavan only)
+const TEAM_TOKEN_CONFIGURED = SHARED_TEAM_TOKEN.length > 20 && !SHARED_TEAM_TOKEN.includes('REPLACE');
 let currentUser = '';
 let videoCount = 0, galleryCount = 0, statCount = 0;
 let techList = [];
@@ -482,14 +512,24 @@ function doLogin() {
   const p = document.getElementById('loginPass').value;
   if (USERS[u] && USERS[u] === p) {
     currentUser = u;
+    // 🆕 BUG FIX 6: Save session to persist across refreshes
+    localStorage.setItem('admin_session_user', u);
+    localStorage.setItem('admin_session_time', Date.now().toString());
+    
     document.getElementById('loginSection').classList.add('hidden');
     document.getElementById('adminSection').classList.remove('hidden');
     document.getElementById('sidebarUser').textContent = u.charAt(0).toUpperCase() + u.slice(1);
     document.getElementById('sidebarRole').textContent = u === 'pavan' ? 'Super Admin 👑' : 'Team Member';
     document.getElementById('dashUser').textContent = u.charAt(0).toUpperCase() + u.slice(1);
+    
+    // 🆕 BUG FIX 4: Hide GitHub Settings for non-pavan users
     if (u === 'pavan') {
       document.getElementById('nav-pavan-delete').classList.remove('hidden');
+      document.getElementById('nav-settings').classList.remove('hidden');
+    } else {
+      document.getElementById('nav-settings').classList.add('hidden');
     }
+    
     addVideoField(); addStatField();
     updateDashboardStats();
     checkTokenStatus();
@@ -499,8 +539,53 @@ function doLogin() {
 }
 document.getElementById('loginPass').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
 
+// 🆕 BUG FIX 6: Restore session on page load
+function restoreSession() {
+  const savedUser = localStorage.getItem('admin_session_user');
+  const savedTime = localStorage.getItem('admin_session_time');
+  
+  if (!savedUser) return false;
+  
+  // Check if session is less than 24 hours old
+  const sessionAge = Date.now() - parseInt(savedTime || '0');
+  if (sessionAge > 24 * 60 * 60 * 1000) {
+    // Session expired
+    localStorage.removeItem('admin_session_user');
+    localStorage.removeItem('admin_session_time');
+    return false;
+  }
+  
+  // Validate user still exists
+  if (!USERS[savedUser]) return false;
+  
+  // Restore session
+  currentUser = savedUser;
+  document.getElementById('loginSection').classList.add('hidden');
+  document.getElementById('adminSection').classList.remove('hidden');
+  document.getElementById('sidebarUser').textContent = savedUser.charAt(0).toUpperCase() + savedUser.slice(1);
+  document.getElementById('sidebarRole').textContent = savedUser === 'pavan' ? 'Super Admin 👑' : 'Team Member';
+  document.getElementById('dashUser').textContent = savedUser.charAt(0).toUpperCase() + savedUser.slice(1);
+  
+  if (savedUser === 'pavan') {
+    document.getElementById('nav-pavan-delete').classList.remove('hidden');
+    document.getElementById('nav-settings').classList.remove('hidden');
+  } else {
+    document.getElementById('nav-settings').classList.add('hidden');
+  }
+  
+  addVideoField(); addStatField();
+  updateDashboardStats();
+  checkTokenStatus();
+  
+  return true;
+}
+
 function doLogout() {
   currentUser = '';
+  // 🆕 BUG FIX 6: Clear session storage on logout
+  localStorage.removeItem('admin_session_user');
+  localStorage.removeItem('admin_session_time');
+  
   document.getElementById('adminSection').classList.add('hidden');
   document.getElementById('loginSection').classList.remove('hidden');
   document.getElementById('loginUser').value = '';
@@ -511,6 +596,12 @@ function doLogout() {
 
 // ===== NAVIGATION =====
 function showSection(name) {
+  // 🆕 BUG FIX 4: Role-based access control for GitHub Settings
+  if (name === 'settings' && currentUser !== 'pavan') {
+    showToast('⛔ GitHub Settings are restricted to Super Admin only', 'error');
+    return;
+  }
+  
   ['dashboard','add-project','projects','settings','manage','pavan-delete'].forEach(s => {
     document.getElementById('section-' + s)?.classList.add('hidden');
     document.getElementById('nav-' + s)?.classList.remove('active');
@@ -525,27 +616,67 @@ function showSection(name) {
 
 // ===== GITHUB SETTINGS =====
 function getGHSettings() {
+  // Pavan's custom token takes priority, then shared team token from localStorage
+  let token = localStorage.getItem('gh_token') || localStorage.getItem('gh_shared_token') || '';
+  
   return {
-    token: localStorage.getItem('gh_token') || '',
+    token: token,
     owner: localStorage.getItem('gh_owner') || GH_DEFAULTS.owner,
     repo: localStorage.getItem('gh_repo') || GH_DEFAULTS.repo,
     branch: localStorage.getItem('gh_branch') || GH_DEFAULTS.branch,
   };
 }
+
 function saveToken() {
+  // 🆕 BUG FIX 4: Only pavan can save token
+  if (currentUser !== 'pavan') {
+    showToast('⛔ Only Super Admin can modify GitHub token', 'error');
+    return;
+  }
   const t = document.getElementById('ghToken').value.trim();
   if (!t) { showToast('Enter a token first', 'error'); return; }
   localStorage.setItem('gh_token', t);
   checkTokenStatus();
   showToast('✅ Token saved!', 'success');
 }
+
 function clearToken() {
+  // 🆕 BUG FIX 4: Only pavan can clear token
+  if (currentUser !== 'pavan') {
+    showToast('⛔ Only Super Admin can clear GitHub token', 'error');
+    return;
+  }
   localStorage.removeItem('gh_token');
   document.getElementById('ghToken').value = '';
   checkTokenStatus();
   showToast('Token cleared', 'info');
 }
+
+// 🆕 Save/clear the shared team token (Pavan sets it once, all team users get it)
+function saveSharedToken() {
+  if (currentUser !== 'pavan') { showToast('⛔ Only Super Admin can set shared token', 'error'); return; }
+  const t = document.getElementById('ghSharedToken').value.trim();
+  if (!t) { showToast('Enter a token first', 'error'); return; }
+  localStorage.setItem('gh_shared_token', t);
+  checkTokenStatus();
+  showToast('✅ Shared team token saved! All team members will now use this.', 'success');
+}
+
+function clearSharedToken() {
+  if (currentUser !== 'pavan') { showToast('⛔ Only Super Admin can clear shared token', 'error'); return; }
+  localStorage.removeItem('gh_shared_token');
+  document.getElementById('ghSharedToken').value = '';
+  checkTokenStatus();
+  showToast('Shared token cleared', 'info');
+}
+
 function saveGitHubSettings() {
+  // 🆕 BUG FIX 4: Only pavan can modify settings
+  if (currentUser !== 'pavan') {
+    showToast('⛔ Only Super Admin can modify GitHub settings', 'error');
+    return;
+  }
+  
   localStorage.setItem('gh_owner', document.getElementById('ghOwner').value.trim());
   localStorage.setItem('gh_repo', document.getElementById('ghRepo').value.trim());
   localStorage.setItem('gh_branch', document.getElementById('ghBranch').value.trim());
@@ -556,7 +687,10 @@ function loadSettingsForm() {
   document.getElementById('ghOwner').value = s.owner;
   document.getElementById('ghRepo').value = s.repo;
   document.getElementById('ghBranch').value = s.branch;
-  if (s.token) document.getElementById('ghToken').value = s.token;
+  const myTok = localStorage.getItem('gh_token') || '';
+  const sharedTok = localStorage.getItem('gh_shared_token') || '';
+  if (myTok) document.getElementById('ghToken').value = myTok;
+  if (sharedTok) document.getElementById('ghSharedToken').value = sharedTok;
   checkTokenStatus();
 }
 function checkTokenStatus() {
@@ -565,13 +699,21 @@ function checkTokenStatus() {
   const dashWarn = document.getElementById('dashTokenWarn');
   const deployWarn = document.getElementById('deployTokenWarn');
   const statTokenEl = document.getElementById('statToken');
+  
+  // 🆕 BUG FIX 5: Show shared token indicator
+  const isSharedToken = (currentUser !== 'pavan' && token === SHARED_TEAM_TOKEN);
+  const tokenSuffix = isSharedToken ? ' (using shared team token)' : '';
+  
   if (token) {
-    if (statusEl) statusEl.innerHTML = '<div class="token-ok">✅ GitHub token is set and ready.</div>';
+    if (statusEl) statusEl.innerHTML = `<div class="token-ok">✅ GitHub token is set and ready${tokenSuffix}.</div>`;
     if (dashWarn) dashWarn.classList.add('hidden');
     if (deployWarn) deployWarn.classList.add('hidden');
     if (statTokenEl) { statTokenEl.textContent = '✅'; statTokenEl.style.color = '#16a34a'; }
   } else {
-    if (statusEl) statusEl.innerHTML = '<div class="token-warning">⚠️ No token set. You need to add your GitHub Personal Access Token to enable one-click deploy.</div>';
+    const noTokenMsg = currentUser !== 'pavan' 
+      ? '⚠️ No token set. Contact pavan (Super Admin) to configure shared team token.' 
+      : '⚠️ No token set. You need to add your GitHub Personal Access Token to enable one-click deploy.';
+    if (statusEl) statusEl.innerHTML = `<div class="token-warning">${noTokenMsg}</div>`;
     if (dashWarn) dashWarn.classList.remove('hidden');
     if (deployWarn) deployWarn.classList.remove('hidden');
     if (statTokenEl) { statTokenEl.textContent = '❌'; statTokenEl.style.color = '#dc2626'; }
@@ -584,24 +726,37 @@ function addVideoField() {
   const c = document.getElementById('videosContainer');
   const div = document.createElement('div');
   div.className = 'video-entry'; div.id = 'video-' + videoCount;
+  // 🆕 BUG FIX 2: Add file upload button
   div.innerHTML = `<div class="flex gap-3 items-start">
     <div class="flex-1 space-y-2">
       <input class="field-input" type="text" placeholder="Title (e.g. Clock Demonstration)" id="vTitle${videoCount}" />
-      <input class="field-input" type="text" placeholder="Path (e.g. /R-D/assets/videos/demo.mp4)" id="vPath${videoCount}" />
+      <div class="flex gap-2">
+        <input class="field-input flex-1" type="text" placeholder="Path (auto-filled after upload)" id="vPath${videoCount}" readonly />
+        <label class="btn-primary cursor-pointer text-sm px-3" style="white-space:nowrap">
+          📤 Upload
+          <input type="file" accept="video/*" onchange="handleVideoUpload(this, ${videoCount})" style="display:none" />
+        </label>
+      </div>
       <input class="field-input" type="text" placeholder="Caption (optional)" id="vCaption${videoCount}" />
     </div>
     <button class="btn-danger mt-1" onclick="document.getElementById('video-${videoCount}').remove()">✕</button>
   </div>`;
   c.appendChild(div);
 }
+
 function addGalleryField() {
   galleryCount++;
   const c = document.getElementById('galleryContainer');
   const div = document.createElement('div');
   div.className = 'img-entry'; div.id = 'gallery-' + galleryCount;
+  // 🆕 BUG FIX 2: Add file upload button
   div.innerHTML = `<div class="flex gap-3 items-center">
-    <input class="field-input flex-1" type="text" placeholder="Path (e.g. /R-D/assets/images/photo.jpg)" id="gPath${galleryCount}" />
+    <input class="field-input flex-1" type="text" placeholder="Path (auto-filled after upload)" id="gPath${galleryCount}" readonly />
     <input class="field-input flex-1" type="text" placeholder="Alt text" id="gAlt${galleryCount}" />
+    <label class="btn-primary cursor-pointer text-sm px-3" style="white-space:nowrap">
+      📤 Upload
+      <input type="file" accept="image/*" onchange="handleImageUpload(this, ${galleryCount})" style="display:none" />
+    </label>
     <button class="btn-danger" onclick="document.getElementById('gallery-${galleryCount}').remove()">✕</button>
   </div>`;
   c.appendChild(div);
@@ -822,7 +977,8 @@ function generateHTML() {
   document.getElementById('deployLog').textContent = `Ready to deploy "${d.title}"\nFile: projects/${d.slug}.html\n\nClick "Deploy to Live Site" to push directly to GitHub.`;
   document.getElementById('outputSection').scrollIntoView({ behavior: 'smooth' });
   checkTokenStatus();
-  saveProject(d);
+  // 🆕 BUG FIX 1: Auto-save to GitHub on generate
+  saveProjectToGitHub(d);
 }
 
 // ===== GITHUB API DEPLOY =====
@@ -956,8 +1112,8 @@ async function deployToGitHub() {
     btn.style.background = '#16a34a';
     showToast(`✅ "${d.title}" is live! Updates in ~1 min.`, 'success');
 
-    // Save project
-    saveProject({ ...d, deployedAt: new Date().toISOString(), liveUrl: `https://${owner}.github.io/${repo}/projects/${d.slug}.html` });
+    // 🆕 BUG FIX 1: Save deployed project to GitHub
+    saveProjectToGitHub({ ...d, deployedAt: new Date().toISOString(), liveUrl: `https://${owner}.github.io/${repo}/projects/${d.slug}.html` });
 
   } catch (err) {
     logLine(`FAILED: ${err.message}`, 'err');
@@ -968,21 +1124,330 @@ async function deployToGitHub() {
   }
 }
 
-// ===== SAVE / LIST PROJECTS =====
-function saveProject(data) {
-  let projects = JSON.parse(localStorage.getItem('aura_projects') || '[]');
-  const idx = projects.findIndex(p => p.slug === data.slug);
-  const entry = { ...data, savedAt: new Date().toISOString() };
-  if (idx >= 0) projects[idx] = entry; else projects.unshift(entry);
-  localStorage.setItem('aura_projects', JSON.stringify(projects));
-  updateDashboardStats();
+// ===== FILE UPLOAD FUNCTIONS (BUG FIX 2) =====
+async function uploadFileToGitHub(file, targetPath) {
+  const { token, owner, repo, branch } = getGHSettings();
+  if (!token) {
+    showToast('GitHub token not configured', 'error');
+    return null;
+  }
+  
+  const api = `https://api.github.com/repos/${owner}/${repo}`;
+  const headers = { 
+    Authorization: `token ${token}`, 
+    'Content-Type': 'application/json',
+    Accept: 'application/vnd.github+json' 
+  };
+  
+  try {
+    // Read file as base64
+    const base64Content = await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const base64 = reader.result.split(',')[1];
+        resolve(base64);
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+    
+    // Get latest commit
+    const refRes = await fetch(`${api}/git/ref/heads/${branch}`, { headers });
+    if (!refRes.ok) throw new Error(`Failed to get branch ref: ${refRes.status}`);
+    const refData = await refRes.json();
+    const latestSHA = refData.object.sha;
+    
+    // Get base tree
+    const commitRes = await fetch(`${api}/git/commits/${latestSHA}`, { headers });
+    if (!commitRes.ok) throw new Error(`Failed to get commit: ${commitRes.status}`);
+    const commitData = await commitRes.json();
+    const baseTreeSHA = commitData.tree.sha;
+    
+    // Create blob
+    const blobRes = await fetch(`${api}/git/blobs`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ content: base64Content, encoding: 'base64' })
+    });
+    if (!blobRes.ok) throw new Error(`Blob creation failed: ${blobRes.status}`);
+    const blobData = await blobRes.json();
+    
+    // Create new tree
+    const treeRes = await fetch(`${api}/git/trees`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({
+        base_tree: baseTreeSHA,
+        tree: [{ path: targetPath, mode: '100644', type: 'blob', sha: blobData.sha }]
+      })
+    });
+    if (!treeRes.ok) throw new Error(`Tree creation failed: ${treeRes.status}`);
+    const treeData = await treeRes.json();
+    
+    // Create commit
+    const newCommitRes = await fetch(`${api}/git/commits`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({
+        message: `Upload file: ${file.name}`,
+        tree: treeData.sha,
+        parents: [latestSHA]
+      })
+    });
+    if (!newCommitRes.ok) throw new Error(`Commit failed: ${newCommitRes.status}`);
+    const newCommitData = await newCommitRes.json();
+    
+    // Update branch ref
+    const pushRes = await fetch(`${api}/git/refs/heads/${branch}`, {
+      method: 'PATCH',
+      headers,
+      body: JSON.stringify({ sha: newCommitData.sha, force: false })
+    });
+    if (!pushRes.ok) throw new Error(`Push failed: ${pushRes.status}`);
+    
+    const githubUrl = `/R-D/${targetPath}`;
+    showToast(`✅ "${file.name}" uploaded successfully`, 'success');
+    return githubUrl;
+    
+  } catch (err) {
+    console.error('Error uploading file:', err);
+    showToast(`Upload failed: ${err.message}`, 'error');
+    return null;
+  }
 }
-function updateDashboardStats() {
-  const projects = JSON.parse(localStorage.getItem('aura_projects') || '[]');
+
+async function handleVideoUpload(inputElement, fieldId) {
+  const file = inputElement.files[0];
+  if (!file) return;
+  
+  if (!file.type.startsWith('video/')) {
+    showToast('Please select a valid video file', 'error');
+    return;
+  }
+  
+  const pathField = document.getElementById(`vPath${fieldId}`);
+  pathField.value = '⏳ Uploading...';
+  
+  const filename = file.name.replace(/[^a-zA-Z0-9.-]/g, '-');
+  const targetPath = `assets/videos/${filename}`;
+  const githubUrl = await uploadFileToGitHub(file, targetPath);
+  
+  if (githubUrl) {
+    pathField.value = githubUrl;
+  } else {
+    pathField.value = '';
+  }
+}
+
+async function handleImageUpload(inputElement, fieldId) {
+  const file = inputElement.files[0];
+  if (!file) return;
+  
+  if (!file.type.startsWith('image/')) {
+    showToast('Please select a valid image file', 'error');
+    return;
+  }
+  
+  const pathField = document.getElementById(`gPath${fieldId}`);
+  pathField.value = '⏳ Uploading...';
+  
+  const filename = file.name.replace(/[^a-zA-Z0-9.-]/g, '-');
+  const targetPath = `assets/projects/${filename}`;
+  const githubUrl = await uploadFileToGitHub(file, targetPath);
+  
+  if (githubUrl) {
+    pathField.value = githubUrl;
+  } else {
+    pathField.value = '';
+  }
+}
+
+async function handleThumbnailUpload(inputElement) {
+  const file = inputElement.files[0];
+  if (!file) return;
+  
+  if (!file.type.startsWith('image/')) {
+    showToast('Please select a valid image file', 'error');
+    return;
+  }
+  
+  const pathField = document.getElementById('pThumbnail');
+  pathField.value = '⏳ Uploading...';
+  
+  const filename = file.name.replace(/[^a-zA-Z0-9.-]/g, '-');
+  const targetPath = `assets/projects/${filename}`;
+  const githubUrl = await uploadFileToGitHub(file, targetPath);
+  
+  if (githubUrl) {
+    pathField.value = githubUrl;
+  } else {
+    pathField.value = '';
+  }
+}
+
+// ===== GITHUB PROJECT STORAGE (BUG FIX 1) =====
+async function loadProjectsFromGitHub() {
+  const { token, owner, repo, branch } = getGHSettings();
+  if (!token) {
+    console.warn('No token available for loading projects');
+    return [];
+  }
+  
+  const api = `https://api.github.com/repos/${owner}/${repo}`;
+  const headers = { 
+    Authorization: `token ${token}`, 
+    Accept: 'application/vnd.github+json' 
+  };
+  
+  try {
+    const response = await fetch(
+      `${api}/contents/projects/_data/projects.json?ref=${branch}`, 
+      { headers }
+    );
+    
+    if (!response.ok) {
+      if (response.status === 404) {
+        console.log('projects.json not found - will create on first save');
+        return [];
+      }
+      throw new Error(`Failed to load projects: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    const content = atob(data.content.replace(/\n/g, ''));
+    const projects = JSON.parse(content);
+    
+    localStorage.setItem('projects_json_sha', data.sha);
+    return projects;
+  } catch (err) {
+    console.error('Error loading projects from GitHub:', err);
+    return [];
+  }
+}
+
+async function saveProjectToGitHub(projectData) {
+  const { token, owner, repo, branch } = getGHSettings();
+  if (!token) {
+    showToast('GitHub token not configured', 'error');
+    return false;
+  }
+  
+  const api = `https://api.github.com/repos/${owner}/${repo}`;
+  const headers = { 
+    Authorization: `token ${token}`, 
+    'Content-Type': 'application/json',
+    Accept: 'application/vnd.github+json' 
+  };
+  
+  try {
+    showToast('⏳ Saving project to GitHub...', 'info');
+    
+    // Load current projects list
+    const projects = await loadProjectsFromGitHub();
+    
+    // Update or add project
+    const idx = projects.findIndex(p => p.slug === projectData.slug);
+    const entry = { ...projectData, savedAt: new Date().toISOString(), savedBy: currentUser };
+    if (idx >= 0) {
+      projects[idx] = entry;
+    } else {
+      projects.unshift(entry);
+    }
+    
+    // Get latest commit
+    const refRes = await fetch(`${api}/git/ref/heads/${branch}`, { headers });
+    if (!refRes.ok) throw new Error(`Failed to get branch ref: ${refRes.status}`);
+    const refData = await refRes.json();
+    const latestSHA = refData.object.sha;
+    
+    // Get base tree
+    const commitRes = await fetch(`${api}/git/commits/${latestSHA}`, { headers });
+    if (!commitRes.ok) throw new Error(`Failed to get commit: ${commitRes.status}`);
+    const commitData = await commitRes.json();
+    const baseTreeSHA = commitData.tree.sha;
+    
+    // Create blob
+    const blobRes = await fetch(`${api}/git/blobs`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ 
+        content: JSON.stringify(projects, null, 2), 
+        encoding: 'utf-8' 
+      })
+    });
+    if (!blobRes.ok) throw new Error(`Blob creation failed: ${blobRes.status}`);
+    const blobData = await blobRes.json();
+    
+    // Create new tree
+    const treeRes = await fetch(`${api}/git/trees`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({
+        base_tree: baseTreeSHA,
+        tree: [{ path: 'projects/_data/projects.json', mode: '100644', type: 'blob', sha: blobData.sha }]
+      })
+    });
+    if (!treeRes.ok) throw new Error(`Tree creation failed: ${treeRes.status}`);
+    const treeData = await treeRes.json();
+    
+    // Create commit
+    const newCommitRes = await fetch(`${api}/git/commits`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({
+        message: `Save project: ${projectData.title} (by ${currentUser})`,
+        tree: treeData.sha,
+        parents: [latestSHA]
+      })
+    });
+    if (!newCommitRes.ok) throw new Error(`Commit failed: ${newCommitRes.status}`);
+    const newCommitData = await newCommitRes.json();
+    
+    // Update branch ref
+    const pushRes = await fetch(`${api}/git/refs/heads/${branch}`, {
+      method: 'PATCH',
+      headers,
+      body: JSON.stringify({ sha: newCommitData.sha, force: false })
+    });
+    if (!pushRes.ok) throw new Error(`Push failed: ${pushRes.status}`);
+    
+    showToast(`✅ Project "${projectData.title}" saved to GitHub`, 'success');
+    await updateDashboardStats();
+    return true;
+    
+  } catch (err) {
+    console.error('Error saving project to GitHub:', err);
+    showToast(`Failed to save project: ${err.message}`, 'error');
+    return false;
+  }
+}
+
+// 🆕 BUG FIX 3: Dedicated save project function
+async function saveProjectDraft() {
+  const d = collectFormData();
+  if (!d.title || !d.slug) {
+    showToast('❌ Please fill in at least Title and Slug fields', 'error');
+    return;
+  }
+  
+  await saveProjectToGitHub(d);
+}
+
+// ===== SAVE / LIST PROJECTS =====
+async function saveProject(data) {
+  // 🆕 BUG FIX 1: Save to GitHub instead of localStorage
+  await saveProjectToGitHub(data);
+}
+
+async function updateDashboardStats() {
+  // 🆕 BUG FIX 1: Load from GitHub instead of localStorage
+  const projects = await loadProjectsFromGitHub();
   document.getElementById('statProjects').textContent = projects.length;
 }
-function renderProjectsList() {
-  const projects = JSON.parse(localStorage.getItem('aura_projects') || '[]');
+
+async function renderProjectsList() {
+  // 🆕 BUG FIX 1: Load from GitHub instead of localStorage
+  const projects = await loadProjectsFromGitHub();
   const c = document.getElementById('projectsList');
   if (!projects.length) {
     c.innerHTML = '<div class="card text-center text-gray-400 py-12"><p>No projects saved yet.</p><button class="btn-primary mt-4" onclick="showSection(\'add-project\')">+ Add New Project</button></div>';
@@ -997,7 +1462,8 @@ function renderProjectsList() {
         <div class="flex gap-2 mt-2 flex-wrap">
           <span class="badge badge-blue">${p.category}</span>
           <span class="badge badge-green">${p.status}</span>
-          ${p.deployedAt ? '<span class="badge badge-green">✅ Deployed</span>' : '<span class="badge badge-yellow">Not Deployed</span>'}
+          ${p.deployedAt ? '<span class="badge badge-green">✅ Deployed</span>' : '<span class="badge badge-yellow">Draft</span>'}
+          ${p.savedBy ? `<span class="badge badge-blue text-xs">by ${p.savedBy}</span>` : ''}
         </div>
         ${p.liveUrl ? `<a href="${p.liveUrl}" target="_blank" class="text-xs text-blue-600 underline mt-1 inline-block">${p.liveUrl}</a>` : ''}
       </div>
@@ -1193,10 +1659,26 @@ async function deleteProjectFromGH(slug, title) {
       method: 'PUT', headers,
       body: JSON.stringify({ message: `Remove card: ${title}`, content: btoa(unescape(encodeURIComponent(indexContent))), sha: indexData.sha, branch })
     });
-    let projects = JSON.parse(localStorage.getItem('aura_projects') || '[]');
-    projects = projects.filter(p => p.slug !== slug);
-    localStorage.setItem('aura_projects', JSON.stringify(projects));
-    updateDashboardStats();
+    // 🆕 BUG FIX 1: Remove from GitHub projects.json instead of localStorage
+    const projects = await loadProjectsFromGitHub();
+    const filtered = projects.filter(p => p.slug !== slug);
+    if (filtered.length !== projects.length) {
+      const { token: tok, owner: own, repo: rep, branch: br } = getGHSettings();
+      const hdrs = { Authorization: `token ${tok}`, 'Content-Type': 'application/json', Accept: 'application/vnd.github+json' };
+      const refR = await fetch(`https://api.github.com/repos/${own}/${rep}/git/ref/heads/${br}`, { headers: hdrs });
+      const refD = await refR.json();
+      const latSHA = refD.object.sha;
+      const cmtR = await fetch(`https://api.github.com/repos/${own}/${rep}/git/commits/${latSHA}`, { headers: hdrs });
+      const cmtD = await cmtR.json();
+      const blobR = await fetch(`https://api.github.com/repos/${own}/${rep}/git/blobs`, { method:'POST', headers:hdrs, body:JSON.stringify({ content:JSON.stringify(filtered,null,2), encoding:'utf-8' }) });
+      const blobD = await blobR.json();
+      const treeR = await fetch(`https://api.github.com/repos/${own}/${rep}/git/trees`, { method:'POST', headers:hdrs, body:JSON.stringify({ base_tree:cmtD.tree.sha, tree:[{ path:'projects/_data/projects.json', mode:'100644', type:'blob', sha:blobD.sha }] }) });
+      const treeD = await treeR.json();
+      const ncR = await fetch(`https://api.github.com/repos/${own}/${rep}/git/commits`, { method:'POST', headers:hdrs, body:JSON.stringify({ message:`Remove project entry: ${title}`, tree:treeD.sha, parents:[latSHA] }) });
+      const ncD = await ncR.json();
+      await fetch(`https://api.github.com/repos/${own}/${rep}/git/refs/heads/${br}`, { method:'PATCH', headers:hdrs, body:JSON.stringify({ sha:ncD.sha }) });
+    }
+    await updateDashboardStats();
     document.getElementById('card-' + slug)?.remove();
     showToast(`✅ "${title}" deleted!`, 'success');
   } catch(err) { showToast('Delete failed: ' + err.message, 'error'); }
@@ -1217,6 +1699,11 @@ function showToast(msg, type = 'success') {
   clearTimeout(t._timer);
   t._timer = setTimeout(() => t.style.display = 'none', 4500);
 }
+
+// 🆕 BUG FIX 6: Restore session on page load
+window.addEventListener('DOMContentLoaded', () => {
+  restoreSession();
+});
 </script>
 </body>
 </html>
