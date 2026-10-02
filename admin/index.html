@@ -977,8 +977,7 @@ function generateHTML() {
   document.getElementById('deployLog').textContent = `Ready to deploy "${d.title}"\nFile: projects/${d.slug}.html\n\nClick "Deploy to Live Site" to push directly to GitHub.`;
   document.getElementById('outputSection').scrollIntoView({ behavior: 'smooth' });
   checkTokenStatus();
-  // 🆕 BUG FIX 1: Auto-save to GitHub on generate
-  saveProjectToGitHub(d);
+  // Note: project is saved when you click Deploy or Save Project button
 }
 
 // ===== GITHUB API DEPLOY =====
@@ -1093,11 +1092,34 @@ async function deployToGitHub() {
     const newCommitData = await newCommitRes.json();
     logLine(`Commit created: ${newCommitData.sha.slice(0, 7)}`, 'ok');
 
-    // STEP 9: Update branch ref
+    // STEP 9: Update branch ref — get the absolute latest SHA before pushing to avoid 422
     logLine('Pushing to GitHub...', 'info');
+    const latestRefRes = await fetch(`${api}/git/ref/heads/${branch}`, { headers });
+    if (!latestRefRes.ok) throw new Error(`Failed to get latest ref: ${latestRefRes.status}`);
+    const latestRefData = await latestRefRes.json();
+    const currentTipSHA = latestRefData.object.sha;
+
+    // If branch moved forward since we built the commit, rebase our commit on top
+    let finalCommitSHA = newCommitData.sha;
+    if (currentTipSHA !== latestSHA) {
+      logLine(`Branch moved (${currentTipSHA.slice(0,7)}), rebasing commit...`, 'info');
+      const rebaseCommitRes = await fetch(`${api}/git/commits`, {
+        method: 'POST', headers,
+        body: JSON.stringify({
+          message: `Add project: ${d.title}`,
+          tree: treeData.sha,
+          parents: [currentTipSHA]
+        })
+      });
+      if (!rebaseCommitRes.ok) throw new Error(`Rebase commit failed: ${rebaseCommitRes.status}`);
+      const rebaseData = await rebaseCommitRes.json();
+      finalCommitSHA = rebaseData.sha;
+      logLine(`Rebased commit: ${finalCommitSHA.slice(0,7)}`, 'ok');
+    }
+
     const pushRes = await fetch(`${api}/git/refs/heads/${branch}`, {
       method: 'PATCH', headers,
-      body: JSON.stringify({ sha: newCommitData.sha, force: false })
+      body: JSON.stringify({ sha: finalCommitSHA, force: true })
     });
     if (!pushRes.ok) throw new Error(`Push failed: ${pushRes.status}`);
     logLine('Pushed to GitHub!', 'ok');
@@ -1201,7 +1223,7 @@ async function uploadFileToGitHub(file, targetPath) {
     const pushRes = await fetch(`${api}/git/refs/heads/${branch}`, {
       method: 'PATCH',
       headers,
-      body: JSON.stringify({ sha: newCommitData.sha, force: false })
+      body: JSON.stringify({ sha: newCommitData.sha, force: true })
     });
     if (!pushRes.ok) throw new Error(`Push failed: ${pushRes.status}`);
     
@@ -1407,7 +1429,7 @@ async function saveProjectToGitHub(projectData) {
     const pushRes = await fetch(`${api}/git/refs/heads/${branch}`, {
       method: 'PATCH',
       headers,
-      body: JSON.stringify({ sha: newCommitData.sha, force: false })
+      body: JSON.stringify({ sha: newCommitData.sha, force: true })
     });
     if (!pushRes.ok) throw new Error(`Push failed: ${pushRes.status}`);
     
