@@ -710,14 +710,23 @@ function checkTokenStatus() {
     if (deployWarn) deployWarn.classList.add('hidden');
     if (statTokenEl) { statTokenEl.textContent = '✅'; statTokenEl.style.color = '#16a34a'; }
   } else {
-    const noTokenMsg = currentUser !== 'pavan' 
-      ? '⚠️ No token set. Contact pavan (Super Admin) to configure shared team token.' 
+    const noTokenMsg = currentUser !== 'pavan'
+      ? `⚠️ No deploy token set. <button onclick="promptTeamToken()" class="underline font-bold text-blue-800">Click here to enter the shared team token</button> (ask Pavan for it).`
       : '⚠️ No token set. You need to add your GitHub Personal Access Token to enable one-click deploy.';
     if (statusEl) statusEl.innerHTML = `<div class="token-warning">${noTokenMsg}</div>`;
     if (dashWarn) dashWarn.classList.remove('hidden');
     if (deployWarn) deployWarn.classList.remove('hidden');
     if (statTokenEl) { statTokenEl.textContent = '❌'; statTokenEl.style.color = '#dc2626'; }
   }
+}
+
+// Team users can enter the shared token once on their own browser
+function promptTeamToken() {
+  const t = prompt('Enter the shared team deploy token (ask Pavan for it):');
+  if (!t || !t.trim()) return;
+  localStorage.setItem('gh_shared_token', t.trim());
+  checkTokenStatus();
+  showToast('✅ Team token saved! You can now deploy.', 'success');
 }
 
 // ===== DYNAMIC FIELDS =====
@@ -1476,7 +1485,7 @@ async function renderProjectsList() {
     return;
   }
   c.innerHTML = projects.map(p => `
-    <div class="card flex items-center gap-4">
+    <div class="card flex items-center gap-4" id="saved-card-${p.slug}">
       <img src="${p.thumbnail || '/R-D/assets/projects/placeholder.svg'}" class="w-20 h-16 object-cover rounded-lg border border-gray-200" onerror="this.src='/R-D/assets/projects/placeholder.svg'">
       <div class="flex-1">
         <h3 class="font-bold text-gray-800">${p.title}</h3>
@@ -1489,11 +1498,43 @@ async function renderProjectsList() {
         </div>
         ${p.liveUrl ? `<a href="${p.liveUrl}" target="_blank" class="text-xs text-blue-600 underline mt-1 inline-block">${p.liveUrl}</a>` : ''}
       </div>
-      <div class="text-xs text-gray-400 text-right">
+      <div class="text-xs text-gray-400 text-right flex flex-col gap-2 items-end">
         <div>projects/${p.slug}.html</div>
         <div>${new Date(p.savedAt).toLocaleDateString()}</div>
+        ${currentUser === 'pavan' ? `<button class="btn-danger text-xs px-3 py-1" onclick="deleteSavedProject('${p.slug}','${p.title.replace(/'/g,"\\'")}')">🗑️ Delete</button>` : ''}
       </div>
     </div>`).join('');
+}
+
+// ===== DELETE FROM SAVED PROJECTS (pavan only) =====
+async function deleteSavedProject(slug, title) {
+  if (currentUser !== 'pavan') { showToast('⛔ Only Pavan can delete', 'error'); return; }
+  if (!confirm(`Remove "${title}" from Saved Projects?\n\nNote: This only removes it from the saved list — the live page on GitHub is NOT deleted.`)) return;
+  const projects = await loadProjectsFromGitHub();
+  const filtered = projects.filter(p => p.slug !== slug);
+  if (filtered.length === projects.length) { showToast('Project not found in saved list', 'error'); return; }
+  const { token, owner, repo, branch } = getGHSettings();
+  if (!token) { showToast('GitHub token not configured', 'error'); return; }
+  const api = `https://api.github.com/repos/${owner}/${repo}`;
+  const headers = { Authorization: `token ${token}`, 'Content-Type': 'application/json', Accept: 'application/vnd.github+json' };
+  showToast('⏳ Removing from saved list...', 'info');
+  try {
+    const refR = await fetch(`${api}/git/ref/heads/${branch}`, { headers });
+    const refD = await refR.json(); const latSHA = refD.object.sha;
+    const cmtR = await fetch(`${api}/git/commits/${latSHA}`, { headers });
+    const cmtD = await cmtR.json();
+    const blobR = await fetch(`${api}/git/blobs`, { method:'POST', headers, body:JSON.stringify({ content:JSON.stringify(filtered,null,2), encoding:'utf-8' }) });
+    const blobD = await blobR.json();
+    const treeR = await fetch(`${api}/git/trees`, { method:'POST', headers, body:JSON.stringify({ base_tree:cmtD.tree.sha, tree:[{ path:'projects/_data/projects.json', mode:'100644', type:'blob', sha:blobD.sha }] }) });
+    const treeD = await treeR.json();
+    const ncR = await fetch(`${api}/git/commits`, { method:'POST', headers, body:JSON.stringify({ message:`Remove saved entry: ${title}`, tree:treeD.sha, parents:[latSHA] }) });
+    const ncD = await ncR.json();
+    const pushR = await fetch(`${api}/git/refs/heads/${branch}`, { method:'PATCH', headers, body:JSON.stringify({ sha:ncD.sha, force:true }) });
+    if (!pushR.ok) throw new Error(`Push failed: ${pushR.status}`);
+    document.getElementById('saved-card-' + slug)?.remove();
+    await updateDashboardStats();
+    showToast(`✅ "${title}" removed from saved list`, 'success');
+  } catch(err) { showToast('Failed: ' + err.message, 'error'); }
 }
 
 // ===== MANAGE PROJECTS =====
