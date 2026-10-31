@@ -54,6 +54,15 @@
 
     <!-- UI refinements (self-contained in index.html) -->
     <style>
+        body {
+            background: linear-gradient(135deg, #f8fafc 0%, #eff6ff 30%, #f0fdf4 60%, #f8fafc 100%);
+            background-attachment: fixed;
+            min-height: 100vh;
+        }
+        .dark body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 30%, #064e3b 60%, #0f172a 100%);
+            background-attachment: fixed;
+        }
         section[id] { scroll-margin-top: 5rem; }
         .project-card { transition: transform .3s ease, box-shadow .3s ease; }
         .project-card:hover { transform: translateY(-6px); box-shadow: 0 22px 45px rgba(0,0,0,.15); }
@@ -68,6 +77,21 @@
         #contact .btn-primary, #contact .btn-secondary { white-space: nowrap; }
         .skill-tag { transition: transform .2s ease, box-shadow .2s ease; }
         .skill-tag:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(30,58,138,.15); }
+        /* Hero glow */
+        #home::before {
+            content: '';
+            position: absolute;
+            top: 10%; left: 50%;
+            width: 600px; height: 400px;
+            transform: translateX(-50%);
+            background: radial-gradient(ellipse, rgba(30,58,138,0.12), transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+        .dark #home::before {
+            background: radial-gradient(ellipse, rgba(16,185,129,0.15), transparent 70%);
+        }
+        #home > div { position: relative; z-index: 1; }
     </style>
     
     <!-- PWA Manifest -->
