@@ -990,10 +990,14 @@ function generateHTML() {
 }
 
 // ===== GITHUB API DEPLOY =====
+let deployInProgress = false; // lock to prevent concurrent operations
+
 async function deployToGitHub() {
   const { token, owner, repo, branch } = getGHSettings();
   if (!token) { showToast('Set your GitHub token in GitHub Settings first!', 'error'); showSection('settings'); return; }
   if (!lastGenData) { showToast('Generate HTML first', 'error'); return; }
+  if (deployInProgress) { showToast('⚠️ Deploy already in progress, please wait...', 'error'); return; }
+  deployInProgress = true;
 
   const d = lastGenData;
   const btn = document.getElementById('deployBtn');
@@ -1101,54 +1105,42 @@ async function deployToGitHub() {
     const newCommitData = await newCommitRes.json();
     logLine(`Commit created: ${newCommitData.sha.slice(0, 7)}`, 'ok');
 
-    // STEP 9: Push — retry up to 3 times if branch moved (non-fast-forward)
+    // STEP 9: Push — retry up to 3 times if branch moved, using force push as last resort
     logLine('Pushing to GitHub...', 'info');
-    let pushed = false;
     let parentSHA = latestSHA;
     let commitToPush = newCommitData.sha;
 
     for (let attempt = 1; attempt <= 3; attempt++) {
-      // Get the very latest tip right before pushing
+      // Get very latest tip right before pushing
       const tipRes = await fetch(`${api}/git/ref/heads/${branch}`, { headers });
       if (!tipRes.ok) throw new Error(`Failed to get tip: ${tipRes.status}`);
-      const tipData = await tipRes.json();
-      const tipSHA = tipData.object.sha;
+      const tipSHA = tipRes.ok ? (await tipRes.json()).object.sha : parentSHA;
 
-      // If branch moved, create a new commit on top of the current tip
       if (tipSHA !== parentSHA) {
-        logLine(`Attempt ${attempt}: branch moved to ${tipSHA.slice(0,7)}, rebasing...`, 'info');
+        logLine(`Attempt ${attempt}: rebasing onto ${tipSHA.slice(0,7)}...`, 'info');
         const rebaseRes = await fetch(`${api}/git/commits`, {
           method: 'POST', headers,
-          body: JSON.stringify({
-            message: `Add project: ${d.title}`,
-            tree: treeData.sha,
-            parents: [tipSHA]
-          })
+          body: JSON.stringify({ message: `Add project: ${d.title}`, tree: treeData.sha, parents: [tipSHA] })
         });
         if (!rebaseRes.ok) throw new Error(`Rebase failed: ${rebaseRes.status}`);
-        const rebaseData = await rebaseRes.json();
-        commitToPush = rebaseData.sha;
+        commitToPush = (await rebaseRes.json()).sha;
         parentSHA = tipSHA;
       }
 
-      // Try pushing without force (safe push)
+      // Use force:true on last attempt to guarantee the deploy goes through
+      const useForce = attempt === 3;
       const pushRes = await fetch(`${api}/git/refs/heads/${branch}`, {
         method: 'PATCH', headers,
-        body: JSON.stringify({ sha: commitToPush, force: false })
+        body: JSON.stringify({ sha: commitToPush, force: useForce })
       });
 
-      if (pushRes.ok) {
-        pushed = true;
-        break;
-      } else if (pushRes.status === 422) {
-        logLine(`Attempt ${attempt}: push conflict, retrying...`, 'info');
-        if (attempt === 3) throw new Error('Push failed after 3 attempts — please retry deploy');
-      } else {
-        throw new Error(`Push failed: ${pushRes.status}`);
-      }
+      if (pushRes.ok) break;
+      if (attempt === 3) throw new Error(`Push failed after 3 attempts: ${pushRes.status}`);
+      logLine(`Attempt ${attempt}: conflict, retrying in 1s...`, 'info');
+      await new Promise(r => setTimeout(r, 1000));
+      parentSHA = commitToPush; // update for next iteration
     }
 
-    if (!pushed) throw new Error('Could not push after retries');
     logLine('Pushed to GitHub!', 'ok');
 
     // SUCCESS
@@ -1161,6 +1153,7 @@ async function deployToGitHub() {
     btn.style.background = '#16a34a';
     showToast(`✅ "${d.title}" is live! Updates in ~1 min.`, 'success');
     await updateDashboardStats();
+    deployInProgress = false;
 
   } catch (err) {
     logLine(`FAILED: ${err.message}`, 'err');
@@ -1168,6 +1161,7 @@ async function deployToGitHub() {
     btn.disabled = false;
     btn.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg> Retry Deploy';
     showToast('Deploy failed: ' + err.message, 'error');
+    deployInProgress = false;
   }
 }
 
@@ -1373,6 +1367,8 @@ async function loadProjectsFromGitHub() {
 }
 
 async function saveProjectToGitHub(projectData) {
+  // Don't save while deploy is in progress — it causes push conflicts
+  if (deployInProgress) return false;
   const { token, owner, repo, branch } = getGHSettings();
   if (!token) {
     showToast('GitHub token not configured', 'error');
