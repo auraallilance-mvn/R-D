@@ -1054,7 +1054,7 @@ async function deployToGitHub() {
       logLine('Could not find projects-grid marker — card not added to index.html', 'err');
     }
 
-    // STEP 6: Create blobs
+    // STEP 6: Create blobs for project page, index.html, AND projects.json (all in one commit)
     logLine('Creating file blobs...', 'info');
     const projectBlob = await fetch(`${api}/git/blobs`, {
       method: 'POST', headers,
@@ -1069,9 +1069,22 @@ async function deployToGitHub() {
     });
     if (!indexBlob.ok) throw new Error(`Index blob failed: ${indexBlob.status}`);
     const indexBlobData = await indexBlob.json();
+
+    // Also update projects.json in the same commit to avoid race conditions
+    const existingProjects = await loadProjectsFromGitHub();
+    const deployedEntry = { ...d, deployedAt: new Date().toISOString(), savedAt: new Date().toISOString(), savedBy: currentUser, liveUrl: `https://${owner}.github.io/${repo}/projects/${d.slug}.html` };
+    const pidx = existingProjects.findIndex(p => p.slug === d.slug);
+    if (pidx >= 0) existingProjects[pidx] = deployedEntry; else existingProjects.unshift(deployedEntry);
+    const projectsBlob = await fetch(`${api}/git/blobs`, {
+      method: 'POST', headers,
+      body: JSON.stringify({ content: JSON.stringify(existingProjects, null, 2), encoding: 'utf-8' })
+    });
+    if (!projectsBlob.ok) throw new Error(`Projects blob failed: ${projectsBlob.status}`);
+    const projectsBlobData = await projectsBlob.json();
+
     logLine('Blobs created', 'ok');
 
-    // STEP 7: Create new tree
+    // STEP 7: Create new tree with all 3 files
     logLine('Creating new tree...', 'info');
     const treeRes = await fetch(`${api}/git/trees`, {
       method: 'POST', headers,
@@ -1079,7 +1092,8 @@ async function deployToGitHub() {
         base_tree: baseTreeSHA,
         tree: [
           { path: `projects/${d.slug}.html`, mode: '100644', type: 'blob', sha: projectBlobData.sha },
-          { path: 'index.html', mode: '100644', type: 'blob', sha: indexBlobData.sha }
+          { path: 'index.html', mode: '100644', type: 'blob', sha: indexBlobData.sha },
+          { path: 'projects/_data/projects.json', mode: '100644', type: 'blob', sha: projectsBlobData.sha }
         ]
       })
     });
@@ -1142,9 +1156,7 @@ async function deployToGitHub() {
     btn.innerHTML = '✅ Deployed!';
     btn.style.background = '#16a34a';
     showToast(`✅ "${d.title}" is live! Updates in ~1 min.`, 'success');
-
-    // 🆕 BUG FIX 1: Save deployed project to GitHub
-    saveProjectToGitHub({ ...d, deployedAt: new Date().toISOString(), liveUrl: `https://${owner}.github.io/${repo}/projects/${d.slug}.html` });
+    await updateDashboardStats();
 
   } catch (err) {
     logLine(`FAILED: ${err.message}`, 'err');
