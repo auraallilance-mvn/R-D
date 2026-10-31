@@ -51,6 +51,24 @@
     
     <!-- Custom CSS -->
     <link rel="stylesheet" href="/R-D/assets/css/style.css">
+
+    <!-- UI refinements (self-contained in index.html) -->
+    <style>
+        section[id] { scroll-margin-top: 5rem; }
+        .project-card { transition: transform .3s ease, box-shadow .3s ease; }
+        .project-card:hover { transform: translateY(-6px); box-shadow: 0 22px 45px rgba(0,0,0,.15); }
+        .project-card:hover .project-overlay { opacity: 1; }
+        .project-overlay .btn-primary { font-size: 1rem; padding: .625rem 1.5rem; box-shadow: 0 10px 25px rgba(0,0,0,.3); }
+        .view-details { display: inline-flex; align-items: center; gap: .4rem; font-size: .875rem; font-weight: 600; color: #1e3a8a; transition: color .2s ease, gap .2s ease; }
+        .view-details:hover { color: #10b981; gap: .6rem; }
+        .dark .view-details { color: #60a5fa; }
+        .dark .view-details:hover { color: #34d399; }
+        #contact .glass-card .space-y-4 > div { border-radius: .75rem; transition: transform .2s ease, box-shadow .2s ease; }
+        #contact .glass-card .space-y-4 > div:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,.08); }
+        #contact .btn-primary, #contact .btn-secondary { white-space: nowrap; }
+        .skill-tag { transition: transform .2s ease, box-shadow .2s ease; }
+        .skill-tag:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(30,58,138,.15); }
+    </style>
     
     <!-- PWA Manifest -->
     <link rel="manifest" href="/R-D/manifest.json">
@@ -183,7 +201,7 @@
                 <div class="space-y-6">
                     <div class="glass-card p-6">
                         <h3 class="text-xl font-semibold mb-4 text-primary-500">Technical Skills</h3>
-                        <div class="grid grid-cols-2 gap-3">
+                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
                             <div class="skill-tag">Arduino</div>
                             <div class="skill-tag">ESP32</div>
                             <div class="skill-tag">Raspberry Pi</div>
@@ -292,7 +310,7 @@
                             <span class="tech-tag">PyTorch</span>
                             <span class="tech-tag">Agriculture AI</span>
                         </div>
-                        <a href="/R-D/projects/paddy-disease-classification.html" class="text-sm text-primary-500 hover:text-primary-600 font-medium">Ã°ÂÂ📄View Full Details →</a>
+                        <a href="/R-D/projects/paddy-disease-classification.html" class="view-details">📄 View Full Details →</a>
                     </div>
                 </div>
 
@@ -315,7 +333,7 @@
                             <span class="tech-tag">Person Counting</span>
                             <span class="tech-tag">Real-time</span>
                         </div>
-                        <a href="/R-D/projects/person-counting-rtdetr.html" class="text-sm text-primary-500 hover:text-primary-600 font-medium">Ã°ÂÂ📄View Full Details →</a>
+                        <a href="/R-D/projects/person-counting-rtdetr.html" class="view-details">📄 View Full Details →</a>
                     </div>
                 </div>
 
@@ -339,7 +357,7 @@
                             <span class="tech-tag">Raspberry Pi 4</span>
                             <span class="tech-tag">Edge Computing</span>
                         </div>
-                        <a href="/R-D/projects/yolov8n-raspberry-pi-optimization.html" class="text-sm text-primary-500 hover:text-primary-600 font-medium">Ã°ÂÂ📄View Full Details →</a>
+                        <a href="/R-D/projects/yolov8n-raspberry-pi-optimization.html" class="view-details">📄 View Full Details →</a>
                     </div>
                 </div>
 
@@ -362,7 +380,7 @@
                             <span class="tech-tag">GPS</span>
                             <span class="tech-tag">Team Project</span>
                         </div>
-                        <a href="/R-D/projects/dji-naza.html" class="text-sm text-primary-500 hover:text-primary-600 font-medium">Ã°ÂÂ📄View Full Details →</a>
+                        <a href="/R-D/projects/dji-naza.html" class="view-details">📄 View Full Details →</a>
                     </div>
                 </div>
 
@@ -385,7 +403,7 @@
                             <span class="tech-tag">Scratch Programming</span>
                             <span class="tech-tag">Robotics</span>
                         </div>
-                        <a href="/R-D/projects/abilix-krypton-robots.html" class="text-sm text-primary-500 hover:text-primary-600 font-medium">Ã°ÂÂ📄View Full Details →</a>
+                        <a href="/R-D/projects/abilix-krypton-robots.html" class="view-details">📄 View Full Details →</a>
                     </div>
                 </div>
 
@@ -405,7 +423,7 @@
                             <span class="tech-tag">Arduino IoT Cloud</span>
                             <span class="tech-tag">MQTT</span>
                         </div>
-                        <a href="/R-D/projects/wifi-led-control.html" class="text-sm text-primary-500 hover:text-primary-600 font-medium">Ã°ÂÂ📄View Full Details →</a>
+                        <a href="/R-D/projects/wifi-led-control.html" class="view-details">📄 View Full Details →</a>
                     </div>
                 </div>
 
@@ -425,7 +443,7 @@
                             <span class="tech-tag">ESP32</span>
                             <span class="tech-tag">ThingSpeak</span>
                         </div>
-                        <a href="/R-D/projects/weather-station.html" class="text-sm text-primary-500 hover:text-primary-600 font-medium">Ã°ÂÂ📄View Full Details →</a>
+                        <a href="/R-D/projects/weather-station.html" class="view-details">📄 View Full Details →</a>
                     </div>
                 </div>
 
@@ -449,7 +467,7 @@
                             <span class="tech-tag">Seven Segment</span>
                             <span class="tech-tag">Digital Clock</span>
                         </div>
-                        <a href="/R-D/projects/seven-segment-display.html" class="text-sm text-primary-500 hover:text-primary-600 font-medium">Ã°ÂÂ📄View Full Details →</a>
+                        <a href="/R-D/projects/seven-segment-display.html" class="view-details">📄 View Full Details →</a>
                     </div>
                 </div>
 
@@ -474,7 +492,7 @@
                             <span class="tech-tag">NeoPixel</span>
                             <span class="tech-tag">WiFi Control</span>
                         </div>
-                        <a href="/R-D/projects/neopixel-display.html" class="text-sm text-primary-500 hover:text-primary-600 font-medium">Ã°ÂÂ📄View Full Details →</a>
+                        <a href="/R-D/projects/neopixel-display.html" class="view-details">📄 View Full Details →</a>
                     </div>
                 </div>
             </div>
@@ -559,7 +577,7 @@
                             <div class="flex space-x-2">
                                 <a href="mailto:auraallilance@gmail.com?subject=Portfolio Inquiry - AuraAlliance&body=Hi,%0D%0A%0D%0AI'm interested in your projects and would like to discuss:%0D%0A%0D%0A[Please describe your inquiry here]%0D%0A%0D%0AThank you!" 
                                    class="btn-primary text-sm">
-                                    Ã°ÂÂ📧Send Email
+                                    📧 Send Email
                                 </a>
                                 <button onclick="copyToClipboard('auraallilance@gmail.com')" 
                                         class="btn-secondary text-sm">
@@ -584,7 +602,7 @@
                             <div class="flex space-x-2">
                                 <a href="tel:+917569963393" 
                                    class="btn-primary text-sm">
-                                    Ã°ÂÂ📞Call Now
+                                    📞 Call Now
                                 </a>
                                 <button onclick="copyToClipboard('+91 7569963393')" 
                                         class="btn-secondary text-sm">
@@ -610,7 +628,7 @@
                                 <a href="https://wa.me/917569963393?text=Hi! I'm interested in your IoT and Robotics projects. I'd like to discuss a potential collaboration." 
                                    target="_blank"
                                    class="btn-primary text-sm">
-                                    Ã°ÂÂÂ¬ WhatsApp
+                                    💬 WhatsApp
                                 </a>
                             </div>
                         </div>
