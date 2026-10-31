@@ -1054,7 +1054,7 @@ async function deployToGitHub() {
       logLine('Could not find projects-grid marker — card not added to index.html', 'err');
     }
 
-    // STEP 6: Create blobs for project page, index.html, AND projects.json (all in one commit)
+    // STEP 6: Create blobs for project page and index.html
     logLine('Creating file blobs...', 'info');
     const projectBlob = await fetch(`${api}/git/blobs`, {
       method: 'POST', headers,
@@ -1069,22 +1069,9 @@ async function deployToGitHub() {
     });
     if (!indexBlob.ok) throw new Error(`Index blob failed: ${indexBlob.status}`);
     const indexBlobData = await indexBlob.json();
-
-    // Also update projects.json in the same commit to avoid race conditions
-    const existingProjects = await loadProjectsFromGitHub();
-    const deployedEntry = { ...d, deployedAt: new Date().toISOString(), savedAt: new Date().toISOString(), savedBy: currentUser, liveUrl: `https://${owner}.github.io/${repo}/projects/${d.slug}.html` };
-    const pidx = existingProjects.findIndex(p => p.slug === d.slug);
-    if (pidx >= 0) existingProjects[pidx] = deployedEntry; else existingProjects.unshift(deployedEntry);
-    const projectsBlob = await fetch(`${api}/git/blobs`, {
-      method: 'POST', headers,
-      body: JSON.stringify({ content: JSON.stringify(existingProjects, null, 2), encoding: 'utf-8' })
-    });
-    if (!projectsBlob.ok) throw new Error(`Projects blob failed: ${projectsBlob.status}`);
-    const projectsBlobData = await projectsBlob.json();
-
     logLine('Blobs created', 'ok');
 
-    // STEP 7: Create new tree with all 3 files
+    // STEP 7: Create new tree with project page + index.html only
     logLine('Creating new tree...', 'info');
     const treeRes = await fetch(`${api}/git/trees`, {
       method: 'POST', headers,
@@ -1092,8 +1079,7 @@ async function deployToGitHub() {
         base_tree: baseTreeSHA,
         tree: [
           { path: `projects/${d.slug}.html`, mode: '100644', type: 'blob', sha: projectBlobData.sha },
-          { path: 'index.html', mode: '100644', type: 'blob', sha: indexBlobData.sha },
-          { path: 'projects/_data/projects.json', mode: '100644', type: 'blob', sha: projectsBlobData.sha }
+          { path: 'index.html', mode: '100644', type: 'blob', sha: indexBlobData.sha }
         ]
       })
     });
@@ -1115,36 +1101,54 @@ async function deployToGitHub() {
     const newCommitData = await newCommitRes.json();
     logLine(`Commit created: ${newCommitData.sha.slice(0, 7)}`, 'ok');
 
-    // STEP 9: Update branch ref — get the absolute latest SHA before pushing to avoid 422
+    // STEP 9: Push — retry up to 3 times if branch moved (non-fast-forward)
     logLine('Pushing to GitHub...', 'info');
-    const latestRefRes = await fetch(`${api}/git/ref/heads/${branch}`, { headers });
-    if (!latestRefRes.ok) throw new Error(`Failed to get latest ref: ${latestRefRes.status}`);
-    const latestRefData = await latestRefRes.json();
-    const currentTipSHA = latestRefData.object.sha;
+    let pushed = false;
+    let parentSHA = latestSHA;
+    let commitToPush = newCommitData.sha;
 
-    // If branch moved forward since we built the commit, rebase our commit on top
-    let finalCommitSHA = newCommitData.sha;
-    if (currentTipSHA !== latestSHA) {
-      logLine(`Branch moved (${currentTipSHA.slice(0,7)}), rebasing commit...`, 'info');
-      const rebaseCommitRes = await fetch(`${api}/git/commits`, {
-        method: 'POST', headers,
-        body: JSON.stringify({
-          message: `Add project: ${d.title}`,
-          tree: treeData.sha,
-          parents: [currentTipSHA]
-        })
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      // Get the very latest tip right before pushing
+      const tipRes = await fetch(`${api}/git/ref/heads/${branch}`, { headers });
+      if (!tipRes.ok) throw new Error(`Failed to get tip: ${tipRes.status}`);
+      const tipData = await tipRes.json();
+      const tipSHA = tipData.object.sha;
+
+      // If branch moved, create a new commit on top of the current tip
+      if (tipSHA !== parentSHA) {
+        logLine(`Attempt ${attempt}: branch moved to ${tipSHA.slice(0,7)}, rebasing...`, 'info');
+        const rebaseRes = await fetch(`${api}/git/commits`, {
+          method: 'POST', headers,
+          body: JSON.stringify({
+            message: `Add project: ${d.title}`,
+            tree: treeData.sha,
+            parents: [tipSHA]
+          })
+        });
+        if (!rebaseRes.ok) throw new Error(`Rebase failed: ${rebaseRes.status}`);
+        const rebaseData = await rebaseRes.json();
+        commitToPush = rebaseData.sha;
+        parentSHA = tipSHA;
+      }
+
+      // Try pushing without force (safe push)
+      const pushRes = await fetch(`${api}/git/refs/heads/${branch}`, {
+        method: 'PATCH', headers,
+        body: JSON.stringify({ sha: commitToPush, force: false })
       });
-      if (!rebaseCommitRes.ok) throw new Error(`Rebase commit failed: ${rebaseCommitRes.status}`);
-      const rebaseData = await rebaseCommitRes.json();
-      finalCommitSHA = rebaseData.sha;
-      logLine(`Rebased commit: ${finalCommitSHA.slice(0,7)}`, 'ok');
+
+      if (pushRes.ok) {
+        pushed = true;
+        break;
+      } else if (pushRes.status === 422) {
+        logLine(`Attempt ${attempt}: push conflict, retrying...`, 'info');
+        if (attempt === 3) throw new Error('Push failed after 3 attempts — please retry deploy');
+      } else {
+        throw new Error(`Push failed: ${pushRes.status}`);
+      }
     }
 
-    const pushRes = await fetch(`${api}/git/refs/heads/${branch}`, {
-      method: 'PATCH', headers,
-      body: JSON.stringify({ sha: finalCommitSHA, force: true })
-    });
-    if (!pushRes.ok) throw new Error(`Push failed: ${pushRes.status}`);
+    if (!pushed) throw new Error('Could not push after retries');
     logLine('Pushed to GitHub!', 'ok');
 
     // SUCCESS
