@@ -1042,7 +1042,7 @@ async function deployToGitHub() {
     const indexRes = await fetch(`${api}/contents/index.html?ref=${branch}`, { headers });
     if (!indexRes.ok) throw new Error(`Failed to fetch index.html: ${indexRes.status}`);
     const indexData = await indexRes.json();
-    let indexContent = atob(indexData.content.replace(/\n/g, ''));
+    let indexContent = decodeURIComponent(escape(atob(indexData.content.replace(/\n/g, ''))));
     logLine('Got index.html', 'ok');
 
     // STEP 5: Inject card into index.html
@@ -1355,7 +1355,7 @@ async function loadProjectsFromGitHub() {
     }
     
     const data = await response.json();
-    const content = atob(data.content.replace(/\n/g, ''));
+    const content = decodeURIComponent(escape(atob(data.content.replace(/\n/g, ''))));
     const projects = JSON.parse(content);
     
     localStorage.setItem('projects_json_sha', data.sha);
@@ -1564,7 +1564,7 @@ async function loadLiveProjects() {
     if (!htmlFiles.length) { c.innerHTML = '<div class="card text-center text-gray-400 py-8">No projects found.</div>'; return; }
     const indexRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/index.html?ref=${branch}`, { headers });
     const indexData = await indexRes.json();
-    const indexContent = atob(indexData.content.replace(/\n/g,''));
+    const indexContent = decodeURIComponent(escape(atob(indexData.content.replace(/\n/g,''))));
     c.innerHTML = `<div class="card mb-4" style="background:#f0fdf4;border:1px solid #86efac"><p class="text-green-800 font-medium text-sm">✅ <strong>${htmlFiles.length} projects</strong> found on GitHub. ${currentUser === 'pavan' ? 'You can edit and delete.' : 'You can edit. Only pavan can delete.'}</p></div>
     <div class="space-y-4">${htmlFiles.map(f => {
       const slug = f.name.replace('.html','');
@@ -1625,7 +1625,7 @@ async function openEditModal(slug, title, desc, thumbnail) {
     const res = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/projects/${slug}.html?ref=${branch}`, { headers });
     if (!res.ok) throw new Error('Could not load file');
     const data = await res.json();
-    const html = atob(data.content.replace(/\n/g,''));
+    const html = decodeURIComponent(escape(atob(data.content.replace(/\n/g,''))));
     const g = (re) => { const m = html.match(re); return m ? m[1].replace(/<[^>]+>/g,'').trim() : ''; };
     document.getElementById('editOverview').value = g(/Project Overview<\/h2>[\s\S]*?<p[^>]*>([\s\S]*?)<\/p>/i);
     document.getElementById('editMentor').value = g(/Project Guidance<\/h3>[\s\S]*?<p[^>]*>([\s\S]*?)<\/p>/i);
