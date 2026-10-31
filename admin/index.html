@@ -1557,12 +1557,12 @@ async function loadLiveProjects() {
   c.innerHTML = '<div class="card text-center text-gray-400 py-8"><div style="width:32px;height:32px;border:4px solid #e2e8f0;border-top-color:#1e3a8a;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 12px"></div>Loading from GitHub...</div>';
   const headers = { Authorization: `token ${token}`, Accept: 'application/vnd.github+json' };
   try {
-    const res = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/projects?ref=${branch}`, { headers });
+    const res = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/projects?ref=${branch}&_t=${Date.now()}`, { headers, cache: 'no-store' });
     if (!res.ok) throw new Error(`GitHub error: ${res.status}`);
     const files = await res.json();
     const htmlFiles = files.filter(f => f.name.endsWith('.html'));
     if (!htmlFiles.length) { c.innerHTML = '<div class="card text-center text-gray-400 py-8">No projects found.</div>'; return; }
-    const indexRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/index.html?ref=${branch}`, { headers });
+    const indexRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/index.html?ref=${branch}&_t=${Date.now()}`, { headers, cache: 'no-store' });
     const indexData = await indexRes.json();
     const indexContent = decodeURIComponent(escape(atob(indexData.content.replace(/\n/g,''))));
     c.innerHTML = `<div class="card mb-4" style="background:#f0fdf4;border:1px solid #86efac"><p class="text-green-800 font-medium text-sm">✅ <strong>${htmlFiles.length} projects</strong> found on GitHub. ${currentUser === 'pavan' ? 'You can edit and delete.' : 'You can edit. Only pavan can delete.'}</p></div>
@@ -1683,7 +1683,7 @@ async function saveAndDeployEdit() {
     addLog('Updating index.html...', 'info');
     const indexRes = await fetch(`${api}/contents/index.html?ref=${branch}`, { headers });
     const indexData = await indexRes.json();
-    let indexContent = atob(indexData.content.replace(/\n/g,''));
+    let indexContent = decodeURIComponent(escape(atob(indexData.content.replace(/\n/g,''))));
     if (indexContent.includes(`/R-D/projects/${slug}.html`)) {
       const re = new RegExp(`<!-- Project Card:[^\\n]*\\n[\\s\\S]*?href="/R-D/projects/${slug}\\.html"[\\s\\S]*?<\\/div>\\s*<\\/div>\\s*<\\/div>`, 'i');
       const m = indexContent.match(re);
@@ -1727,7 +1727,7 @@ async function deleteProjectFromGH(slug, title) {
     });
     const indexRes = await fetch(`${api}/contents/index.html?ref=${branch}`, { headers });
     const indexData = await indexRes.json();
-    let indexContent = atob(indexData.content.replace(/\n/g,''));
+    let indexContent = decodeURIComponent(escape(atob(indexData.content.replace(/\n/g,''))));
     const re = new RegExp(`<!-- Project Card:[^\\n]*\\n[\\s\\S]*?href="/R-D/projects/${slug}\\.html"[\\s\\S]*?<\\/div>\\s*<\\/div>\\s*<\\/div>\\s*`, 'i');
     indexContent = indexContent.replace(re, '');
     await fetch(`${api}/contents/index.html`, {
